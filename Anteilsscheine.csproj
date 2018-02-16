@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AtleX.CommandLineArguments" Version="1.1.1" />
+    <PackageReference Include="CsvHelper" Version="6.1.1" />
+    <PackageReference Include="itext7" Version="7.1.1" />
+    <PackageReference Include="itext7.pdfhtml" Version="2.0.1" />
+  </ItemGroup>
+
+</Project>
