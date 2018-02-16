@@ -7,6 +7,7 @@ namespace Anteilsscheine
 {
     class Program
     {
+
         private class MyArgumentsClass : Arguments
         {
             [Required]
