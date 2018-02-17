@@ -98,7 +98,7 @@ namespace Anteilsscheine
             };
 
             ICollectiveCertificateDocument document = new CollectiveCertificateDocument();
-            CollectiveCertificate CollectiveCertificate = new CollectiveCertificate(document, address, powerPlant, transactions, strombezuege, factor);
+            CollectiveCertificate CollectiveCertificate = new CollectiveCertificate(document, address, powerPlant, transactions);
             var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             CollectiveCertificate.WritePdf(exportFolder, 2017);
         }

@@ -16,22 +16,16 @@ namespace Anteilsscheine
         private readonly Adresse _address;
         private readonly Solaranlage _powerPlant;
         private readonly List<Transaktion> _transactions;
-        private readonly List<Strombezug> _strombezuege;
-        private readonly List<Umwandlungsfaktor> _factor;
 
         public CollectiveCertificate(ICollectiveCertificateDocument document,
                                     Adresse address,
                                     Solaranlage powerPlant,
-                                    List<Transaktion> transactions,
-                                    List<Strombezug> strombezuege,
-                                    List<Umwandlungsfaktor> factor)
+                                    List<Transaktion> transactions)
         {
             _document = document;
             _address = address;
             _powerPlant = powerPlant;
             _transactions = transactions;
-            _strombezuege = strombezuege;
-            _factor = factor;
         }
 
         public void WritePdf(string path, int year)
@@ -54,38 +48,39 @@ namespace Anteilsscheine
                               int anteilsscheine,
                               List<Transaktion> transactions)
         {
-            string table = CollectTransactions(transactions, year);
+            string transactionTable = CollectTransactions(year, transactions);
 
-            return _document.documentTemplate.Replace("${Plant}", _powerPlant.Plant)
-                            .Replace("${Year}", year.ToString())
-                            .Replace("${PowerEarning}", _powerPlant.PowerEarning.ToString())
-                            .Replace("${Name}", _address.Name)
-                            .Replace("${Street}", _address.Street)
-                            .Replace("${City}", _address.City)
-                            .Replace("${PersonalAnteilsscheine}", personalAnteilsscheine.ToString())
-                            .Replace("${PersonalPowerEarning}", personalPowerEarning.ToString())
-                            .Replace("${PrintDate}", printDate.ToString("dd. MMM yyyy"))
-                            .Replace("${Signature1}", signature1)
-                            .Replace("${Signature2}", signature2)
-                            .Replace("${Transactions}", table)
-                            .Replace("${PersonalRemainingBalance}", personalRemainingBalance.ToString())
-                            .Replace("${Anteilsscheine}", anteilsscheine.ToString());
+            return _document.FillDocumentTemplate(
+                year,
+                printDate,
+                _powerPlant.Plant,
+                _powerPlant.PowerEarning,
+                anteilsscheine,
+                signature1,
+                signature2,
+                _address.Name,
+                _address.Street,
+                _address.City,
+                personalAnteilsscheine,
+                personalPowerEarning,
+                personalRemainingBalance,
+                transactionTable);
         }
 
-        private string CollectTransactions(List<Transaktion> transactions, int year)
+        private string CollectTransactions(int year, List<Transaktion> transactions)
         {
             StringBuilder sb = new StringBuilder();
-            string firstLine = _document.tableHeaderTemplate;
-            sb.AppendLine(firstLine);
-            string lineTemplate = _document.tableItemTemplate;
+            sb.AppendLine(_document.tableHeaderTemplate);
+
             foreach (Transaktion transaktion in transactions.OrderBy(t => t.Date))
             {
-                var line = _document.FillTableTemplate(lineTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
+                var line = _document.FillTableTemplate(_document.tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
                 sb.AppendLine(line);
             }
-            string endTemplate = _document.tableFooterTemplate;
-            var endLine = _document.FillTableTemplate(endTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
+
+            var endLine = _document.FillTableTemplate(_document.tableFooterTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
             sb.AppendLine(endLine);
+
             return sb.ToString();
         }
     }
