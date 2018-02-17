@@ -37,7 +37,6 @@ namespace Anteilsscheine
 
             }
 
-            string template = File.ReadAllText("./Daten/Template.html");
             Adresse address = new Adresse()
             {
                 Id = 1,
@@ -98,9 +97,10 @@ namespace Anteilsscheine
                 }
             };
 
-            Sammelanteilsschein sammelanteilsschein = new Sammelanteilsschein(template, address, powerPlant, transactions, strombezuege, factor);
+            ICollectiveCertificateDocument document = new CollectiveCertificateDocument();
+            CollectiveCertificate CollectiveCertificate = new CollectiveCertificate(document, address, powerPlant, transactions, strombezuege, factor);
             var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            sammelanteilsschein.WritePdf(exportFolder, 2017);
+            CollectiveCertificate.WritePdf(exportFolder, 2017);
         }
     }
 }

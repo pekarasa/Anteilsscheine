@@ -10,23 +10,23 @@ using iText.Kernel.Pdf;
 
 namespace Anteilsscheine
 {
-    public class Sammelanteilsschein
+    public class CollectiveCertificate
     {
-        private readonly string _template;
+        private readonly ICollectiveCertificateDocument _document;
         private readonly Adresse _address;
         private readonly Solaranlage _powerPlant;
         private readonly List<Transaktion> _transactions;
         private readonly List<Strombezug> _strombezuege;
         private readonly List<Umwandlungsfaktor> _factor;
 
-        public Sammelanteilsschein(string template,
+        public CollectiveCertificate(ICollectiveCertificateDocument document,
                                     Adresse address,
                                     Solaranlage powerPlant,
                                     List<Transaktion> transactions,
                                     List<Strombezug> strombezuege,
                                     List<Umwandlungsfaktor> factor)
         {
-            _template = template;
+            _document = document;
             _address = address;
             _powerPlant = powerPlant;
             _transactions = transactions;
@@ -56,7 +56,7 @@ namespace Anteilsscheine
         {
             string table = CollectTransactions(transactions, year);
 
-            return _template.Replace("${Plant}", _powerPlant.Plant)
+            return _document.documentTemplate.Replace("${Plant}", _powerPlant.Plant)
                             .Replace("${Year}", year.ToString())
                             .Replace("${PowerEarning}", _powerPlant.PowerEarning.ToString())
                             .Replace("${Name}", _address.Name)
@@ -75,28 +75,18 @@ namespace Anteilsscheine
         private string CollectTransactions(List<Transaktion> transactions, int year)
         {
             StringBuilder sb = new StringBuilder();
-            string firstLine = "<table width='575' cellspacing='0' style='page-break-before: always'><col width='108'><col width='367'><col width='76'><tbody><tr valign='top'><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='left'>Datum per</p></td><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='left'>Text</p></td><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='right'>Betrag</p></td></tr>".Replace("'", "\"");
+            string firstLine = _document.tableHeaderTemplate;
             sb.AppendLine(firstLine);
-            string lineTemplate = "<tr valign='top'><td style='border: none'><p align='left'>${Date}</p></td><td style='border: none'><p align='left'>${Description}</p></td><td style='border: none'><p align='right'>${Amount}.-</p></td></tr>".Replace("'", "\"");
+            string lineTemplate = _document.tableItemTemplate;
             foreach (Transaktion transaktion in transactions.OrderBy(t => t.Date))
             {
-                var line = FillTemplate(lineTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
+                var line = _document.FillTableTemplate(lineTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
                 sb.AppendLine(line);
             }
-            string endTemplate = "<tr valign='top'><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='left'>${Date}</p></td><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='left'>${Description}</p></td><td style='border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: none'><p align='right'>${Amount}.-</p></td></tr></tbody></table>".Replace("'", "\"");
-            var endLine = FillTemplate(endTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
+            string endTemplate = _document.tableFooterTemplate;
+            var endLine = _document.FillTableTemplate(endTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
             sb.AppendLine(endLine);
             return sb.ToString();
-        }
-
-        private static string FillTemplate(string lineTemplate,
-                                           DateTime date,
-                                           string description,
-                                           int amount)
-        {
-            return lineTemplate.Replace("${Date}", date.ToString("dd.MM.yyyy"))
-                               .Replace("${Description}", description)
-                               .Replace("${Amount}", amount.ToString());
         }
     }
 }

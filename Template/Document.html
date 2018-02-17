@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title></title>
+	<meta name="author" content="Peter Portmann" />
+	<meta name="created" content="2013-04-11T20:59:43" />
+	<meta name="changed" content="2017-04-15T09:52:54.389002468" />
+	<style type="text/css">
+		@page {
+			margin: 2.9cm
+		}
+
+		p {
+			margin-bottom: 0.21cm;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 100%;
+		}
+
+		h1 {
+			margin-bottom: 0.21cm;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 170%;
+		}
+
+		td p { /* Abstände innerhalb der Tabelle */
+			margin-bottom: 0.1cm;
+			margin-top: 0.1cm;
+		}
+		th, td {
+    		padding: 2px;
+		}
+
+		.align-right {
+			text-align: right;
+		}
+
+		.paragraphDistance {
+			margin-bottom: 1cm
+		}
+	</style>
+</head>
+
+<body lang="de-CH" dir="ltr">
+	<p>
+		Genossenschaft
+		<br/>
+		<img src="Daten/logo.png" width="309" height="56" border="0">
+	</p>
+	<p class="paragraphDistance"> </p>
+	<h1>Sammelanteilsschein</h1>
+	<p class="paragraphDistance"> </p>
+	<p>
+		Die Solaranlagen
+		<b>${Plant}</b> haben im Jahr ${Year} gesamthaft
+		<b>${PowerEarning} kWh</b>Strom produziert. Dank der zweiten Anlage ist das mehr als eine Verdoppelung der Leistung. Dies wurde auch
+		ermöglicht durch die Beiträge von</p>
+	<p class="paragraphDistance"> </p>
+	<p align="left" style="margin-left: 2.5cm; margin-bottom: 0cm">
+		${Name}
+		<br/>${Street}
+		<br/>${City}
+	</p>
+	<p class="paragraphDistance"> </p>
+	<p>Per 31.12.${Year} sind Sie im Besitz von</p>
+	<p class="paragraphDistance"> </p>
+	<p align="left" style="margin-left: 2.5cm; margin-bottom: 0.21cm">
+		${PersonalAnteilsscheine} <b>Anteilsscheinen</b> à CHF 100.-
+	</p>
+	<p class="paragraphDistance"> </p>
+	<p>Das entspricht der jährlichen Stromproduktion von
+		<b>${PersonalPowerEarning} kWh</b>.
+		<br/> Detaillierte Berechnung siehe Rückseite.</p>
+	<p class="paragraphDistance"> </p>
+	<p>Herzlichen Dank.</p>
+	<p style="margin-bottom: 2cm"> </p>
+	<p>Oltingen, ${PrintDate}</p>
+	<p style="margin-bottom: 3cm"> </p>
+	<table style="width:100%">
+		<tr>
+			<td>
+				<p>${Signature1}</p>
+			</td>
+			<td class=align-right>
+				<p>${Signature2}</p>
+			</td>
+		</tr>
+	</table>
+	<p class="paragraphDistance"> </p>
+	${Transactions}
+	<p class="paragraphDistance"> </p>
+	<p>
+		Sie haben somit ${PersonalAnteilsscheine} Anteilsscheine gezeichnet. Der Restbetrag von CHF ${PersonalRemainingBalance}.- wird gehalten.
+	</p>
+	<p>
+		<b>solar</b>oltingen hat bisher total ${Anteilsscheine} Anteilsscheine ausgegeben.
+	</p>
+	<p>
+		Dieser Sammelanteilsschein ersetzt alle Ihre bisherigen.
+	</p>
+</body>
+
+</html>
