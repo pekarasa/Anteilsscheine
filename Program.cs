@@ -69,10 +69,10 @@ namespace Anteilsscheine
                 List<Umwandlungsfaktor> factor = db.ConversionFactors;
 
                 ICertificateDocument document = new CertificateDocument();
-                Certificate CollectiveCertificate = new Certificate(document, address, powerPlant, transactions);
+                Certificate certificate = new Certificate(document);
 
                 var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                CollectiveCertificate.WritePdf(exportFolder, year);
+                certificate.WritePdf(exportFolder, year, "Kuster Micha", "Portmann Peter", DateTime.Now, address, powerPlant, transactions, strombezuege, factor);
             }
         }
     }

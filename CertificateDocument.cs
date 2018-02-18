@@ -53,7 +53,7 @@ namespace Anteilsscheine
         {
             return template.Replace("${Date}", date.ToString("dd.MM.yyyy"))
                            .Replace("${Description}", description)
-                           .Replace("${Amount}", amount.ToString());
+                           .Replace("${Amount}", amount.ToString("##,#"));
         }
     }
 }

@@ -13,58 +13,28 @@ namespace Anteilsscheine
     public class Certificate
     {
         private readonly ICertificateDocument _document;
-        private readonly Adresse _address;
-        private readonly Solaranlage _powerPlant;
-        private readonly List<Transaktion> _transactions;
 
-        public Certificate(ICertificateDocument document,
-                                    Adresse address,
-                                    Solaranlage powerPlant,
-                                    List<Transaktion> transactions)
+        public Certificate(ICertificateDocument document)
         {
             _document = document;
-            _address = address;
-            _powerPlant = powerPlant;
-            _transactions = transactions;
         }
 
-        public void WritePdf(string path, int year)
+        internal void WritePdf(string exportFolder, int year, string signer1, string signer2, DateTime printDate, Adresse address, Solaranlage powerPlant, List<Transaktion> transactions, List<Strombezug> strombezuege, List<Umwandlungsfaktor> factor)
         {
-            string fileName = $"{year}_{_address.Name}_Sammeanteilsschein.pdf";
-            string exportFile = System.IO.Path.Combine(path, fileName);
+            string fileName = $"{year}_{address.Name}_Sammeanteilsschein.pdf";
+            string exportFile = System.IO.Path.Combine(exportFolder, fileName);
 
-            string htmlData = FillIn(year, 3, 123, DateTime.Now, "Ich", "Du", 321, 998, _transactions);
-            Stream pdfStream = new FileStream(exportFile, FileMode.Create);
-            HtmlConverter.ConvertToPdf(htmlData, pdfStream);
-        }
-
-        private string FillIn(int year,
-                              int personalAnteilsscheine,
-                              int personalPowerEarning,
-                              DateTime printDate,
-                              string signature1,
-                              string signature2,
-                              int personalRemainingBalance,
-                              int anteilsscheine,
-                              List<Transaktion> transactions)
-        {
             string transactionTable = CollectTransactions(year, transactions);
 
-            return _document.FillDocumentTemplate(
-                year,
-                printDate,
-                _powerPlant.Plant,
-                _powerPlant.PowerEarning,
-                anteilsscheine,
-                signature1,
-                signature2,
-                _address.Name,
-                _address.Street,
-                _address.City,
-                personalAnteilsscheine,
-                personalPowerEarning,
-                personalRemainingBalance,
-                transactionTable);
+            int totalNumberOfShareCertificate = 0;
+            int personalPowerEarning = 0;
+            int personalRemainingBalance = 0;
+            int personalNumberOfShareCertificate = 0;
+
+            string htmlData = _document.FillDocumentTemplate(year, printDate, powerPlant.Plant, powerPlant.PowerEarning, totalNumberOfShareCertificate, signer1, signer2, address.Name, address.Street, address.City, personalNumberOfShareCertificate, personalPowerEarning, personalRemainingBalance, transactionTable);
+
+            Stream pdfStream = new FileStream(exportFile, FileMode.Create);
+            HtmlConverter.ConvertToPdf(htmlData, pdfStream);
         }
 
         private string CollectTransactions(int year, List<Transaktion> transactions)
