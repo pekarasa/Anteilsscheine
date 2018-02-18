@@ -10,28 +10,59 @@ using iText.Kernel.Pdf;
 
 namespace Anteilsscheine
 {
-    public class Certificate
+    internal class Certificate
     {
+        internal int NumberOfCertificatesHeld { get; set; }
+        internal int RemainingBalance { get; set; }
+        internal int TotalNumberOfCertificates { get; set; }
         private readonly ICertificateDocument _document;
+        private readonly int _year;
+        private readonly Adresse _address;
+        private readonly Solaranlage _powerPlant;
+        private readonly List<Transaktion> _transactions;
+        private readonly List<Strombezug> _strombezuege;
+        private readonly List<Umwandlungsfaktor> _factor;
 
-        public Certificate(ICertificateDocument document)
+        internal Certificate(ICertificateDocument document, int year, Adresse address, Solaranlage powerPlant, List<Transaktion> transactions, List<Strombezug> strombezuege, List<Umwandlungsfaktor> factor)
         {
             _document = document;
+            _year = year;
+            _address = address;
+            _powerPlant = powerPlant;
+            _transactions = transactions;
+            _strombezuege = strombezuege;
+            _factor = factor;
+
+            foreach (Strombezug bezug in _strombezuege.Where(sb=>sb.Date.Year<=_year))
+            {
+                Transaktion transaktion = new Transaktion();
+                transaktion.Date = bezug.Date;
+                int y = transaktion.Date.Year;
+                try
+                {
+                    decimal f = _factor.Single(fa => fa.Year == y).Factor;
+                    transaktion.Amount = (int)(bezug.PowerPurchase * f);
+                    transaktion.Description = $"Jährlicher Strombezug {y}: {bezug.PowerPurchase}.- x {f} =";
+                    _transactions.Add(transaktion);
+                }
+                catch (Exception)
+                {
+                    throw new InvalidOperationException($"Kein passender Umwandlungsfaktor für das Jahr {y} gefunden.");
+                }
+            }
+
+            NumberOfCertificatesHeld = _transactions.Sum(t => t.Amount) / 100;
         }
 
-        internal void WritePdf(string exportFolder, int year, string signer1, string signer2, DateTime printDate, Adresse address, Solaranlage powerPlant, List<Transaktion> transactions, List<Strombezug> strombezuege, List<Umwandlungsfaktor> factor)
+        internal void WritePdf(string exportFolder, int year, string signer1, string signer2, DateTime printDate)
         {
-            string fileName = $"{year}_{address.Name}_Sammeanteilsschein.pdf";
+            string fileName = $"{year}_{_address.Name}_Sammeanteilsschein.pdf";
             string exportFile = System.IO.Path.Combine(exportFolder, fileName);
 
-            string transactionTable = CollectTransactions(year, transactions);
+            int personalPowerEarning = _powerPlant.PowerEarning / TotalNumberOfCertificates * NumberOfCertificatesHeld;
 
-            int totalNumberOfShareCertificate = 0;
-            int personalPowerEarning = 0;
-            int personalRemainingBalance = 0;
-            int personalNumberOfShareCertificate = 0;
-
-            string htmlData = _document.FillDocumentTemplate(year, printDate, powerPlant.Plant, powerPlant.PowerEarning, totalNumberOfShareCertificate, signer1, signer2, address.Name, address.Street, address.City, personalNumberOfShareCertificate, personalPowerEarning, personalRemainingBalance, transactionTable);
+            string transactionTable = CollectTransactions(year, _transactions);
+            string htmlData = _document.FillDocumentTemplate(year, printDate, _powerPlant.Plant, _powerPlant.PowerEarning, TotalNumberOfCertificates, signer1, signer2, _address.Name, _address.Street, _address.City, NumberOfCertificatesHeld, personalPowerEarning, RemainingBalance, transactionTable);
 
             Stream pdfStream = new FileStream(exportFile, FileMode.Create);
             HtmlConverter.ConvertToPdf(htmlData, pdfStream);

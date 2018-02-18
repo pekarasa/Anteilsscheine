@@ -59,20 +59,31 @@ namespace Anteilsscheine
                 addresses = db.Addresses;
             }
 
+            List<Certificate> certificates = new List<Certificate>();
             foreach (Adresse address in addresses)
             {
                 Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
                 int id = address.Id;
+
                 Solaranlage powerPlant = db.PowerPlants.Single(pp => pp.Year == year);
                 List<Transaktion> transactions = db.Transactions.Where(t => t.Id == id).ToList();
                 List<Strombezug> strombezuege = db.PowerPurchases.Where(pp => pp.Id == id).ToList();
                 List<Umwandlungsfaktor> factor = db.ConversionFactors;
 
                 ICertificateDocument document = new CertificateDocument();
-                Certificate certificate = new Certificate(document);
+                Certificate certificate = new Certificate(document, year, address, powerPlant,transactions, strombezuege, factor);
 
+                certificates.Add(certificate);
+            }
+
+            int totalNumberOfCertificates = certificates.Sum(c => c.NumberOfCertificatesHeld);
+            int remainingBalance = certificates.Sum(c => c.RemainingBalance);
+            certificates.ForEach(c=>c.TotalNumberOfCertificates = totalNumberOfCertificates);
+
+            foreach (Certificate certificate in certificates)
+            {
                 var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                certificate.WritePdf(exportFolder, year, "Kuster Micha", "Portmann Peter", DateTime.Now, address, powerPlant, transactions, strombezuege, factor);
+                certificate.WritePdf(exportFolder, year, "Kuster Micha", "Portmann Peter", DateTime.Now);
             }
         }
     }
