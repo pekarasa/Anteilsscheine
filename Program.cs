@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using Anteilsscheine.Model;
 using AtleX;
 using AtleX.CommandLineArguments;
@@ -14,12 +15,12 @@ namespace Anteilsscheine
         private class MyArgumentsClass : Arguments
         {
             //[Required]
-            [Display(Description = "This text will be displayed in the help, when requested")]
-            public bool Argument1 { get; set; }
+            [Display(Description = "Year for which the collective share certificates are to be created.")]
+            public int Year { get; set; }
 
             // Not required
-            [Display(Description = "This text will be displayed in the help, when requested")]
-            public string Name { get; set; }
+            [Display(Description = "You can use the name filter to restrict for whom collective share certificates should be created. For example, if you enter 'mann', only documents are created for addresses that contain this part in the name.")]
+            public string NameFilter { get; set; }
         }
 
         static void Main(string[] args)
@@ -32,73 +33,39 @@ namespace Anteilsscheine
                 return;
             }
 
-            if (cliArguments.Argument1)
+            Context db;
+            using (StreamReader addressReader = new StreamReader("./Daten/Adresse.csv"))
+            using (StreamReader powerPlantReader = new StreamReader("./Daten/Solaranlage.csv"))
+            using (StreamReader powerPurchasesReader = new StreamReader("./Daten/Strombezug.csv"))
+            using (StreamReader transactionsReader = new StreamReader("./Daten/Transaktion.csv"))
+            using (StreamReader conversionFactorsReader = new StreamReader("./Daten/Umwandlungsfaktor.csv"))
             {
-
+                db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
             }
 
-            Adresse address = new Adresse()
-            {
-                Id = 1,
-                Name = "Karin Oetterli + Peter Portmann",
-                Street = "Mattenweg 186",
-                City = "4494 Oltingen"
-            };
-            Solaranlage powerPlant = new Solaranlage()
-            {
-                Year = 2017,
-                Plant = "Fohrenhof",
-                PowerEarning = 1234,
-                Anteilsscheine = 4321
-            };
-            List<Transaktion> transactions = new List<Transaktion>()
-            {
-                new Transaktion()
-                {
-                    Id=1,
-                    Date= new DateTime(2011, 12,28),
-                    Description = "Kauf Anteilsscheine",
-                    Amount = 6000
-                },
-                new Transaktion()
-                {
-                    Id=1,
-                    Date= new DateTime(2012, 12,28),
-                    Description = "Verkauf Anteilsscheine",
-                    Amount = -1000
-                }
-            };
-            List<Strombezug> strombezuege = new List<Strombezug>()
-            {
-                new Strombezug()
-                {
-                    Id = 1,
-                    Date = new DateTime(2012, 12, 31),
-                    PowerPurchase = 600
-                },
-                new Strombezug()
-                {
-                    Id = 1,
-                    Date = new DateTime(2013, 12, 31),
-                    PowerPurchase = 601
-                }
-            };
-            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>()
-            {
-                new Umwandlungsfaktor()
-                {
-                    Year=2012,
-                    Factor=0.8M
-                },
-                new Umwandlungsfaktor()
-                {
-                    Year=2013,
-                    Factor=0.9M
-                }
-            };
+            int year = cliArguments.Year;
+            if(year==0){
+                year = db.PowerPlants.Max(pp=>pp.Year);
+            }
+
+            IEnumerable<Adresse> addresses;
+            if(cliArguments.NameFilter!=null) {
+                addresses = db.Addresses.Where(a => a.Name.Contains(cliArguments.NameFilter));
+            } else {
+                addresses = db.Addresses;
+            }
+            Adresse address = addresses.FirstOrDefault();
+            Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
+            int id = address.Id;
+
+            Solaranlage powerPlant = db.PowerPlants.Single(pp=>pp.Year==2017);
+            List<Transaktion> transactions = db.Transactions.Where(t=>t.Id==id).ToList();
+            List<Strombezug> strombezuege = db.PowerPurchases.Where(pp=>pp.Id==id).ToList();
+            List<Umwandlungsfaktor> factor = db.ConversionFactors;
 
             ICollectiveCertificateDocument document = new CollectiveCertificateDocument();
             CollectiveCertificate CollectiveCertificate = new CollectiveCertificate(document, address, powerPlant, transactions);
+
             var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             CollectiveCertificate.WritePdf(exportFolder, 2017);
         }

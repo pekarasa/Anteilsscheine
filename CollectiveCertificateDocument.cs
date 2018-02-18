@@ -36,7 +36,7 @@ namespace Anteilsscheine
             return documentTemplate
                 .Replace("${plantName}", plantName)
                 .Replace("${year}", year.ToString())
-                .Replace("${PowerEarning}", plantPowerEarning.ToString())
+                .Replace("${plantPowerEarning}", plantPowerEarning.ToString())
                 .Replace("${addressName}", addressName)
                 .Replace("${addressStreet}", addressStreet)
                 .Replace("${addressCity}", addressCity)
