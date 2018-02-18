@@ -2,7 +2,7 @@ using System;
 
 namespace Anteilsscheine
 {
-    public interface ICollectiveCertificateDocument
+    public interface ICertificateDocument
     {
         string documentTemplate { get; set; }
         string tableHeaderTemplate { get; set; }

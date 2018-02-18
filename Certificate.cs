@@ -10,14 +10,14 @@ using iText.Kernel.Pdf;
 
 namespace Anteilsscheine
 {
-    public class CollectiveCertificate
+    public class Certificate
     {
-        private readonly ICollectiveCertificateDocument _document;
+        private readonly ICertificateDocument _document;
         private readonly Adresse _address;
         private readonly Solaranlage _powerPlant;
         private readonly List<Transaktion> _transactions;
 
-        public CollectiveCertificate(ICollectiveCertificateDocument document,
+        public Certificate(ICertificateDocument document,
                                     Adresse address,
                                     Solaranlage powerPlant,
                                     List<Transaktion> transactions)

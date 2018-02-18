@@ -44,30 +44,36 @@ namespace Anteilsscheine
             }
 
             int year = cliArguments.Year;
-            if(year==0){
-                year = db.PowerPlants.Max(pp=>pp.Year);
+            if (year == 0)
+            {
+                year = db.PowerPlants.Max(pp => pp.Year);
             }
 
             IEnumerable<Adresse> addresses;
-            if(cliArguments.NameFilter!=null) {
+            if (cliArguments.NameFilter != null)
+            {
                 addresses = db.Addresses.Where(a => a.Name.Contains(cliArguments.NameFilter));
-            } else {
+            }
+            else
+            {
                 addresses = db.Addresses;
             }
-            Adresse address = addresses.FirstOrDefault();
-            Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
-            int id = address.Id;
 
-            Solaranlage powerPlant = db.PowerPlants.Single(pp=>pp.Year==2017);
-            List<Transaktion> transactions = db.Transactions.Where(t=>t.Id==id).ToList();
-            List<Strombezug> strombezuege = db.PowerPurchases.Where(pp=>pp.Id==id).ToList();
-            List<Umwandlungsfaktor> factor = db.ConversionFactors;
+            foreach (Adresse address in addresses)
+            {
+                Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
+                int id = address.Id;
+                Solaranlage powerPlant = db.PowerPlants.Single(pp => pp.Year == year);
+                List<Transaktion> transactions = db.Transactions.Where(t => t.Id == id).ToList();
+                List<Strombezug> strombezuege = db.PowerPurchases.Where(pp => pp.Id == id).ToList();
+                List<Umwandlungsfaktor> factor = db.ConversionFactors;
 
-            ICollectiveCertificateDocument document = new CollectiveCertificateDocument();
-            CollectiveCertificate CollectiveCertificate = new CollectiveCertificate(document, address, powerPlant, transactions);
+                ICertificateDocument document = new CertificateDocument();
+                Certificate CollectiveCertificate = new Certificate(document, address, powerPlant, transactions);
 
-            var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            CollectiveCertificate.WritePdf(exportFolder, 2017);
+                var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                CollectiveCertificate.WritePdf(exportFolder, year);
+            }
         }
     }
 }

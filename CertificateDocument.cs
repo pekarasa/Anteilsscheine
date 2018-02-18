@@ -3,14 +3,14 @@ using System.IO;
 
 namespace Anteilsscheine
 {
-    public class CollectiveCertificateDocument : ICollectiveCertificateDocument
+    public class CertificateDocument : ICertificateDocument
     {
         public string documentTemplate { get; set; }
         public string tableHeaderTemplate { get; set; }
         public string tableItemTemplate { get; set; }
         public string tableFooterTemplate { get; set; }
 
-        public CollectiveCertificateDocument()
+        public CertificateDocument()
         {
             documentTemplate = File.ReadAllText("./Template/Document.html");
             tableHeaderTemplate = File.ReadAllText("./Template/TableHeader.html");
