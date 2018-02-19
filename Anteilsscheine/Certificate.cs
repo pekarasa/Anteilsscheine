@@ -10,11 +10,11 @@ using iText.Kernel.Pdf;
 
 namespace Anteilsscheine
 {
-    internal class Certificate
+    public class Certificate
     {
-        internal int NumberOfCertificatesHeld { get; set; }
-        internal int RemainingBalance { get; set; }
-        internal int TotalNumberOfCertificates { get; set; }
+        public int NumberOfCertificatesHeld { get; set; }
+        public int RemainingBalance { get; set; }
+        public int TotalNumberOfCertificates { get; set; }
         private readonly ICertificateDocument _document;
         private readonly int _year;
         private readonly Adresse _address;
@@ -23,7 +23,7 @@ namespace Anteilsscheine
         private readonly List<Strombezug> _strombezuege;
         private readonly List<Umwandlungsfaktor> _factor;
 
-        internal Certificate(ICertificateDocument document, int year, Adresse address, Solaranlage powerPlant, List<Transaktion> transactions, List<Strombezug> strombezuege, List<Umwandlungsfaktor> factor)
+        public Certificate(ICertificateDocument document, int year, Adresse address, Solaranlage powerPlant, List<Transaktion> transactions, List<Strombezug> strombezuege, List<Umwandlungsfaktor> factor)
         {
             _document = document;
             _year = year;
