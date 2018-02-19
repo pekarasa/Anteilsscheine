@@ -33,7 +33,7 @@ namespace Anteilsscheine
             _strombezuege = strombezuege;
             _factor = factor;
 
-            foreach (Strombezug bezug in _strombezuege.Where(sb=>sb.Date.Year<=_year))
+            foreach (Strombezug bezug in _strombezuege)
             {
                 Transaktion transaktion = new Transaktion();
                 transaktion.Date = bezug.Date;
@@ -47,7 +47,7 @@ namespace Anteilsscheine
                 }
                 catch (Exception)
                 {
-                    throw new InvalidOperationException($"Kein passender Umwandlungsfaktor für das Jahr {y} gefunden.");
+                    throw new Exception($"Kein passender Umwandlungsfaktor für das Jahr {y} gefunden.");
                 }
             }
 
@@ -61,28 +61,10 @@ namespace Anteilsscheine
 
             int personalPowerEarning = _powerPlant.PowerEarning / TotalNumberOfCertificates * NumberOfCertificatesHeld;
 
-            string transactionTable = CollectTransactions(year, _transactions);
-            string htmlData = _document.FillDocumentTemplate(year, printDate, _powerPlant.Plant, _powerPlant.PowerEarning, TotalNumberOfCertificates, signer1, signer2, _address.Name, _address.Street, _address.City, NumberOfCertificatesHeld, personalPowerEarning, RemainingBalance, transactionTable);
+            string htmlData = _document.FillDocumentTemplate(year, printDate, _powerPlant.Plant, _powerPlant.PowerEarning, TotalNumberOfCertificates, signer1, signer2, _address.Name, _address.Street, _address.City, NumberOfCertificatesHeld, personalPowerEarning, RemainingBalance, _transactions);
 
             Stream pdfStream = new FileStream(exportFile, FileMode.Create);
             HtmlConverter.ConvertToPdf(htmlData, pdfStream);
-        }
-
-        private string CollectTransactions(int year, List<Transaktion> transactions)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(_document.tableHeaderTemplate);
-
-            foreach (Transaktion transaktion in transactions.OrderBy(t => t.Date))
-            {
-                var line = _document.FillTableTemplate(_document.tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
-                sb.AppendLine(line);
-            }
-
-            var endLine = _document.FillTableTemplate(_document.tableFooterTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
-            sb.AppendLine(endLine);
-
-            return sb.ToString();
         }
     }
 }

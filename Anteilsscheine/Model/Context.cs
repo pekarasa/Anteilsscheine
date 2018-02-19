@@ -20,25 +20,18 @@ namespace Anteilsscheine.Model
                        StreamReader transactionsReader,
                        StreamReader conversionFactorsReader)
         {
-            using (var csv = new CsvReader(addressReader))
+            Addresses = GetRecords<Adresse>(addressReader);
+            PowerPlants = GetRecords<Solaranlage>(powerPlantReader);
+            PowerPurchases = GetRecords<Strombezug>(powerPurchasesReader);
+            Transactions = GetRecords<Transaktion>(transactionsReader);
+            ConversionFactors = GetRecords<Umwandlungsfaktor>(conversionFactorsReader);
+        }
+
+        private List<T> GetRecords<T>(StreamReader reader)
+        {
+            using (var csv = new CsvReader(reader))
             {
-                Addresses = csv.GetRecords<Adresse>().ToList();
-            }
-            using (var csv = new CsvReader(powerPlantReader))
-            {
-                PowerPlants = csv.GetRecords<Solaranlage>().ToList();
-            }
-            using (var csv = new CsvReader(powerPurchasesReader))
-            {
-                PowerPurchases = csv.GetRecords<Strombezug>().ToList();
-            }
-            using (var csv = new CsvReader(transactionsReader))
-            {
-                Transactions = csv.GetRecords<Transaktion>().ToList();
-            }
-            using (var csv = new CsvReader(conversionFactorsReader))
-            {
-                ConversionFactors = csv.GetRecords<Umwandlungsfaktor>().ToList();
+                return csv.GetRecords<T>().ToList();
             }
         }
     }

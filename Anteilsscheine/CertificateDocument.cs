@@ -1,14 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using Anteilsscheine.Model;
 
 namespace Anteilsscheine
 {
     public class CertificateDocument : ICertificateDocument
     {
-        public string documentTemplate { get; set; }
-        public string tableHeaderTemplate { get; set; }
-        public string tableItemTemplate { get; set; }
-        public string tableFooterTemplate { get; set; }
+        private string documentTemplate { get; set; }
+        private string tableHeaderTemplate { get; set; }
+        private string tableItemTemplate { get; set; }
+        private string tableFooterTemplate { get; set; }
 
         public CertificateDocument()
         {
@@ -31,8 +35,10 @@ namespace Anteilsscheine
                                            int personalNumberOfShareCertificate,
                                            int personalPowerEarning,
                                            int personalRemainingBalance,
-                                           string transactionTable)
+                                           List<Transaktion> transactions)
         {
+            string transactionTable = CollectTransactions(year, transactions.Where(t=>t.Date.Year<=year).ToList());
+
             return documentTemplate
                 .Replace("${plantName}", plantName)
                 .Replace("${year}", year.ToString())
@@ -49,11 +55,29 @@ namespace Anteilsscheine
                 .Replace("${personalRemainingBalance}", personalRemainingBalance.ToString())
                 .Replace("${totalNumberOfShareCertificate}", totalNumberOfShareCertificate.ToString());
         }
-        public string FillTableTemplate(string template, DateTime date, string description, int amount)
+        private string FillTableTemplate(string template, DateTime date, string description, int amount)
         {
             return template.Replace("${Date}", date.ToString("dd.MM.yyyy"))
                            .Replace("${Description}", description)
                            .Replace("${Amount}", amount.ToString("##,#"));
         }
+
+        private string CollectTransactions(int year, List<Transaktion> transactions)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(tableHeaderTemplate);
+
+            foreach (Transaktion transaktion in transactions.OrderBy(t => t.Date))
+            {
+                var line = FillTableTemplate(tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
+                sb.AppendLine(line);
+            }
+
+            var endLine = FillTableTemplate(tableFooterTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
+            sb.AppendLine(endLine);
+
+            return sb.ToString();
+        }
+
     }
 }

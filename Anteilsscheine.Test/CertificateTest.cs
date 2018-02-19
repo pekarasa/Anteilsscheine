@@ -1,48 +1,50 @@
 using Anteilsscheine.Model;
+using Anteilsscheine;
 using FakeItEasy;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Anteilsscheine.UnitTests.Certificate
+namespace Anteilsscheine.UnitTests
 {
     [TestFixture]
     public class CertificateTest
     {
-        private class Doc : ICertificateDocument
-        {
-            public string documentTemplate { get; set; }
-            public string tableHeaderTemplate { get; set; }
-            public string tableItemTemplate { get; set; }
-            public string tableFooterTemplate { get; set; }
-
-            public string FillDocumentTemplate(int year, DateTime printDate, string plantName, int plantPowerEarning, int totalNumberOfShareCertificate, string signer1, string signer2, string addressName, string addressStreet, string addressCity, int personalNumberOfShareCertificate, int personalPowerEarning, int personalRemainingBalance, string table)
-            {
-                throw new NotImplementedException();
-            }
-
-            public string FillTableTemplate(string template, DateTime date, string description, int amount)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [Test]
         public void WhenConstructorisCalled_ThenObjectIsReturned()
         {
             // var document = A.Fake<ICertificateDocument>();
             // A.CallTo(() => document.FillDocumentTemplate()).Returns(lollipop);
+            // Arrange
 
-            ICertificateDocument document = null;
-            int year = 2016;
-            Adresse address = null;
-            Solaranlage powerPlant = new Solaranlage();
-            List<Transaktion> transactions = new List<Transaktion>();
+            // Act
+            var sut = new Anteilsscheine.Certificate(null, 2016, null, new Solaranlage(), new List<Transaktion>(), new List<Strombezug>(), null);
+
+            // Assert
+            Assert.IsNotNull(sut, "Object must be returned.");
+        }
+
+        [Test]
+        //public void WhenHundredCertificatesExist_Then10CertificatesResultIn10PercentOfThePlantProduction()
+        public void WhenAnEnergyPurchaseContractOf1CertificatePerYearRunsFor10Years_Then10CertificatesAreCountedAllways()
+        {
+            // Arrange
+            int id = 1;
             List<Strombezug> strombezuege = new List<Strombezug>();
-            List<Umwandlungsfaktor> factor = null;
-            var cert = new Anteilsscheine.Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);
+            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>();
+            DateTime date = new DateTime(2012,12,31);
+            for (int i = 0; i < 10; i++)
+            {
+                strombezuege.Add(new Strombezug{Id=id, Date=date, PowerPurchase=100});
+                factor.Add(new Umwandlungsfaktor{Year=date.Year, Factor=1});
+                date=date.AddYears(1);
+            }
 
-            Assert.IsNotNull(cert, "Object must be returned.");
+            // Act
+            var sut = new Certificate(null, 2016, null, new Solaranlage{Year=2016, PowerEarning=3000}, new List<Transaktion>(), strombezuege, factor);
+
+            // Assert
+            Assert.AreEqual(10, sut.NumberOfCertificatesHeld);
         }
     }
 }
