@@ -6,6 +6,7 @@ using System.Linq;
 using Anteilsscheine.Model;
 using AtleX;
 using AtleX.CommandLineArguments;
+using iText.Html2pdf;
 
 namespace Anteilsscheine
 {
@@ -84,14 +85,17 @@ namespace Anteilsscheine
                 foreach (Certificate certificate in certificates)
                 {
                     var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                    certificate.WritePdf(exportFolder, year, "Kuster Micha", "Portmann Peter", DateTime.Now);
+                    string htmlData = certificate.FillTemplateWithData(year, "Kuster Micha", "Portmann Peter", DateTime.Now);
+                    string fileName = certificate.GetFileName(exportFolder);
+                    Stream pdfStream = new FileStream(fileName, FileMode.Create);
+                    HtmlConverter.ConvertToPdf(htmlData, pdfStream);
                 }
             }
             catch (Exception e)
             {
 
                 Console.Error.WriteLine(e.Message);
-                if (e.InnerException != null) 
+                if (e.InnerException != null)
                 {
                     Console.Error.WriteLine(e.InnerException.Message);
                 }

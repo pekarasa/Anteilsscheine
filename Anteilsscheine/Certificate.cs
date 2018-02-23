@@ -15,6 +15,11 @@ namespace Anteilsscheine
         public int NumberOfCertificatesHeld { get; set; }
         public int RemainingBalance { get; set; }
         public int TotalNumberOfCertificates { get; set; }
+        public int PersonalPowerEarning
+        {
+            get { 
+                return _powerPlant.PowerEarning / TotalNumberOfCertificates * NumberOfCertificatesHeld; }
+        }
         private readonly ICertificateDocument _document;
         private readonly int _year;
         private readonly Adresse _address;
@@ -54,17 +59,16 @@ namespace Anteilsscheine
             NumberOfCertificatesHeld = _transactions.Sum(t => t.Amount) / 100;
         }
 
-        internal void WritePdf(string exportFolder, int year, string signer1, string signer2, DateTime printDate)
+        public string FillTemplateWithData(int year, string signer1, string signer2, DateTime printDate)
         {
-            string fileName = $"{year}_{_address.Name}_Sammeanteilsschein.pdf";
-            string exportFile = System.IO.Path.Combine(exportFolder, fileName);
+            return _document.FillDocumentTemplate(year, printDate, _powerPlant.Plant, _powerPlant.PowerEarning, TotalNumberOfCertificates, signer1, signer2, _address.Name, _address.Street, _address.City, NumberOfCertificatesHeld, PersonalPowerEarning, RemainingBalance, _transactions);
+        }
 
-            int personalPowerEarning = _powerPlant.PowerEarning / TotalNumberOfCertificates * NumberOfCertificatesHeld;
+        internal string GetFileName(string exportFolder)
+        {
+            string fileName = $"{_year}_{_address.Name}_Sammeanteilsschein.pdf";
+            return System.IO.Path.Combine(exportFolder, fileName);
 
-            string htmlData = _document.FillDocumentTemplate(year, printDate, _powerPlant.Plant, _powerPlant.PowerEarning, TotalNumberOfCertificates, signer1, signer2, _address.Name, _address.Street, _address.City, NumberOfCertificatesHeld, personalPowerEarning, RemainingBalance, _transactions);
-
-            Stream pdfStream = new FileStream(exportFile, FileMode.Create);
-            HtmlConverter.ConvertToPdf(htmlData, pdfStream);
         }
     }
 }
