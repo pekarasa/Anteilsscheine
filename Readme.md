@@ -1,4 +1,4 @@
-# Anteilsscheine
+# ShareCertificate
 
 In order to facilitate the annually recurring work of issuing share certificates, this program has been developed.
 
@@ -14,4 +14,4 @@ Will follow
 
 ## License
 
-Anteilsscheine uses the MIT licence, see the LICENSE file.
+ShareCertificate uses the MIT licence, see the LICENSE file.

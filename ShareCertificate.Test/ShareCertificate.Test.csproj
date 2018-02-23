@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Anteilsscheine\Anteilsscheine.csproj" />
+    <ProjectReference Include="..\ShareCertificate\ShareCertificate.csproj" />
   </ItemGroup>
 
 </Project>

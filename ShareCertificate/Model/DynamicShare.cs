@@ -1,10 +1,10 @@
 using System;
 
-namespace Anteilsscheine.Model
+namespace ShareCertificate.Model
 {
-    public class Strombezug
+    public class DynamicShare
     {
-        public int Id { get; set; }
+        public int AddressId { get; set; }
         public DateTime Date { get; set; }
         public int PowerPurchase { get; set; }
     }

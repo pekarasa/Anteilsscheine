@@ -1,8 +1,8 @@
 using System;
 
-namespace Anteilsscheine.Model
+namespace ShareCertificate.Model
 {
-    public class Umwandlungsfaktor
+    public class ConversionFactor
     {
         public int Year { get; set; }
         public decimal Factor { get; set; }

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anteilsscheine", "Anteilsscheine\Anteilsscheine.csproj", "{9E2E5B3D-B999-40DA-98BD-6F480A808667}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareCertificate", "ShareCertificate\ShareCertificate.csproj", "{9E2E5B3D-B999-40DA-98BD-6F480A808667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anteilsscheine.Test", "Anteilsscheine.Test\Anteilsscheine.Test.csproj", "{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareCertificate.Test", "ShareCertificate.Test\ShareCertificate.Test.csproj", "{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

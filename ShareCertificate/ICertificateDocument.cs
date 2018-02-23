@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Anteilsscheine.Model;
+using ShareCertificate.Model;
 
-namespace Anteilsscheine
+namespace ShareCertificate
 {
     public interface ICertificateDocument
     {
         string FillDocumentTemplate(int year,
                                     DateTime printDate,
-                                    string plantName,
                                     int plantPowerEarning,
                                     int totalNumberOfShareCertificate,
                                     string signer1,
@@ -19,6 +18,6 @@ namespace Anteilsscheine
                                     int personalNumberOfShareCertificate,
                                     int personalPowerEarning,
                                     int personalRemainingBalance,
-                                    List<Transaktion> transactions);
+                                    List<Transaction> transactions);
     }
 }

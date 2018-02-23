@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using Anteilsscheine.Model;
+using ShareCertificate.Model;
 using AtleX;
 using AtleX.CommandLineArguments;
 using iText.Html2pdf;
 
-namespace Anteilsscheine
+namespace ShareCertificate
 {
     class Program
     {
@@ -36,11 +36,11 @@ namespace Anteilsscheine
                 }
 
                 Context db;
-                using (StreamReader addressReader = new StreamReader("./Daten/Adresse.csv"))
-                using (StreamReader powerPlantReader = new StreamReader("./Daten/Solaranlage.csv"))
-                using (StreamReader powerPurchasesReader = new StreamReader("./Daten/Strombezug.csv"))
-                using (StreamReader transactionsReader = new StreamReader("./Daten/Transaktion.csv"))
-                using (StreamReader conversionFactorsReader = new StreamReader("./Daten/Umwandlungsfaktor.csv"))
+                using (StreamReader addressReader = new StreamReader("./Daten/Address.csv"))
+                using (StreamReader powerPlantReader = new StreamReader("./Daten/PowerEarning.csv"))
+                using (StreamReader powerPurchasesReader = new StreamReader("./Daten/DynamicShare.csv"))
+                using (StreamReader transactionsReader = new StreamReader("./Daten/Transaction.csv"))
+                using (StreamReader conversionFactorsReader = new StreamReader("./Daten/ConversionFactor.csv"))
                 {
                     db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
                 }
@@ -48,10 +48,10 @@ namespace Anteilsscheine
                 int year = cliArguments.Year;
                 if (year == 0)
                 {
-                    year = db.PowerPlants.Max(pp => pp.Year);
+                    year = db.PowerEarnings.Max(pp => pp.Year);
                 }
 
-                IEnumerable<Adresse> addresses;
+                IEnumerable<Address> addresses;
                 if (cliArguments.NameFilter != null)
                 {
                     addresses = db.Addresses.Where(a => a.Name.Contains(cliArguments.NameFilter));
@@ -62,15 +62,15 @@ namespace Anteilsscheine
                 }
 
                 List<Certificate> certificates = new List<Certificate>();
-                foreach (Adresse address in addresses)
+                foreach (Address address in addresses)
                 {
                     Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
-                    int id = address.Id;
+                    int adressId = address.Id;
 
-                    Solaranlage powerPlant = db.PowerPlants.Single(pp => pp.Year == year);
-                    List<Transaktion> transactions = db.Transactions.Where(t => t.Id == id).ToList();
-                    List<Strombezug> strombezuege = db.PowerPurchases.Where(pp => pp.Id == id).ToList();
-                    List<Umwandlungsfaktor> factor = db.ConversionFactors;
+                    PowerEarning powerPlant = db.PowerEarnings.Single(pp => pp.Year == year);
+                    List<Transaction> transactions = db.Transactions.Where(t => t.AddressId == adressId).ToList();
+                    List<DynamicShare> strombezuege = db.DynamicShares.Where(pp => pp.AddressId == adressId).ToList();
+                    List<ConversionFactor> factor = db.ConversionFactors;
 
                     ICertificateDocument document = new CertificateDocument();
                     Certificate certificate = new Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);

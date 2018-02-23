@@ -1,12 +1,12 @@
-using Anteilsscheine.Model;
-using Anteilsscheine;
+using ShareCertificate.Model;
+using ShareCertificate;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Anteilsscheine.UnitTests
+namespace ShareCertificate.UnitTests
 {
     [TestFixture]
     public class CertificateTest
@@ -17,7 +17,7 @@ namespace Anteilsscheine.UnitTests
             // Arrange
 
             // Act
-            var sut = new Anteilsscheine.Certificate(null, 2016, null, new Solaranlage(), new List<Transaktion>(), new List<Strombezug>(), null);
+            var sut = new ShareCertificate.Certificate(null, 2016, new Address(), new PowerEarning(), new List<Transaction>(), new List<DynamicShare>(), new List<ConversionFactor>{new ConversionFactor{Year=2016, Factor=1}});
 
             // Assert
             Assert.IsNotNull(sut, "Object must be returned.");
@@ -28,22 +28,22 @@ namespace Anteilsscheine.UnitTests
         {
             const int YEAR = 2015;
             ICertificateDocument document = new DocumentMock();
-            Adresse address = new Adresse();
+            Address address = new Address();
             // Arrange
             // 1 dynamic certificate annually between 2010 - 2019 => Total 10
-            List<Strombezug> strombezuege = new List<Strombezug>();
-            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>();
+            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            List<ConversionFactor> factor = new List<ConversionFactor>();
             for (int year = 2010; year <= 2019; year++)
             {
                 DateTime date = new DateTime(year, 12, 31);
-                strombezuege.Add(new Strombezug { Id = 1, Date = date, PowerPurchase = 100 });
-                factor.Add(new Umwandlungsfaktor { Year = year, Factor = 1 });
+                strombezuege.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
+                factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
             // Single subscription of 15 certificates in 2012
-            List<Transaktion> transactions = new List<Transaktion>();
-            transactions.Add(new Transaktion { Date = new DateTime(2012, 2, 15), Amount = 1500 });
+            List<Transaction> transactions = new List<Transaction>();
+            transactions.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
             // Plant Earning is 100
-            Solaranlage powerPlant = new Solaranlage { PowerEarning = 100 };
+            PowerEarning powerPlant = new PowerEarning { Earning = 100 };
             // Total comitted certifiactes = 100
             Certificate sut = new Certificate(document, YEAR, address, powerPlant, transactions, strombezuege, factor);
             sut.TotalNumberOfCertificates = 100;
@@ -62,23 +62,23 @@ namespace Anteilsscheine.UnitTests
         {
             const int YEAR = 2015;
             ICertificateDocument document = new DocumentMock();
-            Adresse address = new Adresse();
-            Solaranlage powerPlant = new Solaranlage();
+            Address address = new Address();
+            PowerEarning powerPlant = new PowerEarning();
             // Arrange
             // 1 dynamic certificate annually between 2010 - 2019 => Total 10
-            List<Strombezug> strombezuege = new List<Strombezug>();
-            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>();
+            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            List<ConversionFactor> factor = new List<ConversionFactor>();
             for (int year = 2010; year <= 2019; year++)
             {
                 DateTime date = new DateTime(year, 12, 31);
-                strombezuege.Add(new Strombezug { Id = 1, Date = date, PowerPurchase = 100 });
-                factor.Add(new Umwandlungsfaktor { Year = year, Factor = 1 });
+                strombezuege.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
+                factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
             // Subscription of 15 certificates in 2012
-            List<Transaktion> transactions = new List<Transaktion>();
-            transactions.Add(new Transaktion { Date = new DateTime(2012, 2, 15), Amount = 1500 });
+            List<Transaction> transactions = new List<Transaction>();
+            transactions.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
             // Subscription of 25 certificates in 2016
-            transactions.Add(new Transaktion { Date = new DateTime(2016, 2, 15), Amount = 2500 });
+            transactions.Add(new Transaction { Date = new DateTime(2016, 2, 15), Amount = 2500 });
             Certificate sut = new Certificate(document, YEAR, address, powerPlant, transactions, strombezuege, factor);
             sut.TotalNumberOfCertificates = 1;
 
@@ -96,19 +96,19 @@ namespace Anteilsscheine.UnitTests
         {
             // Arrange
             int id = 1;
-            List<Strombezug> strombezuege = new List<Strombezug>();
-            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>();
+            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            List<ConversionFactor> factor = new List<ConversionFactor>();
             DateTime date = new DateTime(2012, 12, 31);
             for (int i = 0; i < 10; i++)
             {
-                strombezuege.Add(new Strombezug { Id = id, Date = date, PowerPurchase = 100 });
-                factor.Add(new Umwandlungsfaktor { Year = date.Year, Factor = 1 });
+                strombezuege.Add(new DynamicShare { AddressId = id, Date = date, PowerPurchase = 100 });
+                factor.Add(new ConversionFactor { Year = date.Year, Factor = 1 });
                 date = date.AddYears(1);
             }
 
             // Act;
             const int Year = 2016;
-            var sut = new Certificate(null, Year, null, new Solaranlage { Year = Year, PowerEarning = 0 }, new List<Transaktion>(), strombezuege, factor);
+            var sut = new Certificate(null, Year, new Address(), new PowerEarning { Year = Year, Earning = 0 }, new List<Transaction>(), strombezuege, factor);
 
             // Assert
             Assert.AreEqual(10, sut.NumberOfCertificatesHeld);
@@ -119,17 +119,18 @@ namespace Anteilsscheine.UnitTests
         {
             // Arrange
             int id = 1;
-            List<Strombezug> strombezuege = new List<Strombezug>();
-            List<Umwandlungsfaktor> factor = new List<Umwandlungsfaktor>();
+            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            List<ConversionFactor> factor = new List<ConversionFactor>();
             DateTime date = new DateTime(2012, 12, 31);
             for (int i = 0; i < 10; i++)
             {
-                strombezuege.Add(new Strombezug { Id = id, Date = date, PowerPurchase = 100 });
-                factor.Add(new Umwandlungsfaktor { Year = date.Year, Factor = 1 });
+                strombezuege.Add(new DynamicShare { AddressId = id, Date = date, PowerPurchase = 100 });
+                factor.Add(new ConversionFactor { Year = date.Year, Factor = 1 });
                 date = date.AddYears(1);
             }
             const int Year = 2016;
-            var sut = new Certificate(null, Year, null, new Solaranlage { Year = Year, PowerEarning = 0 }, new List<Transaktion>(), strombezuege, factor);
+            var sut = new Certificate(new DocumentMock(), Year, new Address(), new PowerEarning { Year = Year, Earning = 0 }, new List<Transaction>(), strombezuege, factor);
+            sut.TotalNumberOfCertificates=1;
 
             // Act
             string htmlData = sut.FillTemplateWithData(Year, null, null, DateTime.Now);
@@ -139,10 +140,10 @@ namespace Anteilsscheine.UnitTests
 
         private class DocumentMock : ICertificateDocument
         {
-            string ICertificateDocument.FillDocumentTemplate(int year, DateTime printDate, string plantName, int plantPowerEarning, int totalNumberOfShareCertificate, string signer1, string signer2, string addressName, string addressStreet, string addressCity, int personalNumberOfShareCertificate, int personalPowerEarning, int personalRemainingBalance, List<Transaktion> transactions)
+            string ICertificateDocument.FillDocumentTemplate(int year, DateTime printDate, int plantPowerEarning, int totalNumberOfShareCertificate, string signer1, string signer2, string addressName, string addressStreet, string addressCity, int personalNumberOfShareCertificate, int personalPowerEarning, int personalRemainingBalance, List<Transaction> transactions)
             {
                 StringBuilder sb = new StringBuilder();
-                foreach (Transaktion trans in transactions)
+                foreach (Transaction trans in transactions)
                 {
                     sb.AppendLine(string.Format("{0:dd.MM.yyyy}, {1}, {2}", trans.Date, trans.Description, trans.Amount));
                 }

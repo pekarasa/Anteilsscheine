@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Anteilsscheine.Model;
+using ShareCertificate.Model;
 
-namespace Anteilsscheine
+namespace ShareCertificate
 {
     public class CertificateDocument : ICertificateDocument
     {
@@ -24,7 +24,6 @@ namespace Anteilsscheine
 
         public string FillDocumentTemplate(int year,
                                            DateTime printDate,
-                                           string plantName,
                                            int plantPowerEarning,
                                            int totalNumberOfShareCertificate,
                                            string signer1,
@@ -35,12 +34,11 @@ namespace Anteilsscheine
                                            int personalNumberOfShareCertificate,
                                            int personalPowerEarning,
                                            int personalRemainingBalance,
-                                           List<Transaktion> transactions)
+                                           List<Transaction> transactions)
         {
             string transactionTable = CollectTransactions(year, transactions.Where(t=>t.Date.Year<=year).ToList());
 
             return documentTemplate
-                .Replace("${plantName}", plantName)
                 .Replace("${year}", year.ToString())
                 .Replace("${plantPowerEarning}", plantPowerEarning.ToString())
                 .Replace("${addressName}", addressName)
@@ -62,12 +60,12 @@ namespace Anteilsscheine
                            .Replace("${Amount}", amount.ToString("##,#"));
         }
 
-        private string CollectTransactions(int year, List<Transaktion> transactions)
+        private string CollectTransactions(int year, List<Transaction> transactions)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(tableHeaderTemplate);
 
-            foreach (Transaktion transaktion in transactions.OrderBy(t => t.Date))
+            foreach (Transaction transaktion in transactions.OrderBy(t => t.Date))
             {
                 var line = FillTableTemplate(tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
                 sb.AppendLine(line);

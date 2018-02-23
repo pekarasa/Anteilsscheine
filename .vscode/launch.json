@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Anteilsscheine/bin/Debug/netcoreapp2.0/Anteilsscheine.dll",
+            "program": "${workspaceFolder}/ShareCertificate/bin/Debug/netcoreapp2.0/ShareCertificate.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

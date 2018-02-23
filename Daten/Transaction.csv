@@ -1,4 +1,4 @@
-Id,Date,Description,Amount
+AddressId,Date,Description,Amount
 101,09.12.2011,Kauf Anteilsscheine,200
 102,21.12.2011,Kauf Anteilsscheine,10000
 102,01.02.2015,Übertrag Anteile je 2'500.- an Serafin und Florentin,-5000

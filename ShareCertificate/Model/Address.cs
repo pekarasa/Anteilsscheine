@@ -1,8 +1,8 @@
 using System;
 
-namespace Anteilsscheine.Model
+namespace ShareCertificate.Model
 {
-    public class Adresse
+    public class Address
     {
         public int Id {get;set;}
         public string Name {get;set;}

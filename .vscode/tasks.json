@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Anteilsscheine/Anteilsscheine.csproj"
+                "${workspaceFolder}/ShareCertificate/ShareCertificate.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
