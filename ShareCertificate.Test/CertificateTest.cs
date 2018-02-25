@@ -12,7 +12,7 @@ namespace ShareCertificate.UnitTests
     public class CertificateTest
     {
         [Test]
-        public void WhenConstructorisCalled_ThenObjectIsReturned()
+        public void ConstructorTest()
         {
             // Arrange
 
@@ -43,18 +43,19 @@ namespace ShareCertificate.UnitTests
             List<Transaction> transactions = new List<Transaction>();
             transactions.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
             // Plant Earning is 100
-            PowerEarning powerPlant = new PowerEarning { Earning = 100 };
+            PowerEarning powerPlant = new PowerEarning { Earning = 1000 };
             // Total comitted certifiactes = 100
             Certificate sut = new Certificate(document, YEAR, address, powerPlant, transactions, strombezuege, factor);
-            sut.TotalNumberOfCertificates = 100;
+            sut.TotalNumberOfComittedCertificates = 100;
 
             // Act
             // Calculation date 2015 has no influence on the result
             sut.FillTemplateWithData(YEAR, null, null, DateTime.Now);
 
             // Assert
-            // Personal Power Earning must be 25
-            sut.PersonalPowerEarning.Should().Be(25);
+            sut.NumberOfCommittedCertificates.Should().Be(25);
+            // Personal Power Earning must be 250
+            sut.PersonalPowerEarning.Should().Be(250);
         }
 
         [Test]
@@ -65,22 +66,22 @@ namespace ShareCertificate.UnitTests
             Address address = new Address();
             PowerEarning powerPlant = new PowerEarning();
             // Arrange
-            // 1 dynamic certificate annually between 2010 - 2019 => Total 10
-            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            // 1 dynamic certificate annually between 2010 - 2019
+            List<DynamicShare> dynymicShare = new List<DynamicShare>();
             List<ConversionFactor> factor = new List<ConversionFactor>();
             for (int year = 2010; year <= 2019; year++)
             {
                 DateTime date = new DateTime(year, 12, 31);
-                strombezuege.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
+                dynymicShare.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
                 factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
             // Subscription of 15 certificates in 2012
-            List<Transaction> transactions = new List<Transaction>();
-            transactions.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
+            List<Transaction> fixShare = new List<Transaction>();
+            fixShare.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
             // Subscription of 25 certificates in 2016
-            transactions.Add(new Transaction { Date = new DateTime(2016, 2, 15), Amount = 2500 });
-            Certificate sut = new Certificate(document, YEAR, address, powerPlant, transactions, strombezuege, factor);
-            sut.TotalNumberOfCertificates = 1;
+            fixShare.Add(new Transaction { Date = new DateTime(2016, 2, 15), Amount = 2500 });
+            Certificate sut = new Certificate(document, YEAR, address, powerPlant, fixShare, dynymicShare, factor);
+            sut.TotalNumberOfComittedCertificates = 1;
 
             // Act
             // Calculation date 2015
@@ -89,53 +90,7 @@ namespace ShareCertificate.UnitTests
             // Assert
             html.Should().ContainAll(new List<string> { "2010", "2011", "2012", "2013", "2014", "2015" });
             html.Should().NotContainAny(new List<string> { "2016", "2017", "2018", "2019" });
-            sut.NumberOfCertificatesHeld.Should().Be(25);
-        }
-        [Test]
-        public void WhenAnEnergyPurchaseContractOf1CertificatePerYearRunsFor10Years_Then10CertificatesAreCountedRegardlessOfYear()
-        {
-            // Arrange
-            int id = 1;
-            List<DynamicShare> strombezuege = new List<DynamicShare>();
-            List<ConversionFactor> factor = new List<ConversionFactor>();
-            DateTime date = new DateTime(2012, 12, 31);
-            for (int i = 0; i < 10; i++)
-            {
-                strombezuege.Add(new DynamicShare { AddressId = id, Date = date, PowerPurchase = 100 });
-                factor.Add(new ConversionFactor { Year = date.Year, Factor = 1 });
-                date = date.AddYears(1);
-            }
-
-            // Act;
-            const int Year = 2016;
-            var sut = new Certificate(null, Year, new Address(), new PowerEarning { Year = Year, Earning = 0 }, new List<Transaction>(), strombezuege, factor);
-
-            // Assert
-            Assert.AreEqual(10, sut.NumberOfCertificatesHeld);
-        }
-
-        [Test]
-        public void WhenAnEnergyPurchaseContractOf1CertificatePerYearRunsFor10Years_ThenOnly5CertificatesAreListedAfter5Years()
-        {
-            // Arrange
-            int id = 1;
-            List<DynamicShare> strombezuege = new List<DynamicShare>();
-            List<ConversionFactor> factor = new List<ConversionFactor>();
-            DateTime date = new DateTime(2012, 12, 31);
-            for (int i = 0; i < 10; i++)
-            {
-                strombezuege.Add(new DynamicShare { AddressId = id, Date = date, PowerPurchase = 100 });
-                factor.Add(new ConversionFactor { Year = date.Year, Factor = 1 });
-                date = date.AddYears(1);
-            }
-            const int Year = 2016;
-            var sut = new Certificate(new DocumentMock(), Year, new Address(), new PowerEarning { Year = Year, Earning = 0 }, new List<Transaction>(), strombezuege, factor);
-            sut.TotalNumberOfCertificates=1;
-
-            // Act
-            string htmlData = sut.FillTemplateWithData(Year, null, null, DateTime.Now);
-            // Assert
-            Assert.AreEqual(10, sut.NumberOfCertificatesHeld);
+            sut.NumberOfCertificatesHeld.Should().Be(21, "dynymicShare: 6 + fixShare: 15 => 21");
         }
 
         private class DocumentMock : ICertificateDocument

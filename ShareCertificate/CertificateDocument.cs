@@ -65,7 +65,7 @@ namespace ShareCertificate
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(tableHeaderTemplate);
 
-            foreach (Transaction transaktion in transactions.OrderBy(t => t.Date))
+            foreach (Transaction transaktion in transactions)
             {
                 var line = FillTableTemplate(tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
                 sb.AppendLine(line);

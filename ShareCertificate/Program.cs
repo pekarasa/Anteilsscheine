@@ -14,13 +14,16 @@ namespace ShareCertificate
     {
         private class MyArgumentsClass : Arguments
         {
-            //[Required]
+            [Required]
             [Display(Description = "Year for which the collective share certificates are to be created.")]
             public int Year { get; set; }
 
             // Not required
             [Display(Description = "You can use the name filter to restrict for whom collective share certificates should be created. For example, if you enter 'mann', only documents are created for addresses that contain this part in the name.")]
             public string NameFilter { get; set; }
+
+            [Display(Description = "If set to 'false', then only Certificates with NumberOfCommittedCertificates != 0 will be created. ")]
+            public bool All { get; set; }
         }
 
         static void Main(string[] args)
@@ -50,21 +53,13 @@ namespace ShareCertificate
                 {
                     year = db.PowerEarnings.Max(pp => pp.Year);
                 }
+                Console.Out.WriteLine($"Year: {year}");
+                Console.Out.WriteLine("Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
 
-                IEnumerable<Address> addresses;
-                if (cliArguments.NameFilter != null)
-                {
-                    addresses = db.Addresses.Where(a => a.Name.Contains(cliArguments.NameFilter));
-                }
-                else
-                {
-                    addresses = db.Addresses;
-                }
 
                 List<Certificate> certificates = new List<Certificate>();
-                foreach (Address address in addresses)
+                foreach (Address address in db.Addresses)
                 {
-                    Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}");
                     int adressId = address.Id;
 
                     PowerEarning powerPlant = db.PowerEarnings.Single(pp => pp.Year == year);
@@ -76,14 +71,28 @@ namespace ShareCertificate
                     Certificate certificate = new Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);
 
                     certificates.Add(certificate);
+                    Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}, {certificate.NumberOfCertificatesHeld}, {certificate.RemainingBalance}, {certificate.NumberOfCommittedCertificates}");
                 }
 
                 int totalNumberOfCertificates = certificates.Sum(c => c.NumberOfCertificatesHeld);
+                int totalNumberOfCommittedCertificates = certificates.Sum(c => c.NumberOfCommittedCertificates);
                 int remainingBalance = certificates.Sum(c => c.RemainingBalance);
                 certificates.ForEach(c => c.TotalNumberOfCertificates = totalNumberOfCertificates);
+                certificates.ForEach(c => c.TotalNumberOfComittedCertificates = totalNumberOfCommittedCertificates);
+                Console.Out.WriteLine($"999, Total, , , {totalNumberOfCertificates}, {remainingBalance}, {totalNumberOfCommittedCertificates}");
 
                 foreach (Certificate certificate in certificates)
                 {
+                    if (cliArguments.NameFilter != null && !certificate.Name.Contains(cliArguments.NameFilter))
+                    {
+                        continue;
+                    }
+
+                    if (!cliArguments.All && certificate.NumberOfCommittedCertificates == 0)
+                    {
+                        continue;
+                    }
+
                     var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                     string htmlData = certificate.FillTemplateWithData(year, "Kuster Micha", "Portmann Peter", DateTime.Now);
                     string fileName = certificate.GetFileName(exportFolder);
