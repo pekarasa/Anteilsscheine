@@ -77,7 +77,6 @@ namespace ShareCertificate.Test
                 dynymicShare.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
                 factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
-            
             List<Transaction> fixShare = new List<Transaction>
             {
                 // Subscription of 15 certificates in 2012
@@ -85,7 +84,6 @@ namespace ShareCertificate.Test
                 // Subscription of 25 certificates in 2016
                 new Transaction {Date = new DateTime(2016, 2, 15), Amount = 2500}
             };
-            
             Certificate sut =
                 new Certificate(document, Year, address, powerPlant, fixShare, dynymicShare, factor)
                 {

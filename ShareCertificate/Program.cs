@@ -37,11 +37,11 @@ namespace ShareCertificate
                 }
 
                 Context db;
-                using (StreamReader addressReader = new StreamReader("./Daten/Address.csv"))
-                using (StreamReader powerPlantReader = new StreamReader("./Daten/PowerEarning.csv"))
-                using (StreamReader powerPurchasesReader = new StreamReader("./Daten/DynamicShare.csv"))
-                using (StreamReader transactionsReader = new StreamReader("./Daten/Transaction.csv"))
-                using (StreamReader conversionFactorsReader = new StreamReader("./Daten/ConversionFactor.csv"))
+                using (StreamReader addressReader = new StreamReader("./Data/Address.csv"))
+                using (StreamReader powerPlantReader = new StreamReader("./Data/PowerEarning.csv"))
+                using (StreamReader powerPurchasesReader = new StreamReader("./Data/DynamicShare.csv"))
+                using (StreamReader transactionsReader = new StreamReader("./Data/Transaction.csv"))
+                using (StreamReader conversionFactorsReader = new StreamReader("./Data/ConversionFactor.csv"))
                 {
                     db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
                 }
