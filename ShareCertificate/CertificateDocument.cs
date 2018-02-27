@@ -9,17 +9,17 @@ namespace ShareCertificate
 {
     public class CertificateDocument : ICertificateDocument
     {
-        private string documentTemplate { get; set; }
-        private string tableHeaderTemplate { get; set; }
-        private string tableItemTemplate { get; set; }
-        private string tableFooterTemplate { get; set; }
+        private string DocumentTemplate { get; }
+        private string TableHeaderTemplate { get; }
+        private string TableItemTemplate { get; }
+        private string TableFooterTemplate { get; }
 
         public CertificateDocument()
         {
-            documentTemplate = File.ReadAllText("./Template/Document.html");
-            tableHeaderTemplate = File.ReadAllText("./Template/TableHeader.html");
-            tableItemTemplate = File.ReadAllText("./Template/TableItem.html");
-            tableFooterTemplate = File.ReadAllText("./Template/TableFooter.html");
+            DocumentTemplate = File.ReadAllText("./Template/Document.html");
+            TableHeaderTemplate = File.ReadAllText("./Template/TableHeader.html");
+            TableItemTemplate = File.ReadAllText("./Template/TableItem.html");
+            TableFooterTemplate = File.ReadAllText("./Template/TableFooter.html");
         }
 
         public string FillDocumentTemplate(int year,
@@ -38,7 +38,7 @@ namespace ShareCertificate
         {
             string transactionTable = CollectTransactions(year, transactions.Where(t=>t.Date.Year<=year).ToList());
 
-            return documentTemplate
+            return DocumentTemplate
                 .Replace("${year}", year.ToString())
                 .Replace("${plantPowerEarning}", plantPowerEarning.ToString())
                 .Replace("${addressName}", addressName)
@@ -63,15 +63,15 @@ namespace ShareCertificate
         private string CollectTransactions(int year, List<Transaction> transactions)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(tableHeaderTemplate);
+            sb.AppendLine(TableHeaderTemplate);
 
             foreach (Transaction transaktion in transactions)
             {
-                var line = FillTableTemplate(tableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
+                var line = FillTableTemplate(TableItemTemplate, transaktion.Date, transaktion.Description, transaktion.Amount);
                 sb.AppendLine(line);
             }
 
-            var endLine = FillTableTemplate(tableFooterTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
+            var endLine = FillTableTemplate(TableFooterTemplate, new DateTime(year, 12, 31), "Total", transactions.Sum(t => t.Amount));
             sb.AppendLine(endLine);
 
             return sb.ToString();

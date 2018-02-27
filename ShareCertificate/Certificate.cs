@@ -1,12 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using ShareCertificate.Model;
-using iText.Html2pdf;
-using iText.Kernel.Pdf;
 
 namespace ShareCertificate
 {
@@ -41,13 +36,7 @@ namespace ShareCertificate
         /// Personal part of the power earning
         /// </summary>
 
-        public int PersonalPowerEarning
-        {
-            get
-            {
-                return _powerEarning / TotalNumberOfComittedCertificates * NumberOfCommittedCertificates;
-            }
-        }
+        public int PersonalPowerEarning => _powerEarning / TotalNumberOfComittedCertificates * NumberOfCommittedCertificates;
 
         private readonly ICertificateDocument _document;
         private readonly int _year;
@@ -73,8 +62,7 @@ namespace ShareCertificate
             List<Transaction> dynamicTransactions = new List<Transaction>();
             foreach (DynamicShare bezug in _dynamicShares)
             {
-                Transaction transaktion = new Transaction();
-                transaktion.Date = bezug.Date;
+                Transaction transaktion = new Transaction {Date = bezug.Date};
                 int y = transaktion.Date.Year;
                 try
                 {
@@ -89,11 +77,11 @@ namespace ShareCertificate
                 }
             }
 
-            var fixTransactionsUpToYear = fixTransactions.Where(t => t.Date.Year <= _year);
+            var fixTransactionsUpToYear = fixTransactions.Where(t => t.Date.Year <= _year).ToList();
             NumberOfCommittedCertificates = (fixTransactionsUpToYear.Sum(t => t.Amount)
                                            + dynamicTransactions.Sum(t => t.Amount)) / 100;
 
-            var dynamicTransUpToYear = dynamicTransactions.Where(t => t.Date.Year <= _year);
+            var dynamicTransUpToYear = dynamicTransactions.Where(t => t.Date.Year <= _year).ToList();
             var amountHeld = (fixTransactionsUpToYear.Sum(t => t.Amount)
                             + dynamicTransUpToYear.Sum(t => t.Amount));
             NumberOfCertificatesHeld = amountHeld / 100;

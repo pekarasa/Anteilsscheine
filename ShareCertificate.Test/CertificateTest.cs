@@ -1,12 +1,11 @@
-using ShareCertificate.Model;
-using ShareCertificate;
-using FluentAssertions;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FluentAssertions;
+using NUnit.Framework;
+using ShareCertificate.Model;
 
-namespace ShareCertificate.UnitTests
+namespace ShareCertificate.Test
 {
     [TestFixture]
     public class CertificateTest
@@ -17,7 +16,7 @@ namespace ShareCertificate.UnitTests
             // Arrange
 
             // Act
-            var sut = new ShareCertificate.Certificate(null, 2016, new Address(), new PowerEarning(), new List<Transaction>(), new List<DynamicShare>(), new List<ConversionFactor>{new ConversionFactor{Year=2016, Factor=1}});
+            var sut = new Certificate(null, 2016, new Address(), new PowerEarning(), new List<Transaction>(), new List<DynamicShare>(), new List<ConversionFactor>{new ConversionFactor{Year=2016, Factor=1}});
 
             // Assert
             Assert.IsNotNull(sut, "Object must be returned.");
@@ -26,7 +25,7 @@ namespace ShareCertificate.UnitTests
         [Test]
         public void ShareOfEarningsIsDerivedFromCommittedAndEmittedCertificates()
         {
-            const int YEAR = 2015;
+            const int Year = 2015;
             ICertificateDocument document = new DocumentMock();
             Address address = new Address();
             // Arrange
@@ -40,17 +39,20 @@ namespace ShareCertificate.UnitTests
                 factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
             // Single subscription of 15 certificates in 2012
-            List<Transaction> transactions = new List<Transaction>();
-            transactions.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
+            List<Transaction> transactions =
+                new List<Transaction> {new Transaction {Date = new DateTime(2012, 2, 15), Amount = 1500}};
             // Plant Earning is 100
             PowerEarning powerPlant = new PowerEarning { Earning = 1000 };
             // Total comitted certifiactes = 100
-            Certificate sut = new Certificate(document, YEAR, address, powerPlant, transactions, strombezuege, factor);
-            sut.TotalNumberOfComittedCertificates = 100;
+            Certificate sut =
+                new Certificate(document, Year, address, powerPlant, transactions, strombezuege, factor)
+                {
+                    TotalNumberOfComittedCertificates = 100
+                };
 
             // Act
             // Calculation date 2015 has no influence on the result
-            sut.FillTemplateWithData(YEAR, null, null, DateTime.Now);
+            sut.FillTemplateWithData(Year, null, null, DateTime.Now);
 
             // Assert
             sut.NumberOfCommittedCertificates.Should().Be(25);
@@ -61,7 +63,7 @@ namespace ShareCertificate.UnitTests
         [Test]
         public void OnlyPastTransactionsCanBeSeenInTheHistoryOfTheCertificate()
         {
-            const int YEAR = 2015;
+            const int Year = 2015;
             ICertificateDocument document = new DocumentMock();
             Address address = new Address();
             PowerEarning powerPlant = new PowerEarning();
@@ -75,17 +77,24 @@ namespace ShareCertificate.UnitTests
                 dynymicShare.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
                 factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
-            // Subscription of 15 certificates in 2012
-            List<Transaction> fixShare = new List<Transaction>();
-            fixShare.Add(new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 });
-            // Subscription of 25 certificates in 2016
-            fixShare.Add(new Transaction { Date = new DateTime(2016, 2, 15), Amount = 2500 });
-            Certificate sut = new Certificate(document, YEAR, address, powerPlant, fixShare, dynymicShare, factor);
-            sut.TotalNumberOfComittedCertificates = 1;
+            
+            List<Transaction> fixShare = new List<Transaction>
+            {
+                // Subscription of 15 certificates in 2012
+                new Transaction {Date = new DateTime(2012, 2, 15), Amount = 1500},
+                // Subscription of 25 certificates in 2016
+                new Transaction {Date = new DateTime(2016, 2, 15), Amount = 2500}
+            };
+            
+            Certificate sut =
+                new Certificate(document, Year, address, powerPlant, fixShare, dynymicShare, factor)
+                {
+                    TotalNumberOfComittedCertificates = 1
+                };
 
             // Act
             // Calculation date 2015
-            string html = sut.FillTemplateWithData(YEAR, null, null, DateTime.Now);
+            string html = sut.FillTemplateWithData(Year, null, null, DateTime.Now);
 
             // Assert
             html.Should().ContainAll(new List<string> { "2010", "2011", "2012", "2013", "2014", "2015" });

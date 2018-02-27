@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using ShareCertificate.Model;
-using AtleX;
 using AtleX.CommandLineArguments;
 using iText.Html2pdf;
 
@@ -30,8 +29,7 @@ namespace ShareCertificate
         {
             try
             {
-                MyArgumentsClass cliArguments;
-                if (!CommandLineArguments.TryParse<MyArgumentsClass>(args, out cliArguments))
+                if (!CommandLineArguments.TryParse<MyArgumentsClass>(args, out var cliArguments))
                 {
                     // Something wrong, exit or display help?
                     CommandLineArguments.DisplayHelp(cliArguments);
