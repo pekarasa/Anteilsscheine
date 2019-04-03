@@ -46,7 +46,7 @@ namespace ShareCertificate
                 .Replace("${addressCity}", addressCity)
                 .Replace("${personalNumberOfShareCertificate}", personalNumberOfShareCertificate.ToString())
                 .Replace("${personalPowerEarning}", personalPowerEarning.ToString())
-                .Replace("${printDate}", printDate.ToString("dd. MMM yyyy"))
+                .Replace("${printDate}", printDate.ToString("dd. MMMM yyyy"))
                 .Replace("${signer1}", signer1)
                 .Replace("${signer2}", signer2)
                 .Replace("${transactionTable}", transactionTable)

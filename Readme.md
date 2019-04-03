@@ -16,16 +16,18 @@ Go to the folder where the two subfolders _Data_ and _Template_ are. Open an she
 
 ```bash
 dotnet path_to/ShareCertificate.dll /Year 2018 > 2018_Sammelanteilsscheine.csv
+dotnet ShareCertificate/bin/Debug/netcoreapp2.0/ShareCertificate.dll /Year 2018 >2018.csv
 ```
 
 In the csv is an overview of all share certificates per person.
 
 ## How to merge all PDFs to a single one
 
-The following command is used to combine all PDFs in one file:
+The following command is used to combine all PDFs in one file and delete the generated:
 
 ```bash
-pdfunite ~Schreibtisch/*.pdf 2018_SammelanteilsscheinSerienbrief.pdf
+pdfunite ~/Schreibtisch/*.pdf 2018_SammelanteilsscheinSerienbrief.pdf
+rm ~/Schreibtisch/2018_*.pdf
 ```
 
 ## License

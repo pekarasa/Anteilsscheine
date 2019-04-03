@@ -6,6 +6,8 @@ using System.Linq;
 using ShareCertificate.Model;
 using AtleX.CommandLineArguments;
 using iText.Html2pdf;
+using System.Threading;
+using System.Globalization;
 
 namespace ShareCertificate
 {
@@ -35,6 +37,8 @@ namespace ShareCertificate
                     CommandLineArguments.DisplayHelp(cliArguments);
                     return;
                 }
+
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("de-CH");
 
                 Context db;
                 using (StreamReader addressReader = new StreamReader("./Data/Address.csv"))
@@ -92,7 +96,7 @@ namespace ShareCertificate
                     }
 
                     var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                    string htmlData = certificate.FillTemplateWithData(year, "Kuster Micha", "Portmann Peter", DateTime.Now);
+                    string htmlData = certificate.FillTemplateWithData(year, "Micha Kuster", "Anna-Tina Pfäffli", new DateTime(2019, 4, 3));
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
                     HtmlConverter.ConvertToPdf(htmlData, pdfStream);
