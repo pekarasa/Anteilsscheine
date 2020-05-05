@@ -3,6 +3,12 @@
 # or wget:
 # wget --no-check-certificate http://gist.githubusercontent.com/kmorcinek/2710267/raw/.gitignore
 
+# pdf und generiertes csv
+*.pdf
+20*.csv
+# Order mit alten Daten
+Data 20*
+
 # User-specific files
 *.suo
 *.user
@@ -144,7 +150,7 @@ UpgradeLog*.htm
 *.txt~
 *.swp
 *.swo
- 
+
 # svn
 .svn
 

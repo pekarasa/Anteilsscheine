@@ -96,7 +96,7 @@ namespace ShareCertificate
                     }
 
                     var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                    string htmlData = certificate.FillTemplateWithData(year, "Micha Kuster", "Anna-Tina Pfäffli", new DateTime(2019, 4, 3));
+                    string htmlData = certificate.FillTemplateWithData(year, "Micha Kuster", "Peter Portmann", new DateTime(2020, 5, 5));
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
                     HtmlConverter.ConvertToPdf(htmlData, pdfStream);

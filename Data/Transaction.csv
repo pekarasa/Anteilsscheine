@@ -7,6 +7,7 @@ AddressId,Date,Description,Amount
 107,29.11.2011,Kauf Anteilsscheine,4000
 108,18.12.2011,Kauf Anteilsscheine,5000
 109,08.12.2011,Kauf Anteilsscheine,1000
+109,30.08.2019,Verkauf Anteilsscheine,-2000
 110,01.01.2018,Verkauf Anteilsscheine,-2100
 111,28.11.2011,Kauf Anteilsscheine,10000
 112,14.12.2011,Kauf Anteilsscheine,1000
@@ -20,6 +21,7 @@ AddressId,Date,Description,Amount
 118,07.12.2011,Kauf Anteilsscheine,300
 119,28.12.2011,Kauf Anteilsscheine,6000
 121,13.12.2011,Kauf Anteilsscheine,3000
+121,30.08.2019,Verkauf Anteilsscheine,-5000
 122,14.12.2011,Kauf Anteilsscheine,2000
 124,07.01.2012,Kauf Anteilsscheine,2000
 125,27.11.2011,Kauf Anteilsscheine,5000
