@@ -48,11 +48,11 @@ namespace ShareCertificate
                 int year = cliArguments.Year;
                 
                 Context db;
-                using (StreamReader addressReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/Address.csv"))
-                using (StreamReader powerPlantReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/PowerEarning.csv"))
-                using (StreamReader powerPurchasesReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/DynamicShare.csv"))
-                using (StreamReader transactionsReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/Transaction.csv"))
-                using (StreamReader conversionFactorsReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/ConversionFactor.csv"))
+                using (StreamReader addressReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/Address.csv"))
+                using (StreamReader powerPlantReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/PowerEarning.csv"))
+                using (StreamReader powerPurchasesReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/DynamicShare.csv"))
+                using (StreamReader transactionsReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/Transaction.csv"))
+                using (StreamReader conversionFactorsReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/ConversionFactor.csv"))
                 {
                     db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
                 }
@@ -70,7 +70,7 @@ namespace ShareCertificate
                     List<DynamicShare> strombezuege = db.DynamicShares.Where(pp => pp.AddressId == adressId).ToList();
                     List<ConversionFactor> factor = db.ConversionFactors;
 
-                    ICertificateDocument document = new CertificateDocument();
+                    ICertificateDocument document = new CertificateDocument($"./Customer{cliArguments.CustomerName}/{year}/Template");
                     Certificate certificate = new Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);
 
                     certificates.Add(certificate);

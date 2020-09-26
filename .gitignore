@@ -13,6 +13,7 @@ Summary_20*.csv
 *.suo
 *.user
 *.sln.docstates
+launchSettings.json
 
 # Build results
 [Dd]ebug/

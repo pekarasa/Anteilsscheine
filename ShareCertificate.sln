@@ -8,6 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareCertificate.Test", "Sh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17B3CD8E-6487-45AF-948C-17A16BEC484D}"
 	ProjectSection(SolutionItems) = preProject
+		CustomerTest\2019\Address.csv = CustomerTest\2019\Address.csv
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject

@@ -14,12 +14,12 @@ namespace ShareCertificate
         private string TableItemTemplate { get; }
         private string TableFooterTemplate { get; }
 
-        public CertificateDocument()
+        public CertificateDocument(string templatePath)
         {
-            DocumentTemplate = File.ReadAllText("./Template/Document.html");
-            TableHeaderTemplate = File.ReadAllText("./Template/TableHeader.html");
-            TableItemTemplate = File.ReadAllText("./Template/TableItem.html");
-            TableFooterTemplate = File.ReadAllText("./Template/TableFooter.html");
+            DocumentTemplate = File.ReadAllText($"{templatePath}/Document.html");
+            TableHeaderTemplate = File.ReadAllText($"{templatePath}/TableHeader.html");
+            TableItemTemplate = File.ReadAllText($"{templatePath}/TableItem.html");
+            TableFooterTemplate = File.ReadAllText($"{templatePath}/TableFooter.html");
         }
 
         public string FillDocumentTemplate(int year,
