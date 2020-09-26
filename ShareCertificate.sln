@@ -1,11 +1,15 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareCertificate", "ShareCertificate\ShareCertificate.csproj", "{9E2E5B3D-B999-40DA-98BD-6F480A808667}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareCertificate", "ShareCertificate\ShareCertificate.csproj", "{9E2E5B3D-B999-40DA-98BD-6F480A808667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareCertificate.Test", "ShareCertificate.Test\ShareCertificate.Test.csproj", "{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareCertificate.Test", "ShareCertificate.Test\ShareCertificate.Test.csproj", "{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17B3CD8E-6487-45AF-948C-17A16BEC484D}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9E2E5B3D-B999-40DA-98BD-6F480A808667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +45,11 @@ Global
 		{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}.Release|x64.Build.0 = Release|x64
 		{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}.Release|x86.ActiveCfg = Release|x86
 		{D302366F-A2F1-4B89-BFEE-3EF11FAD384C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3020961D-037E-4CFD-B1F8-A4D2CB42FEDD}
 	EndGlobalSection
 EndGlobal

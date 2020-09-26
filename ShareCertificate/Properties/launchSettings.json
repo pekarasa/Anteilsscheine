@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ShareCertificate": {
+      "commandName": "Project",
+      "commandLineArgs": "/Year 2019 /CustomerName SolarOltingen"
+    }
+  }
+}

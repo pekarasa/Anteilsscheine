@@ -16,14 +16,18 @@ namespace ShareCertificate
         private class MyArgumentsClass : Arguments
         {
             [Required]
-            [Display(Description = "Year for which the collective share certificates are to be created.")]
+            [Display(Description = "Year for which the collective share certificates are created.")]
             public int Year { get; set; }
+
+            [Required]
+            [Display(Description = "Customer name for whom the collective share certificates are created.")]
+            public string CustomerName { get; set; }
 
             // Not required
             [Display(Description = "You can use the name filter to restrict for whom collective share certificates should be created. For example, if you enter 'mann', only documents are created for addresses that contain this part in the name.")]
             public string NameFilter { get; set; }
 
-            [Display(Description = "If set to 'false', then only Certificates with NumberOfCommittedCertificates != 0 will be created. ")]
+            [Display(Description = "If set to 'false' (default), then only Certificates with NumberOfCommittedCertificates != 0 will be created. ")]
             public bool All { get; set; }
         }
 
@@ -35,29 +39,26 @@ namespace ShareCertificate
                 {
                     // Something wrong, exit or display help?
                     CommandLineArguments.DisplayHelp(cliArguments);
+                    Console.Error.WriteLine("Error in the command line arguments");
                     return;
                 }
 
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("de-CH");
 
+                int year = cliArguments.Year;
+                
                 Context db;
-                using (StreamReader addressReader = new StreamReader("./Data/Address.csv"))
-                using (StreamReader powerPlantReader = new StreamReader("./Data/PowerEarning.csv"))
-                using (StreamReader powerPurchasesReader = new StreamReader("./Data/DynamicShare.csv"))
-                using (StreamReader transactionsReader = new StreamReader("./Data/Transaction.csv"))
-                using (StreamReader conversionFactorsReader = new StreamReader("./Data/ConversionFactor.csv"))
+                using (StreamReader addressReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/Address.csv"))
+                using (StreamReader powerPlantReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/PowerEarning.csv"))
+                using (StreamReader powerPurchasesReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/DynamicShare.csv"))
+                using (StreamReader transactionsReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/Transaction.csv"))
+                using (StreamReader conversionFactorsReader = new StreamReader($"./Data{cliArguments.CustomerName}/{year}/ConversionFactor.csv"))
                 {
                     db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
                 }
 
-                int year = cliArguments.Year;
-                if (year == 0)
-                {
-                    year = db.PowerEarnings.Max(pp => pp.Year);
-                }
                 Console.Out.WriteLine($"Year: {year}");
                 Console.Out.WriteLine("Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
-
 
                 List<Certificate> certificates = new List<Certificate>();
                 foreach (Address address in db.Addresses)

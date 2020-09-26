@@ -15,8 +15,8 @@ dotnet build
 Go to the folder where the two subfolders _Data_ and _Template_ are. Open an shell and start the programm with the follwing command:
 
 ```bash
-dotnet path_to/ShareCertificate.dll /Year 2018 > 2018_Sammelanteilsscheine.csv
-dotnet ShareCertificate/bin/Debug/netcoreapp2.0/ShareCertificate.dll /Year 2018 >2018.csv
+dotnet path_to/ShareCertificate.dll /Year 2019 /CustomerName Test > DataTest/Summary_2019.csv
+dotnet ShareCertificate/bin/Debug/netcoreapp2.0/ShareCertificate.dll /Year 2019 /CustomerName SolarOltingen > DataSolarOltingen/Summary_2019.csv
 ```
 
 In the csv is an overview of all share certificates per person.

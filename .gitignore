@@ -3,11 +3,11 @@
 # or wget:
 # wget --no-check-certificate http://gist.githubusercontent.com/kmorcinek/2710267/raw/.gitignore
 
-# pdf und generiertes csv
+# pdf and generated csv
 *.pdf
-20*.csv
-# Order mit alten Daten
-Data 20*
+Summary_20*.csv
+# Order with customer data
+*SolarOltingen
 
 # User-specific files
 *.suo
