@@ -8,8 +8,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareCertificate.Test", "Sh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17B3CD8E-6487-45AF-948C-17A16BEC484D}"
 	ProjectSection(SolutionItems) = preProject
-		CustomerTest\2019\Address.csv = CustomerTest\2019\Address.csv
+		azure-pipelines.yml = azure-pipelines.yml
 		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestData", "TestData", "{F242670F-6AAC-4D77-B017-ECC0F660919F}"
+	ProjectSection(SolutionItems) = preProject
+		CustomerTest\2019\Address.csv = CustomerTest\2019\Address.csv
+		CustomerTest\2019\ConversionFactor.csv = CustomerTest\2019\ConversionFactor.csv
+		CustomerTest\2019\DynamicShare.csv = CustomerTest\2019\DynamicShare.csv
+		CustomerTest\2019\PowerEarning.csv = CustomerTest\2019\PowerEarning.csv
+		CustomerTest\2019\Transaction.csv = CustomerTest\2019\Transaction.csv
 	EndProjectSection
 EndProject
 Global
@@ -49,6 +58,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F242670F-6AAC-4D77-B017-ECC0F660919F} = {17B3CD8E-6487-45AF-948C-17A16BEC484D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3020961D-037E-4CFD-B1F8-A4D2CB42FEDD}

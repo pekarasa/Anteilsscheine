@@ -48,11 +48,14 @@ namespace ShareCertificate
                 int year = cliArguments.Year;
                 
                 Context db;
-                using (StreamReader addressReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/Address.csv"))
-                using (StreamReader powerPlantReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/PowerEarning.csv"))
-                using (StreamReader powerPurchasesReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/DynamicShare.csv"))
-                using (StreamReader transactionsReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/Transaction.csv"))
-                using (StreamReader conversionFactorsReader = new StreamReader($"./Customer{cliArguments.CustomerName}/{year}/ConversionFactor.csv"))
+
+                string dataPath = $"./Customer{cliArguments.CustomerName}/{year}";
+
+                using (StreamReader addressReader = new StreamReader($"{dataPath}/Address.csv"))
+                using (StreamReader powerPlantReader = new StreamReader($"{dataPath}/PowerEarning.csv"))
+                using (StreamReader powerPurchasesReader = new StreamReader($"{dataPath}/DynamicShare.csv"))
+                using (StreamReader transactionsReader = new StreamReader($"{dataPath}/Transaction.csv"))
+                using (StreamReader conversionFactorsReader = new StreamReader($"{dataPath}/ConversionFactor.csv"))
                 {
                     db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
                 }
@@ -60,7 +63,7 @@ namespace ShareCertificate
                 Console.Out.WriteLine($"Year: {year}");
                 Console.Out.WriteLine("Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
 
-                List<Certificate> certificates = new List<Certificate>();
+                CertificateCollection certificates = new CertificateCollection();
                 foreach (Address address in db.Addresses)
                 {
                     int adressId = address.Id;
@@ -70,21 +73,19 @@ namespace ShareCertificate
                     List<DynamicShare> strombezuege = db.DynamicShares.Where(pp => pp.AddressId == adressId).ToList();
                     List<ConversionFactor> factor = db.ConversionFactors;
 
-                    ICertificateDocument document = new CertificateDocument($"./Customer{cliArguments.CustomerName}/{year}/Template");
+                    ICertificateDocument document = new CertificateDocument($"{dataPath}/Template");
                     Certificate certificate = new Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);
 
                     certificates.Add(certificate);
                     Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}, {certificate.NumberOfCertificatesHeld}, {certificate.RemainingBalance}, {certificate.NumberOfCommittedCertificates}");
                 }
 
-                int totalNumberOfCertificates = certificates.Sum(c => c.NumberOfCertificatesHeld);
-                int totalNumberOfCommittedCertificates = certificates.Sum(c => c.NumberOfCommittedCertificates);
-                int remainingBalance = certificates.Sum(c => c.RemainingBalance);
-                certificates.ForEach(c => c.TotalNumberOfCertificates = totalNumberOfCertificates);
-                certificates.ForEach(c => c.TotalNumberOfComittedCertificates = totalNumberOfCommittedCertificates);
+                int totalNumberOfCertificates = certificates.TotalNumberOfCertificates;
+                int totalNumberOfCommittedCertificates = certificates.TotalNumberOfCommittedCertificates;
+                int remainingBalance = certificates.TotalRemainingBalance;
                 Console.Out.WriteLine($"999, Total, , , {totalNumberOfCertificates}, {remainingBalance}, {totalNumberOfCommittedCertificates}");
 
-                string exportFolder = $"./Customer{cliArguments.CustomerName}/{year}/Generated";
+                string exportFolder = $"{dataPath}/Generated";
                 if(!Directory.Exists(exportFolder))
                 {
                     Directory.CreateDirectory(exportFolder);

@@ -47,7 +47,7 @@ namespace ShareCertificate.Test
             Certificate sut =
                 new Certificate(document, Year, address, powerPlant, transactions, strombezuege, factor)
                 {
-                    TotalNumberOfComittedCertificates = 100
+                    TotalNumberOfCommittedCertificates = 100
                 };
 
             // Act
@@ -87,7 +87,7 @@ namespace ShareCertificate.Test
             Certificate sut =
                 new Certificate(document, Year, address, powerPlant, fixShare, dynymicShare, factor)
                 {
-                    TotalNumberOfComittedCertificates = 1
+                    TotalNumberOfCommittedCertificates = 1
                 };
 
             // Act

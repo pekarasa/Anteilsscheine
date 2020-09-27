@@ -5,7 +5,7 @@ using ShareCertificate.Model;
 
 namespace ShareCertificate
 {
-    public class Certificate
+    public class Certificate: ICertificate
     {
         /// <summary>
         /// Number of certificates held by the holder
@@ -30,12 +30,12 @@ namespace ShareCertificate
         /// <summary>
         /// Total number of committed certificates issued
         /// </summary>
-        public int TotalNumberOfComittedCertificates { get; set; }
+        public int TotalNumberOfCommittedCertificates { get; set; }
 
         /// <summary>
         /// Personal part of the power earning
         /// </summary>
-        public int PersonalPowerEarning => _powerEarning / TotalNumberOfComittedCertificates * NumberOfCommittedCertificates;
+        public int PersonalPowerEarning => _powerEarning / TotalNumberOfCommittedCertificates * NumberOfCommittedCertificates;
 
         private readonly ICertificateDocument _document;
         private readonly int _year;
