@@ -10,17 +10,17 @@ namespace ShareCertificate
         /// <summary>
         /// Number of certificates held by the holder
         /// </summary>
-        public int NumberOfCertificatesHeld { get; set; }
+        public int NumberOfCertificatesHeld { get; private set; }
 
         /// <summary>
         /// Number of certificates by committed electricity buying
         /// </summary>
-        public int NumberOfCommittedCertificates { get; set; }
+        public int NumberOfCommittedCertificates { get; private set; }
 
         /// <summary>
         /// Remaining rounding amount due to electricity buying
         /// </summary>
-        public int RemainingBalance { get; set; }
+        public int RemainingBalance { get; private set; }
 
         /// <summary>
         /// Total number of certificates issued
@@ -35,7 +35,6 @@ namespace ShareCertificate
         /// <summary>
         /// Personal part of the power earning
         /// </summary>
-
         public int PersonalPowerEarning => _powerEarning / TotalNumberOfComittedCertificates * NumberOfCommittedCertificates;
 
         private readonly ICertificateDocument _document;
@@ -101,7 +100,7 @@ namespace ShareCertificate
         internal string GetFileName(string exportFolder)
         {
             string name = Name.Replace(" ","").Replace("-","");
-            string fileName = $"{_year}_{name}_Sammeanteilsschein.pdf";
+            string fileName = $"{_year}_{name}_Sammelanteilsschein.pdf";
             return System.IO.Path.Combine(exportFolder, fileName);
 
         }
