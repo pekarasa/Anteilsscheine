@@ -42,6 +42,10 @@
 		.paragraphDistance {
 			margin-bottom: 1cm
 		}
+
+    .pagebreak {
+      page-break-before: always;
+    }
 	</style>
 </head>
 
@@ -54,7 +58,7 @@
 	<h1>ShareCertificate</h1>
 	<p class="paragraphDistance"> </p>
 	<p>
-		The following variables are available. A difference is made between data valid for the year and data valid for a single address record.
+		The following variables are available. A difference is made between data valid for the year and data valid for a single address record and data valid for transactions for a adress record.
 	</p>
 	<p>
 		Annual data
@@ -80,9 +84,15 @@
 			<li>&#36;{personalNumberOfShareCertificate}: ${personalNumberOfShareCertificate}</li>
 			<li>&#36;{personalPowerEarning}: ${personalPowerEarning}</li>
 			<li>&#36;{personalRemainingBalance}: ${personalRemainingBalance}</li>
-			<li>&#36;{transactionTable}: ${transactionTable}</li>
 		</ul>
 	</p>
+	<p class="pagebreak">
+		Transaction data
+	</p>
+	<p>
+	<p class="paragraphDistance"> </p>
+	&#36;{transactionTable}: ${transactionTable}
+	<p class="paragraphDistance"> </p>
 </body>
 
 </html>
