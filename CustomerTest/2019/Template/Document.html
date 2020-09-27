@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 
 <head>
@@ -12,7 +12,7 @@
 			margin: 2.9cm
 		}
 
-		p {
+		p, li {
 			margin-bottom: 0.21cm;
 			font-family: Arial, Helvetica, sans-serif;
 			font-size: 100%;
@@ -47,63 +47,41 @@
 
 <body lang="de-CH" dir="ltr">
 	<p>
-		Genossenschaft
-		<br/>
-		<img src="Template/logo.png" width="309" height="56" border="0">
+		CustomerTest
+		<br />
 	</p>
 	<p class="paragraphDistance"> </p>
-	<h1>Sammelanteilsschein</h1>
+	<h1>ShareCertificate</h1>
 	<p class="paragraphDistance"> </p>
 	<p>
-		Die Solaranlagen <b>Fohrenhof</b> haben im Jahr ${year} gesamthaft
-		<b>${plantPowerEarning} kWh</b> Strom produziert.
-		Wenn man von einem Jahresverbauch von 2550 kWh für ein Zweipersonenhaushalt
-		ausgeht, so versorgt <b>solar</b>oltingen knapp 51 Haushalte.
-		Das wurde auch ermöglicht durch die Beiträge von</p>
-	<p class="paragraphDistance"> </p>
-	<p align="left" style="margin-left: 2.5cm; margin-bottom: 0cm">
-		<b>${addressName}</b>
-		<br/>${addressStreet}
-		<br/>${addressCity}
-	</p>
-	<p class="paragraphDistance"> </p>
-	<p>Per 31.12.${year} sind Sie im Besitz von</p>
-	<p class="paragraphDistance"> </p>
-	<p align="left" style="margin-left: 2.5cm; margin-bottom: 0.21cm">
-		${personalNumberOfShareCertificate}
-		<b>Anteilsscheinen</b> à CHF 100.-.
-	</p>
-	<p class="paragraphDistance"> </p>
-	<p>Das entspricht der jährlichen Stromproduktion von
-		<b>${personalPowerEarning} kWh</b>.
-		<br/> Detaillierte Berechnung siehe Rückseite.</p>
-	<p class="paragraphDistance"> </p>
-	<p>Herzlichen Dank.</p>
-	<p style="margin-bottom: 2cm"> </p>
-	<p>Oltingen, ${printDate}</p>
-	<p style="margin-bottom: 3cm"> </p>
-	<table style="width:100%">
-		<tr>
-			<td>
-				<p>${signer1}</p>
-			</td>
-			<td class=align-right>
-				<p>${signer2}</p>
-			</td>
-		</tr>
-	</table>
-	<p class="paragraphDistance"> </p>
-	${transactionTable}
-	<p class="paragraphDistance"> </p>
-	<p>
-		Sie haben somit ${personalNumberOfShareCertificate} Anteilsscheine gezeichnet. Der Restbetrag von CHF ${personalRemainingBalance}.-
-		wird gehalten.
+		The following variables are available. A difference is made between data valid for the year and data valid for a single address record.
 	</p>
 	<p>
-		<b>solar</b>oltingen hat bisher total ${totalNumberOfShareCertificate} Anteilsscheine ausgegeben.
+		Annual data
 	</p>
 	<p>
-		Dieser Sammelanteilsschein ersetzt alle bisherigen.
+		<ul>
+			<li>&#36;{year}: ${year}</li>
+			<li>&#36;{plantPowerEarning}: ${plantPowerEarning}</li>
+			<li>&#36;{printDate}: ${printDate}</li>
+			<li>&#36;{signer1}: ${signer1}</li>
+			<li>&#36;{signer2}: ${signer2}</li>
+			<li>&#36;{totalNumberOfShareCertificate}: ${totalNumberOfShareCertificate}</li>
+		</ul>
+	</p>
+	<p>
+		Address record data
+	</p>
+	<p>
+		<ul>
+			<li>&#36;{addressName}: ${addressName}</li>
+			<li>&#36;{addressStreet}: ${addressStreet}</li>
+			<li>&#36;{addressCity}: ${addressCity}</li>
+			<li>&#36;{personalNumberOfShareCertificate}: ${personalNumberOfShareCertificate}</li>
+			<li>&#36;{personalPowerEarning}: ${personalPowerEarning}</li>
+			<li>&#36;{personalRemainingBalance}: ${personalRemainingBalance}</li>
+			<li>&#36;{transactionTable}: ${transactionTable}</li>
+		</ul>
 	</p>
 </body>
 
