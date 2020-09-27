@@ -14,22 +14,23 @@ dotnet build
 
 ## How to start the application
 
-Go to the folder where the two subfolders _Data_ and _Template_ are. Open an shell and start the programm with the follwing command:
+Go to the folder where the subfolders _Customer*_ is. Open an shell and start the programm with the follwing command:
 
 ```bash
-dotnet path_to/ShareCertificate.dll /Year 2019 /CustomerName Test > CustomerTest/Summary_2019.csv
-dotnet ShareCertificate/bin/Debug/netcoreapp2.0/ShareCertificate.dll /Year 2019 /CustomerName SolarOltingen > CustomerSolarOltingen/Summary_2019.csv
+dotnet ShareCertificate/bin/Debug/netcoreapp3.1\ShareCertificate.dll /Year 2019 /CustomerName Test > CustomerTest/Summary_2019.csv
 ```
 
 In the csv is an overview of all share certificates per person.
+
+The generated PDFs are saved in the subfolder CustomerTest/2019/Generated/.
 
 ## How to merge all PDFs to a single one
 
 The following command is used to combine all PDFs in one file and delete the generated:
 
 ```bash
-pdfunite ~/Schreibtisch/*.pdf 2018_SammelanteilsscheinSerienbrief.pdf
-rm ~/Schreibtisch/2018_*.pdf
+pdfunite CustomerTest/2019/Generated/*.pdf SammelanteilsscheinSerienbrief_2019.pdf
+rm CustomerTest/2019/Generated/2019_*.pdf
 ```
 
 ## License

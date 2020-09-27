@@ -84,6 +84,12 @@ namespace ShareCertificate
                 certificates.ForEach(c => c.TotalNumberOfComittedCertificates = totalNumberOfCommittedCertificates);
                 Console.Out.WriteLine($"999, Total, , , {totalNumberOfCertificates}, {remainingBalance}, {totalNumberOfCommittedCertificates}");
 
+                string exportFolder = $"./Customer{cliArguments.CustomerName}/{year}/Generated";
+                if(!Directory.Exists(exportFolder))
+                {
+                    Directory.CreateDirectory(exportFolder);
+                }
+
                 foreach (Certificate certificate in certificates)
                 {
                     if (cliArguments.NameFilter != null && !certificate.Name.Contains(cliArguments.NameFilter))
@@ -96,7 +102,6 @@ namespace ShareCertificate
                         continue;
                     }
 
-                    var exportFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                     string htmlData = certificate.FillTemplateWithData(year, "Micha Kuster", "Peter Portmann", new DateTime(2020, 5, 5));
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
