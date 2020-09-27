@@ -2,6 +2,8 @@
 
 In order to facilitate the annually recurring work of issuing share certificates, this program has been developed.
 
+[![Build Status](https://dev.azure.com/pekarasa/Anteilsscheine/_apis/build/status/pekarasa.Anteilsscheine?branchName=master)](https://dev.azure.com/pekarasa/Anteilsscheine/_build/latest?definitionId=1&branchName=master)
+
 The program is written with C# dotnet core 2.0.
 
 ## How to build the application
