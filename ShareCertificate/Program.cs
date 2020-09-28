@@ -8,6 +8,7 @@ using AtleX.CommandLineArguments;
 using iText.Html2pdf;
 using System.Threading;
 using System.Globalization;
+using CsvHelper.Configuration.Attributes;
 
 namespace ShareCertificate
 {
@@ -16,12 +17,24 @@ namespace ShareCertificate
         private class MyArgumentsClass : Arguments
         {
             [Required]
-            [Display(Description = "Year for which the collective share certificates are created.")]
+            [Display(Description = "Year for which the collective share certificates are issued.")]
             public int Year { get; set; }
 
             [Required]
-            [Display(Description = "Customer name for whom the collective share certificates are created.")]
+            [Display(Description = "Customer name for whom the collective share certificates are issued.")]
             public string CustomerName { get; set; }
+
+            [Required]
+            [Display(Description = "Name of the person who will be the first to sign.")]
+            public string Signer1 { get; set; }
+
+            [Required]
+            [Display(Description = "Name of the person who signs as second signature.")]
+            public string Signer2 { get; set; }
+
+            [Required]
+            [Display(Description = "Date for which the collective share certificate are issued.")]
+            public DateTime IssueDate { get; set; }
 
             // Not required
             [Display(Description = "You can use the name filter to restrict for whom collective share certificates should be created. For example, if you enter 'mann', only documents are created for addresses that contain this part in the name.")]
@@ -103,7 +116,7 @@ namespace ShareCertificate
                         continue;
                     }
 
-                    string htmlData = certificate.FillTemplateWithData(year, "Micha Kuster", "Peter Portmann", new DateTime(2020, 5, 5));
+                    string htmlData = certificate.FillTemplateWithData(year, cliArguments.Signer1, cliArguments.Signer2, cliArguments.IssueDate);
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
                     HtmlConverter.ConvertToPdf(htmlData, pdfStream);
