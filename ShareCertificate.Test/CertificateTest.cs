@@ -23,45 +23,62 @@ namespace ShareCertificate.Test
         }
 
         [Test]
-        public void ShareOfEarningsIsDerivedFromCommittedAndEmittedCertificates()
+        public void WhenACustomerHas10DynamicÂnd15TransactionalShares_ThenTheNumberOfCommittedCertificatesMustBe25()
         {
-            const int Year = 2015;
-            ICertificateDocument document = new DocumentMock();
-            Address address = new Address();
-            // Arrange
-            // 1 dynamic certificate annually between 2010 - 2019 => Total 10
+            // arrange
+            // 20 dynamic certificates: 2 dynamic certificate annually between 2010 - 2019
             List<DynamicShare> strombezuege = new List<DynamicShare>();
             List<ConversionFactor> factor = new List<ConversionFactor>();
             for (int year = 2010; year <= 2019; year++)
             {
                 DateTime date = new DateTime(year, 12, 31);
-                strombezuege.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 100 });
+                strombezuege.Add(new DynamicShare { AddressId = 1, Date = date, PowerPurchase = 200 });
                 factor.Add(new ConversionFactor { Year = year, Factor = 1 });
             }
-            // Single subscription of 15 certificates in 2012
+
+            // 15 certificates in 2012: Single transaction of 15 certificates in 2012
             List<Transaction> transactions =
-                new List<Transaction> {new Transaction {Date = new DateTime(2012, 2, 15), Amount = 1500}};
-            // Plant Earning is 100
-            PowerEarning powerPlant = new PowerEarning { Earning = 1000 };
-            // Total comitted certifiactes = 100
-            Certificate sut =
-                new Certificate(document, Year, address, powerPlant, transactions, strombezuege, factor)
-                {
-                    TotalNumberOfCommittedCertificates = 100
-                };
+                new List<Transaction> { new Transaction { Date = new DateTime(2012, 2, 15), Amount = 1500 } };
 
-            // Act
-            // Calculation date 2015 has no influence on the result
-            sut.FillTemplateWithData(Year, null, null, DateTime.Now);
+            ICertificateDocument document = new DocumentMock();
+            Address address = new Address();
+            PowerEarning powerPlant = new PowerEarning();
 
-            // Assert
-            sut.NumberOfCommittedCertificates.Should().Be(25);
-            // Personal Power Earning must be 250
-            sut.PersonalPowerEarning.Should().Be(250);
+            // act
+            Certificate sut = new Certificate(document, 2018, address, powerPlant, transactions, strombezuege, factor);
+
+            // assert
+            sut.NumberOfCommittedCertificates.Should().Be(35, "20 dynamic certificates plus 15 certificates from a transaction gives a total of 35 certificates");
         }
 
         [Test]
-        public void OnlyPastTransactionsCanBeSeenInTheHistoryOfTheCertificate()
+        public void WhenAPartyOwnsAQuarterOfTheCertificates_ThenItIsEntitledToAQuarterOfThePowerEarnings()
+        {
+            // arrange
+            // 25 certificates in 2012: Single transaction of 15 certificates in 2012
+            List<Transaction> transactions =
+                new List<Transaction> { new Transaction { Date = new DateTime(2012, 2, 15), Amount = 2500 } };
+
+            // Plant Earning is 100
+            PowerEarning powerPlant = new PowerEarning { Earning = 1000 };
+
+            List<DynamicShare> strombezuege = new List<DynamicShare>();
+            List<ConversionFactor> factor = new List<ConversionFactor>();
+            ICertificateDocument document = new DocumentMock();
+            Address address = new Address();
+
+            // act
+            Certificate sut = new Certificate(document, 2018, address, powerPlant, transactions, strombezuege, factor)
+            { 
+                TotalNumberOfCommittedCertificates = 100 
+            };
+
+            // assert
+            sut.PersonalPowerEarning.Should().Be(250, "25 out of 100 is a quarter and a quarter of 1000 kWh gives 250 kWh");
+        }
+
+        [Test]
+        public void WhenDynamicCertificatesExistForTheFuture_ThenTheseAreNotShownOnTheDocument()
         {
             const int Year = 2015;
             ICertificateDocument document = new DocumentMock();
@@ -84,11 +101,10 @@ namespace ShareCertificate.Test
                 // Subscription of 25 certificates in 2016
                 new Transaction {Date = new DateTime(2016, 2, 15), Amount = 2500}
             };
-            Certificate sut =
-                new Certificate(document, Year, address, powerPlant, fixShare, dynymicShare, factor)
-                {
-                    TotalNumberOfCommittedCertificates = 1
-                };
+            Certificate sut = new Certificate(document, Year, address, powerPlant, fixShare, dynymicShare, factor)
+            {
+                TotalNumberOfCommittedCertificates = 1
+            };
 
             // Act
             // Calculation date 2015
