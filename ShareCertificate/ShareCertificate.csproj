@@ -1,9 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <OutputType>Exe</OutputType>
+
+    <Authors>Peter Portmann</Authors>
+
+    <Company>PeKaRaSa</Company>
+
+    <Description>In order to facilitate the annually recurring work of issuing share certificates, this program has been developed.</Description>
+
+    <Copyright>2019</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -59,7 +59,7 @@ namespace ShareCertificate
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("de-CH");
 
                 int year = cliArguments.Year;
-                
+
                 Context db;
 
                 string dataPath = $"./Customer{cliArguments.CustomerName}/{year}";
@@ -70,11 +70,13 @@ namespace ShareCertificate
                 using (StreamReader transactionsReader = new StreamReader($"{dataPath}/Transaction.csv"))
                 using (StreamReader conversionFactorsReader = new StreamReader($"{dataPath}/ConversionFactor.csv"))
                 {
-                    db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader, conversionFactorsReader);
+                    db = new Context(addressReader, powerPlantReader, powerPurchasesReader, transactionsReader,
+                        conversionFactorsReader);
                 }
 
                 Console.Out.WriteLine($"Year: {year}");
-                Console.Out.WriteLine("Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
+                Console.Out.WriteLine(
+                    "Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
 
                 CertificateCollection certificates = new CertificateCollection();
                 foreach (Address address in db.Addresses)
@@ -87,19 +89,22 @@ namespace ShareCertificate
                     List<ConversionFactor> factor = db.ConversionFactors;
 
                     ICertificateDocument document = new CertificateDocument($"{dataPath}/Template");
-                    Certificate certificate = new Certificate(document, year, address, powerPlant, transactions, strombezuege, factor);
+                    Certificate certificate = new Certificate(document, year, address, powerPlant, transactions,
+                        strombezuege, factor);
 
                     certificates.Add(certificate);
-                    Console.Out.WriteLine($"{address.Id}, {address.Name}, {address.Street}, {address.City}, {certificate.NumberOfCertificatesHeld}, {certificate.RemainingBalance}, {certificate.NumberOfCommittedCertificates}");
+                    Console.Out.WriteLine(
+                        $"{address.Id}, {address.Name}, {address.Street}, {address.City}, {certificate.NumberOfCertificatesHeld}, {certificate.RemainingBalance}, {certificate.NumberOfCommittedCertificates}");
                 }
 
                 int totalNumberOfCertificates = certificates.TotalNumberOfCertificates;
                 int totalNumberOfCommittedCertificates = certificates.TotalNumberOfCommittedCertificates;
                 int remainingBalance = certificates.TotalRemainingBalance;
-                Console.Out.WriteLine($"999, Total, , , {totalNumberOfCertificates}, {remainingBalance}, {totalNumberOfCommittedCertificates}");
+                Console.Out.WriteLine(
+                    $"999, Total, , , {totalNumberOfCertificates}, {remainingBalance}, {totalNumberOfCommittedCertificates}");
 
                 string exportFolder = $"{dataPath}/Generated";
-                if(!Directory.Exists(exportFolder))
+                if (!Directory.Exists(exportFolder))
                 {
                     Directory.CreateDirectory(exportFolder);
                 }
@@ -116,7 +121,8 @@ namespace ShareCertificate
                         continue;
                     }
 
-                    string htmlData = certificate.FillTemplateWithData(year, cliArguments.Signer1, cliArguments.Signer2, cliArguments.IssueDate);
+                    string htmlData = certificate.FillTemplateWithData(year, cliArguments.Signer1, cliArguments.Signer2,
+                        cliArguments.IssueDate);
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
                     HtmlConverter.ConvertToPdf(htmlData, pdfStream);
@@ -130,6 +136,10 @@ namespace ShareCertificate
                 {
                     Console.Error.WriteLine(e.InnerException.Message);
                 }
+            }
+            finally
+            {
+                Console.ReadLine();
             }
         }
     }
