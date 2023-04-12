@@ -39,11 +39,11 @@ steps:
     command: publish
     publishWebProjects: False
     projects: 'ShareCertificate/*.csproj'
-    arguments: '-r linux-x64 -p:PublishSingleFile=true --self-contained true --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '-r linux-x64 -p:PublishSingleFile=true --self-contained true --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Linux-x64_$(Build.BuildNumber)'
     zipAfterPublish: True
 
 # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'AnteilsscheineApp'
+    targetPath: '$(Build.ArtifactStagingDirectory)/Linux-x64_$(Build.BuildNumber)' 
+    artifactName: 'ShareCertificate_LatestBuild'
