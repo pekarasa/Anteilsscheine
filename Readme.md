@@ -9,7 +9,10 @@ The program is written with C# .NET 6.0.
 ## How to build the application
 
 ```bash
+cd Anteilsscheine
 dotnet build
+cd ShareCertificate
+dotnet publish -r linux-x64 -p:PublishSingleFile=true --self-contained true
 ```
 
 ## How to start the application
@@ -17,7 +20,8 @@ dotnet build
 Go to the folder where the subfolders _Customer*_ is. Open an shell and start the programm with the follwing command:
 
 ```bash
-dotnet ShareCertificate/bin/Debug/netcoreapp3.1\ShareCertificate.dll /Year 2019 /CustomerName Test > CustomerTest/Summary_2019.csv
+cd Anteilsscheine
+ShareCertificate/bin/Debug/net6.0/linux-x64/publish/ShareCertificate --Year 2019 --CustomerName Test --Signer1 "A. Aaa" --Signer2 "B. Bbb" --IssueDate "12.04.2023" > CustomerTest/Summary_2019.csv
 ```
 
 In the csv is an overview of all share certificates per person.
