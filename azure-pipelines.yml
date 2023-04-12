@@ -37,7 +37,8 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
-    publishWebProjects: True
+    publishWebProjects: False
+    projects: 'ShareCertificate/*.csproj'
     arguments: '-r linux-x64 -p:PublishSingleFile=true --self-contained true --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
