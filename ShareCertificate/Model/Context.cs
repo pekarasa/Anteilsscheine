@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace ShareCertificate.Model
 {
@@ -29,7 +31,12 @@ namespace ShareCertificate.Model
 
         private List<T> GetRecords<T>(TextReader reader)
         {
-            System.Globalization.CultureInfo configuration = new System.Globalization.CultureInfo("de-CH");
+            var configuration = new CsvConfiguration(new CultureInfo("de-CH"))
+            {
+                HasHeaderRecord = true,
+                Delimiter = ",",
+            };
+
             using (var csv = new CsvReader(reader, configuration))
             {
                 return csv.GetRecords<T>().ToList();
