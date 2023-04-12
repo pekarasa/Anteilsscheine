@@ -21,7 +21,7 @@ Go to the folder where the subfolders _Customer*_ is. Open an shell and start th
 
 ```bash
 cd Anteilsscheine
-ShareCertificate/bin/Debug/net6.0/linux-x64/publish/ShareCertificate --Year 2019 --CustomerName Test > CustomerTest/Summary_2019.csv
+publish/linux-x64/ShareCertificate --Year 2019 --CustomerName Test > CustomerTest/Summary_2019.csv
 ```
 
 In the csv is an overview of all share certificates per person.
