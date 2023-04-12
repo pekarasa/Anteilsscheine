@@ -92,9 +92,9 @@ namespace ShareCertificate
             _allTransUpToYear = _allTransUpToYear.OrderBy(t => t.Date).ToList();
         }
 
-        public string FillTemplateWithData(int year, string signer1, string signer2, DateTime printDate)
+        public string FillTemplateWithData(int year)
         {
-            return _document.FillDocumentTemplate(year, printDate, _powerEarning, TotalNumberOfCertificates, signer1, signer2, Name, _street, _city, NumberOfCertificatesHeld, PersonalPowerEarning, RemainingBalance, _allTransUpToYear);
+            return _document.FillDocumentTemplate(year, _powerEarning, TotalNumberOfCertificates, Name, _street, _city, NumberOfCertificatesHeld, PersonalPowerEarning, RemainingBalance, _allTransUpToYear);
         }
 
         internal string GetFileName(string exportFolder)

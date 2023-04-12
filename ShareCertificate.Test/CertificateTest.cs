@@ -108,7 +108,7 @@ namespace ShareCertificate.Test
 
             // Act
             // Calculation date 2015
-            string html = sut.FillTemplateWithData(Year, null, null, DateTime.Now);
+            string html = sut.FillTemplateWithData(Year);
 
             // Assert
             html.Should().ContainAll(new List<string> { "2010", "2011", "2012", "2013", "2014", "2015" });
@@ -118,7 +118,7 @@ namespace ShareCertificate.Test
 
         private class DocumentMock : ICertificateDocument
         {
-            string ICertificateDocument.FillDocumentTemplate(int year, DateTime printDate, int plantPowerEarning, int totalNumberOfShareCertificate, string signer1, string signer2, string addressName, string addressStreet, string addressCity, int personalNumberOfShareCertificate, int personalPowerEarning, int personalRemainingBalance, List<Transaction> transactions)
+            string ICertificateDocument.FillDocumentTemplate(int year, int plantPowerEarning, int totalNumberOfShareCertificate, string addressName, string addressStreet, string addressCity, int personalNumberOfShareCertificate, int personalPowerEarning, int personalRemainingBalance, List<Transaction> transactions)
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (Transaction trans in transactions)

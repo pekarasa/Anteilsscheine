@@ -24,18 +24,6 @@ namespace ShareCertificate
             [Display(Description = "Customer name for whom the collective share certificates are issued.")]
             public string CustomerName { get; set; }
 
-            [Required]
-            [Display(Description = "Name of the person who will be the first to sign.")]
-            public string Signer1 { get; set; }
-
-            [Required]
-            [Display(Description = "Name of the person who signs as second signature.")]
-            public string Signer2 { get; set; }
-
-            [Required]
-            [Display(Description = "Date for which the collective share certificate are issued.")]
-            public DateTime IssueDate { get; set; }
-
             // Not required
             [Display(Description = "You can use the name filter to restrict for whom collective share certificates should be created. For example, if you enter 'mann', only documents are created for addresses that contain this part in the name.")]
             public string NameFilter { get; set; }
@@ -121,8 +109,7 @@ namespace ShareCertificate
                         continue;
                     }
 
-                    string htmlData = certificate.FillTemplateWithData(year, cliArguments.Signer1, cliArguments.Signer2,
-                        cliArguments.IssueDate);
+                    string htmlData = certificate.FillTemplateWithData(year);
                     string fileName = certificate.GetFileName(exportFolder);
                     Stream pdfStream = new FileStream(fileName, FileMode.Create);
                     HtmlConverter.ConvertToPdf(htmlData, pdfStream);

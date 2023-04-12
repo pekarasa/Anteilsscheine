@@ -23,11 +23,8 @@ namespace ShareCertificate
         }
 
         public string FillDocumentTemplate(int year,
-                                           DateTime printDate,
                                            int plantPowerEarning,
                                            int totalNumberOfShareCertificate,
-                                           string signer1,
-                                           string signer2,
                                            string addressName,
                                            string addressStreet,
                                            string addressCity,
@@ -46,9 +43,6 @@ namespace ShareCertificate
                 .Replace("${addressCity}", addressCity)
                 .Replace("${personalNumberOfShareCertificate}", personalNumberOfShareCertificate.ToString())
                 .Replace("${personalPowerEarning}", personalPowerEarning.ToString())
-                .Replace("${printDate}", printDate.ToString("dd. MMMM yyyy"))
-                .Replace("${signer1}", signer1)
-                .Replace("${signer2}", signer2)
                 .Replace("${transactionTable}", transactionTable)
                 .Replace("${personalRemainingBalance}", personalRemainingBalance.ToString())
                 .Replace("${totalNumberOfShareCertificate}", totalNumberOfShareCertificate.ToString());

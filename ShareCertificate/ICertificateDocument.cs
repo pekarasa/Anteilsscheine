@@ -7,11 +7,8 @@ namespace ShareCertificate
     public interface ICertificateDocument
     {
         string FillDocumentTemplate(int year,
-                                    DateTime printDate,
                                     int plantPowerEarning,
                                     int totalNumberOfShareCertificate,
-                                    string signer1,
-                                    string signer2,
                                     string addressName,
                                     string addressStreet,
                                     string addressCity,
