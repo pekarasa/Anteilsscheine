@@ -27,9 +27,10 @@ namespace ShareCertificate.Model
             ConversionFactors = GetRecords<ConversionFactor>(conversionFactorsReader);
         }
 
-        private List<T> GetRecords<T>(StreamReader reader)
+        private List<T> GetRecords<T>(TextReader reader)
         {
-            using (var csv = new CsvReader(reader))
+            System.Globalization.CultureInfo configuration = new System.Globalization.CultureInfo("de-CH");
+            using (var csv = new CsvReader(reader, configuration))
             {
                 return csv.GetRecords<T>().ToList();
             }
