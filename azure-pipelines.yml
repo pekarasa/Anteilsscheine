@@ -47,3 +47,5 @@ steps:
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'ShareCertificate_LatestBuild'
+
+#https://stackoverflow.com/questions/63788646/naming-resulting-zip-archive-in-azure-pipelines-build
