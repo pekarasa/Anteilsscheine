@@ -9,6 +9,7 @@ using iText.Html2pdf;
 using System.Threading;
 using System.Globalization;
 using CsvHelper.Configuration.Attributes;
+using System.Text;
 
 namespace ShareCertificate
 {
@@ -62,6 +63,7 @@ namespace ShareCertificate
                         conversionFactorsReader);
                 }
 
+                Console.OutputEncoding = Encoding.UTF8;
                 Console.Out.WriteLine($"Year: {year}");
                 Console.Out.WriteLine(
                     "Id, Name, Street, City, NumberOfCertificatesHeld, RemainingBalance, NumberOfCommittedCertificates");
