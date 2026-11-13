@@ -2,8 +2,8 @@
   "profiles": {
     "ShareCertificate": {
       "commandName": "Project",
-      "commandLineArgs": "/Year 2023 /CustomerName SolarOltingen > D:\\Git\\Anteilsscheine\\CustomerSolarOltingen\\Summary_2023.csv",
-      "workingDirectory": "D:\\Git\\Anteilsscheine"
+      "commandLineArgs": "--Year 2025 --CustomerName SolarOltingen > CustomerSolarOltingen/Summary_2025.csv",
+      "workingDirectory": "../../"
     }
   }
 }
