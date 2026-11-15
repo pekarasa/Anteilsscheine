@@ -1,9 +1,29 @@
-import type { Certificate } from "./certificate";
+import type { YearData } from "../model/types";
+import { calculateCertificate, type Certificate } from "./certificate";
+import { texts } from "../ui/texts";
 
 export interface CertificateTotals {
   totalNumberOfCertificates: number;
   totalNumberOfCommittedCertificates: number;
   totalRemainingBalance: number;
+}
+
+/** One certificate per address, in the order of the address list. */
+export function calculateYearCertificates(data: YearData): Certificate[] {
+  const powerEarning = data.powerEarnings.find((earning) => earning.year === data.year);
+  if (!powerEarning) {
+    throw new Error(texts.issues.missingPowerEarning(data.year));
+  }
+  return data.addresses.map((address) =>
+    calculateCertificate({
+      year: data.year,
+      address,
+      powerEarning,
+      transactions: data.transactions.filter((t) => t.addressId === address.id),
+      dynamicShares: data.dynamicShares.filter((s) => s.addressId === address.id),
+      conversionFactors: data.conversionFactors,
+    }),
+  );
 }
 
 /**
