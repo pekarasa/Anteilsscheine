@@ -1,0 +1,484 @@
+import type {
+  Address,
+  CalendarDate,
+  ConversionFactor,
+  DecimalValue,
+  DynamicShare,
+  PowerEarning,
+  Settings,
+  Template,
+  Transaction,
+  YearData,
+} from "../model/types";
+import { parseDecimal } from "../logic/decimal";
+import { texts } from "../ui/texts";
+import { decodeText, parseCsv, type CsvTable } from "./csv";
+import { formatIsoDate, parseGermanDate, parseIsoDate } from "./dates";
+import { getYearFile, yearFileNames, type Archive, type YearFolder } from "./zip";
+
+export type IssueSeverity = "error" | "warning";
+
+export interface Issue {
+  severity: IssueSeverity;
+  file: string;
+  line?: number;
+  message: string;
+}
+
+export interface YearReadResult {
+  /** Undefined if the files could not be read at all; see the error issues. */
+  data?: YearData;
+  issues: Issue[];
+}
+
+const placeholderNames = new Set([
+  "year",
+  "plantPowerEarning",
+  "addressName",
+  "addressStreet",
+  "addressCity",
+  "personalNumberOfShareCertificate",
+  "personalPowerEarning",
+  "transactionTable",
+  "personalRemainingBalance",
+  "totalNumberOfShareCertificate",
+  "printDate",
+  "signer1",
+  "signer2",
+  "Date",
+  "Description",
+  "Amount",
+]);
+
+const templateFileNames = [
+  yearFileNames.document,
+  yearFileNames.tableHeader,
+  yearFileNames.tableItem,
+  yearFileNames.tableFooter,
+] as const;
+
+const csvFileNames = [
+  yearFileNames.address,
+  yearFileNames.transaction,
+  yearFileNames.dynamicShare,
+  yearFileNames.powerEarning,
+  yearFileNames.conversionFactor,
+] as const;
+
+interface CsvRecord {
+  line: number;
+  get(column: string): string;
+}
+
+interface Mapped<T> {
+  items: T[];
+  lines: number[];
+}
+
+type Fail = (message: string) => void;
+
+/**
+ * Reads all files of one year folder. Parsing problems (missing files, invalid
+ * values) leave `data` undefined. Semantic problems (duplicate IDs, missing
+ * power earning, ...) are reported as issues while `data` is still returned.
+ */
+export function readYear(archive: Archive, folder: YearFolder, today: CalendarDate): YearReadResult {
+  const issues: Issue[] = [];
+  const missing = [...csvFileNames, ...templateFileNames].filter(
+    (name) => getYearFile(archive, folder, name) === undefined,
+  );
+  for (const name of missing) {
+    issues.push(errorIssue(name, texts.issues.missingFile(name)));
+  }
+  if (missing.length > 0) {
+    return { issues };
+  }
+
+  const read = new FileReader(archive, folder, issues);
+  const addresses = readTable(read, yearFileNames.address, ["Id", "Name", "Street", "City"], mapAddress);
+  const transactions = readTable(
+    read,
+    yearFileNames.transaction,
+    ["AddressId", "Date", "Description", "Amount"],
+    mapTransaction,
+  );
+  const dynamicShares = readTable(
+    read,
+    yearFileNames.dynamicShare,
+    ["AddressId", "Date", "PowerPurchase"],
+    mapDynamicShare,
+  );
+  const powerEarnings = readTable(read, yearFileNames.powerEarning, ["Year", "Earning"], mapPowerEarning);
+  const conversionFactors = readTable(
+    read,
+    yearFileNames.conversionFactor,
+    ["Year", "Factor"],
+    mapConversionFactor,
+  );
+  const settings = readSettings(read, today);
+  const template = readTemplate(read);
+
+  if (
+    !addresses ||
+    !transactions ||
+    !dynamicShares ||
+    !powerEarnings ||
+    !conversionFactors ||
+    !settings ||
+    !template
+  ) {
+    return { issues };
+  }
+
+  const data: YearData = {
+    year: folder.year,
+    addresses: addresses.items,
+    transactions: transactions.items,
+    dynamicShares: dynamicShares.items,
+    powerEarnings: powerEarnings.items,
+    conversionFactors: conversionFactors.items,
+    template,
+    settings,
+  };
+
+  checkAddresses(addresses, issues);
+  checkTransactions(data, transactions, issues);
+  checkDynamicShares(data, dynamicShares, issues);
+  checkPowerEarnings(data, powerEarnings, issues);
+  checkConversionFactors(conversionFactors, issues);
+  return { data, issues };
+}
+
+export function describeIssue(issue: Issue): string {
+  return `${texts.issues.location(issue.file, issue.line)}: ${issue.message}`;
+}
+
+class FileReader {
+  constructor(
+    private readonly archive: Archive,
+    private readonly folder: YearFolder,
+    private readonly issues: Issue[],
+  ) {}
+
+  bytes(fileName: string): Uint8Array | undefined {
+    return getYearFile(this.archive, this.folder, fileName);
+  }
+
+  text(fileName: string): string | undefined {
+    const bytes = this.bytes(fileName);
+    if (!bytes) {
+      return undefined;
+    }
+    const decoded = decodeText(bytes);
+    if (decoded.encoding !== "utf-8") {
+      this.issues.push(warningIssue(fileName, texts.issues.encodingFallback(fileName)));
+    }
+    return decoded.text;
+  }
+
+  csv(fileName: string, columns: readonly string[]): CsvRecord[] | undefined {
+    const text = this.text(fileName);
+    if (text === undefined) {
+      return undefined;
+    }
+    const table = parseCsv(text);
+    const missing = columns.filter((column) => !table.header.includes(column));
+    if (missing.length > 0) {
+      this.issues.push(errorIssue(fileName, texts.issues.missingColumns(missing)));
+      return undefined;
+    }
+    for (const error of table.errors) {
+      this.issues.push(errorIssue(fileName, texts.issues.invalidCsvLine, error.line));
+    }
+    if (table.errors.length > 0) {
+      return undefined;
+    }
+    return table.rows.map((row) => toRecord(table, row.line, row.cells));
+  }
+
+  push(issue: Issue): void {
+    this.issues.push(issue);
+  }
+}
+
+function readTable<T>(
+  read: FileReader,
+  fileName: string,
+  columns: readonly string[],
+  mapper: (record: CsvRecord, fail: Fail) => T | undefined,
+): Mapped<T> | undefined {
+  const records = read.csv(fileName, columns);
+  if (!records) {
+    return undefined;
+  }
+  let valid = true;
+  const items: T[] = [];
+  const lines: number[] = [];
+  for (const record of records) {
+    const fail: Fail = (message) => {
+      valid = false;
+      read.push(errorIssue(fileName, message, record.line));
+    };
+    const item = mapper(record, fail);
+    if (item === undefined) {
+      valid = false;
+    } else {
+      items.push(item);
+      lines.push(record.line);
+    }
+  }
+  return valid ? { items, lines } : undefined;
+}
+
+function toRecord(table: CsvTable, line: number, cells: string[]): CsvRecord {
+  return {
+    line,
+    get: (column) => cells[table.header.indexOf(column)] ?? "",
+  };
+}
+
+function mapAddress(record: CsvRecord, fail: Fail): Address | undefined {
+  const id = integerCell(record, "Id", fail);
+  if (id === undefined) {
+    return undefined;
+  }
+  return {
+    id,
+    name: record.get("Name"),
+    street: record.get("Street"),
+    city: record.get("City"),
+  };
+}
+
+function mapTransaction(record: CsvRecord, fail: Fail): Transaction | undefined {
+  const addressId = integerCell(record, "AddressId", fail);
+  const date = dateCell(record, "Date", fail);
+  const amount = integerCell(record, "Amount", fail);
+  if (addressId === undefined || date === undefined || amount === undefined) {
+    return undefined;
+  }
+  return { addressId, date, description: record.get("Description"), amount };
+}
+
+function mapDynamicShare(record: CsvRecord, fail: Fail): DynamicShare | undefined {
+  const addressId = integerCell(record, "AddressId", fail);
+  const date = dateCell(record, "Date", fail);
+  const powerPurchase = integerCell(record, "PowerPurchase", fail);
+  if (addressId === undefined || date === undefined || powerPurchase === undefined) {
+    return undefined;
+  }
+  return { addressId, date, powerPurchase };
+}
+
+function mapPowerEarning(record: CsvRecord, fail: Fail): PowerEarning | undefined {
+  const year = integerCell(record, "Year", fail);
+  const earning = integerCell(record, "Earning", fail);
+  if (year === undefined || earning === undefined) {
+    return undefined;
+  }
+  return { year, earning };
+}
+
+function mapConversionFactor(record: CsvRecord, fail: Fail): ConversionFactor | undefined {
+  const year = integerCell(record, "Year", fail);
+  const factor = decimalCell(record, "Factor", fail);
+  if (year === undefined || factor === undefined) {
+    return undefined;
+  }
+  return { year, factor };
+}
+
+function integerCell(record: CsvRecord, column: string, fail: Fail): number | undefined {
+  const text = record.get(column).trim();
+  if (!/^-?\d+$/.test(text)) {
+    fail(texts.issues.invalidInteger(column, text));
+    return undefined;
+  }
+  return Number(text);
+}
+
+function dateCell(record: CsvRecord, column: string, fail: Fail): CalendarDate | undefined {
+  const text = record.get(column);
+  const date = parseGermanDate(text);
+  if (!date) {
+    fail(texts.issues.invalidDate(column, text));
+  }
+  return date;
+}
+
+function decimalCell(record: CsvRecord, column: string, fail: Fail): DecimalValue | undefined {
+  try {
+    return parseDecimal(record.get(column));
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+    return undefined;
+  }
+}
+
+function readSettings(read: FileReader, today: CalendarDate): Settings | undefined {
+  const text = read.text(yearFileNames.settings);
+  if (text === undefined) {
+    read.push(warningIssue(yearFileNames.settings, texts.issues.settingsMissing));
+    return { printDate: formatIsoDate(today), signer1: "", signer2: "" };
+  }
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    read.push(errorIssue(yearFileNames.settings, texts.issues.invalidJson));
+    return undefined;
+  }
+  if (typeof json !== "object" || json === null || Array.isArray(json)) {
+    read.push(errorIssue(yearFileNames.settings, texts.issues.invalidJson));
+    return undefined;
+  }
+  const values = json as Record<string, unknown>;
+  const printDate = typeof values["printDate"] === "string" ? parseIsoDate(values["printDate"]) : undefined;
+  if (!printDate) {
+    read.push(errorIssue(yearFileNames.settings, texts.issues.invalidSettings("printDate")));
+    return undefined;
+  }
+  const signer1 = optionalSigner(values, "signer1", read);
+  const signer2 = optionalSigner(values, "signer2", read);
+  if (signer1 === undefined || signer2 === undefined) {
+    return undefined;
+  }
+  return { printDate: formatIsoDate(printDate), signer1, signer2 };
+}
+
+function optionalSigner(values: Record<string, unknown>, field: string, read: FileReader): string | undefined {
+  const value = values[field];
+  if (value === undefined) {
+    return "";
+  }
+  if (typeof value !== "string") {
+    read.push(errorIssue(yearFileNames.settings, texts.issues.invalidSettings(field)));
+    return undefined;
+  }
+  return value;
+}
+
+function readTemplate(read: FileReader): Template | undefined {
+  const document = read.text(yearFileNames.document);
+  const tableHeader = read.text(yearFileNames.tableHeader);
+  const tableItem = read.text(yearFileNames.tableItem);
+  const tableFooter = read.text(yearFileNames.tableFooter);
+  if (
+    document === undefined ||
+    tableHeader === undefined ||
+    tableItem === undefined ||
+    tableFooter === undefined
+  ) {
+    return undefined;
+  }
+  const template: Template = { document, tableHeader, tableItem, tableFooter };
+  const logo = read.bytes(yearFileNames.logo);
+  if (logo) {
+    template.logo = logo;
+  }
+  const contents: [string, string][] = [
+    [yearFileNames.document, document],
+    [yearFileNames.tableHeader, tableHeader],
+    [yearFileNames.tableItem, tableItem],
+    [yearFileNames.tableFooter, tableFooter],
+  ];
+  for (const [fileName, text] of contents) {
+    for (const name of findPlaceholders(text)) {
+      if (!placeholderNames.has(name)) {
+        read.push(warningIssue(fileName, texts.issues.unknownPlaceholder(name)));
+      }
+    }
+  }
+  return template;
+}
+
+function findPlaceholders(text: string): string[] {
+  return [...text.matchAll(/\$\{([^}]*)\}/g)].map((match) => match[1] ?? "");
+}
+
+function checkAddresses(addresses: Mapped<Address>, issues: Issue[]): void {
+  const firstLineById = new Map<number, number>();
+  addresses.items.forEach((address, index) => {
+    const line = addresses.lines[index] ?? 0;
+    if (firstLineById.has(address.id)) {
+      issues.push(errorIssue(yearFileNames.address, texts.issues.duplicateAddressId(address.id), line));
+    } else {
+      firstLineById.set(address.id, line);
+    }
+  });
+}
+
+function checkTransactions(data: YearData, transactions: Mapped<Transaction>, issues: Issue[]): void {
+  const ids = new Set(data.addresses.map((address) => address.id));
+  transactions.items.forEach((transaction, index) => {
+    if (!ids.has(transaction.addressId)) {
+      issues.push(
+        warningIssue(
+          yearFileNames.transaction,
+          texts.issues.unknownAddressId(transaction.addressId),
+          transactions.lines[index],
+        ),
+      );
+    }
+  });
+}
+
+function checkDynamicShares(data: YearData, shares: Mapped<DynamicShare>, issues: Issue[]): void {
+  const ids = new Set(data.addresses.map((address) => address.id));
+  const factorYears = new Set(data.conversionFactors.map((factor) => factor.year));
+  const reportedYears = new Set<number>();
+  shares.items.forEach((share, index) => {
+    const line = shares.lines[index];
+    if (!ids.has(share.addressId)) {
+      issues.push(
+        warningIssue(yearFileNames.dynamicShare, texts.issues.unknownAddressId(share.addressId), line),
+      );
+    }
+    const year = share.date.year;
+    if (!factorYears.has(year) && !reportedYears.has(year)) {
+      reportedYears.add(year);
+      issues.push(errorIssue(yearFileNames.dynamicShare, texts.errors.noConversionFactor(year), line));
+    }
+  });
+}
+
+function checkPowerEarnings(data: YearData, earnings: Mapped<PowerEarning>, issues: Issue[]): void {
+  const matches = earnings.items
+    .map((earning, index) => ({ earning, line: earnings.lines[index] }))
+    .filter((entry) => entry.earning.year === data.year);
+  if (matches.length === 0) {
+    issues.push(errorIssue(yearFileNames.powerEarning, texts.issues.missingPowerEarning(data.year)));
+  }
+  if (matches.length > 1) {
+    issues.push(
+      errorIssue(
+        yearFileNames.powerEarning,
+        texts.issues.duplicatePowerEarning(data.year),
+        matches[1]?.line,
+      ),
+    );
+  }
+}
+
+function checkConversionFactors(factors: Mapped<ConversionFactor>, issues: Issue[]): void {
+  const seenYears = new Set<number>();
+  const reportedYears = new Set<number>();
+  factors.items.forEach((factor, index) => {
+    const year = factor.year;
+    if (seenYears.has(year) && !reportedYears.has(year)) {
+      reportedYears.add(year);
+      issues.push(
+        errorIssue(yearFileNames.conversionFactor, texts.errors.duplicateConversionFactor(year), factors.lines[index]),
+      );
+    }
+    seenYears.add(year);
+  });
+}
+
+function errorIssue(file: string, message: string, line?: number): Issue {
+  return { severity: "error", file, line, message };
+}
+
+function warningIssue(file: string, message: string, line?: number): Issue {
+  return { severity: "warning", file, line, message };
+}
