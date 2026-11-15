@@ -1,40 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { describeIssue, readYear, type Issue } from "../src/io/validation";
-import { findYearFolders, type Archive } from "../src/io/zip";
+import { findYearFolders } from "../src/io/zip";
 import type { CalendarDate } from "../src/model/types";
+import { yearArchive } from "./helpers/archive";
 
-const encoder = new TextEncoder();
 const today: CalendarDate = { year: 2026, month: 11, day: 15 };
-
-const validFiles: Record<string, string> = {
-  "Address.csv": "Id,Name,Street,City\r\n101,Maya Graf,Unter der Fluh 22,4450 Sissach\r\n",
-  "Transaction.csv": "AddressId,Date,Description,Amount\r\n101,09.12.2011,Kauf Anteilsscheine,200\r\n",
-  "DynamicShare.csv": "AddressId,Date,PowerPurchase\r\n101,31.12.2019,600\r\n",
-  "PowerEarning.csv": "Year,Earning\r\n2019,50000\r\n",
-  "ConversionFactor.csv": "Year,Factor\r\n2019,0.8\r\n",
-  "Settings.json": '{"printDate":"2026-02-28","signer1":"Max Mustermann","signer2":"John Doe"}',
-  "Template/Document.html": "<p>${addressName}</p>",
-  "Template/TableHeader.html": "<table>",
-  "Template/TableItem.html": "<tr><td>${Date}</td><td>${Description}</td><td>${Amount}</td></tr>",
-  "Template/TableFooter.html": "</table>",
-};
-
-/** Builds an archive with one year folder. A null value removes the file. */
-function yearArchive(overrides: Record<string, string | Uint8Array | null> = {}): Archive {
-  const files = new Map<string, Uint8Array>();
-  for (const [name, text] of Object.entries(validFiles)) {
-    files.set(`CustomerTest/2019/${name}`, encoder.encode(text));
-  }
-  for (const [name, value] of Object.entries(overrides)) {
-    const path = `CustomerTest/2019/${name}`;
-    if (value === null) {
-      files.delete(path);
-    } else {
-      files.set(path, typeof value === "string" ? encoder.encode(value) : value);
-    }
-  }
-  return files;
-}
+const encoder = new TextEncoder();
 
 function read(overrides: Record<string, string | Uint8Array | null> = {}) {
   const archive = yearArchive(overrides);
