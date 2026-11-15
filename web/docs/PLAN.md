@@ -303,7 +303,7 @@ funktioniert `file://` nicht.
 
 ---
 
-### [ ] Etappe 1: Datenmodell und Berechnung
+### [x] Etappe 1: Datenmodell und Berechnung
 
 **Ziel:** Die Berechnung aus `Certificate.cs` und `CertificateCollection.cs`
 liefert in TypeScript nachweislich dieselben Ergebnisse.
@@ -610,7 +610,7 @@ speichern.
 Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 
 - [x] Etappe 0: Projektgerüst
-- [ ] Etappe 1: Datenmodell und Berechnung
+- [x] Etappe 1: Datenmodell und Berechnung
 - [ ] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
 - [ ] Etappe 3: Vorlage füllen und Druckdokument
 - [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
@@ -669,6 +669,30 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 - [Etappe 0] Keine `.gitattributes`-Änderung nötig. Die Dateitypen der
   Etappe (HTML, TS, JSON, MD) sind Text. Schriften oder Bilder später als
   `binary` ergänzen.
+- [Etappe 1] Umgesetzt in `web/src/logic/` (`decimal.ts`, `certificate.ts`,
+  `certificateCollection.ts`) mit Modell in `web/src/model/types.ts`. 25
+  Vitest-Tests grün, `npm run build` erfolgreich.
+- [Etappe 1] Referenz erfüllt: Alle 10 Adressen und die Total-Zeile von
+  `CustomerTest/2019` stimmen mit `web/test/fixtures/CustomerTest_Summary_2019.csv`
+  überein (Test `reference2019.test.ts`). Die Eingaben werden per Vite-Import
+  `?raw` direkt aus `CustomerTest/2019` gelesen. Dafür gibt es in
+  `web/test/raw.d.ts` eine Typdeklaration; `@types/node` ist nicht nötig.
+- [Etappe 1] Der Referenztest verwendet einen minimalen CSV-Parser im Test
+  (Trennzeichen `,`, Zeilen mit `\r\n` oder `\n`). Er wird in Etappe 2 durch
+  `io/csv.ts` ersetzt.
+- [Etappe 1] Abweichung (Ergänzung): Ein Umwandlungsfaktor, der für ein Jahr
+  doppelt vorkommt, erzeugt eine eigene deutsche Fehlermeldung. C# wirft hier
+  ebenfalls einen Fehler (`Single`), aber ohne deutschen Text.
+- [Etappe 1] Die Berechnung ist zustandslos (Funktionen statt Klasse mit
+  gesetzten Summen). `calculatePersonalPowerEarning` erhält die
+  Gesamtsumme als Parameter. Bei Summe 0 kommt die Meldung aus `texts.ts`
+  statt `Infinity`/`NaN`.
+- [Etappe 1] Die Typen `Settings` und `Template` sind bereits in `YearData`
+  definiert, damit das Modell vollständig ist. Befüllt werden sie in den
+  Etappen 2 und 3.
+- [Etappe 1] Offen für Etappe 3: Das Verhalten von `ToString("##,#")` bei
+  Betrag 0 (Plan 5.4 vermutet leeren String) ist noch nicht gegen C# geprüft.
+  Die Formatierung ist nicht Teil von Etappe 1.
 
 ## 10. Entstehung
 
