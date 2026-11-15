@@ -16,6 +16,7 @@ Key rules (details in the plan, section 4):
 - Every commit builds and passes the tests (`npm test`, `npm run build` in `web/`).
 - After finishing a stage: update status (section 8) and findings (section 9)
   in `web/docs/PLAN.md` and commit that separately.
-- Do not commit unrelated working-tree changes (e.g. line-ending-only changes).
+- Do not commit unrelated working-tree changes.
+- Never commit real customer data (addresses, amounts); use `CustomerTest/` only.
 - UI language is German (de-CH); code, identifiers, comments and commit
   messages are English. ASCII only outside string literals. Always use braces.

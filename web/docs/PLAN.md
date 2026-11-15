@@ -95,13 +95,14 @@ Keine Daten verlassen den Rechner. Kein Server, keine Installation.
    Abweichungen vom Plan und offene Punkte festhalten.
 4. Diese Dokumentänderung als eigenen Commit ("Update plan after stage N").
 
-### 4.4 Hinweis zum Repository-Zustand
+### 4.4 Repository-Hygiene
 
-Beim Erstellen dieses Plans zeigte `git status` viele geänderte Dateien
-(`CustomerTest/**`, `ShareCertificate/**`, `azure-pipelines.yml`, ...). Die
-Änderungen betreffen **nur Zeilenenden** (CRLF/LF), keine Inhalte. Sie stammen
-nicht aus dieser Planung. Nicht mit committen; Benutzer fragen, ob dafür eine
-`.gitattributes` angelegt oder die Änderungen verworfen werden sollen.
+- Zeilenenden sind über `.gitattributes` geregelt (`* text=auto`, `*.sln`
+  mit CRLF, Binärdateien als `binary`). Im Repository wird LF gespeichert.
+  Neue Dateitypen bei Bedarf dort ergänzen (z. B. Schriftarten als `binary`).
+- **Echte Kundendaten** (Adressen, Beträge) dürfen **nie** ins Repository.
+  `.gitignore` schliesst `Summary_20*.csv` bereits aus. Testdaten nur aus
+  `CustomerTest/` oder frei erfunden.
 
 ---
 
@@ -619,7 +620,13 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 
 (Wird nach jeder Etappe ergänzt. Format: `- [Etappe N] Erkenntnis ...`)
 
-- [Planung] Zeilenenden-Änderungen im Arbeitsverzeichnis, siehe 4.4.
+- [Planung] Zeilenenden mit `.gitattributes` normalisiert (Commit
+  "Add .gitattributes to normalize line endings").
+- [Planung] `dotnet` ist in der Entwicklungsumgebung nicht installiert.
+- [Planung] Die vom Benutzer erzeugte `Summary_2019.csv` (Wurzelordner,
+  von `.gitignore` ausgeschlossen) stammt aus **echten Kundendaten**
+  (39 Adressen), nicht aus `CustomerTest/2019` (10 Adressen). Sie ist daher
+  **kein** Referenzwert für `CustomerTest` und darf nicht committet werden.
 - [Planung] `Document.html` in `CustomerTest/2019` enthält fest
   eingetragene Werte ("print date: 28. Februar 2023", "signer1: Max
   Mustermann", "signer2: John Doe"). Beim Umsetzen von Etappe 6 durch
