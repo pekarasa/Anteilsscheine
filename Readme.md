@@ -37,6 +37,25 @@ pdfunite CustomerTest/2019/Generated/*.pdf SammelanteilsscheinSerienbrief_2019.p
 rm CustomerTest/2019/Generated/2019_*.pdf
 ```
 
+## Web application
+
+The `web/` folder contains a static web version of the tool. It runs entirely
+in the browser and builds into a single HTML file. It is under construction;
+the plan is in `web/docs/PLAN.md`.
+
+Requirements: Node.js 22.12 or newer and npm.
+
+```bash
+cd web
+npm ci              # install dependencies (once, or after changes to package-lock.json)
+npm run dev         # start the development server
+npm run typecheck   # TypeScript check
+npm test            # run the unit tests
+npm run build       # build dist/index.html (one self-contained file)
+```
+
+The built file `web/dist/index.html` can be opened by double-click in a browser.
+
 ## License
 
 ShareCertificate uses the MIT licence, see the LICENSE file.
