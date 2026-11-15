@@ -1,0 +1,18 @@
+# Normalize line endings: store LF in the repository, check out with the
+# platform default (CRLF on Windows with core.autocrlf, LF elsewhere).
+* text=auto
+
+# Visual Studio solution files must keep CRLF.
+*.sln text eol=crlf
+
+# Shell scripts must keep LF to run on Linux/macOS.
+*.sh text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
