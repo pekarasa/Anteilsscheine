@@ -90,9 +90,13 @@ Keine Daten verlassen den Rechner. Kein Server, keine Installation.
 
 1. Alle Akzeptanzkriterien der Etappe erfüllt.
 2. `npm test` und `npm run build` in `web/` laufen fehlerfrei.
-3. In diesem Dokument den Status der Etappe in Abschnitt 8 auf "erledigt"
-   setzen und unter Abschnitt 9 ("Erkenntnisse") neue Erkenntnisse,
-   Abweichungen vom Plan und offene Punkte festhalten.
+3. In diesem Dokument die Etappe von `[ ]` auf `[x]` setzen, und zwar
+   **an beiden Stellen**: in der Checkliste in Abschnitt 8 und in der
+   Überschrift der Etappe in Abschnitt 7 (z. B. `### [x] Etappe 0: ...`).
+   Unter Abschnitt 9 ("Erkenntnisse") neue Erkenntnisse, Abweichungen vom
+   Plan und offene Punkte festhalten.
+   Ist eine Etappe nur teilweise erledigt, bleibt sie `[ ]`; der
+   Zwischenstand wird in Abschnitt 9 beschrieben.
 4. Diese Dokumentänderung als eigenen Commit ("Update plan after stage N").
 
 ### 4.4 Repository-Hygiene
@@ -272,7 +276,7 @@ empfohlen; Abhängigkeiten sind angegeben.
 
 ---
 
-### Etappe 0: Projektgerüst
+### [ ] Etappe 0: Projektgerüst
 
 **Ziel:** Ein lauffähiges, leeres Web-Projekt, das zu einer einzigen HTML-Datei
 gebaut wird.
@@ -299,7 +303,7 @@ funktioniert `file://` nicht.
 
 ---
 
-### Etappe 1: Datenmodell und Berechnung
+### [ ] Etappe 1: Datenmodell und Berechnung
 
 **Ziel:** Die Berechnung aus `Certificate.cs` und `CertificateCollection.cs`
 liefert in TypeScript nachweislich dieselben Ergebnisse.
@@ -343,7 +347,7 @@ und den Referenztest dort ergänzen.
 
 ---
 
-### Etappe 2: CSV, ZIP, Validierung und Jahr-Funktionen
+### [ ] Etappe 2: CSV, ZIP, Validierung und Jahr-Funktionen
 
 **Ziel:** ZIP-Dateien lesen und schreiben, Daten prüfen, Jahre anlegen und
 bearbeiten. Reine Logik ohne UI.
@@ -391,7 +395,7 @@ bearbeiten. Reine Logik ohne UI.
 
 ---
 
-### Etappe 3: Vorlage füllen und Druckdokument
+### [ ] Etappe 3: Vorlage füllen und Druckdokument
 
 **Ziel:** Aus Daten und Vorlage das HTML eines Briefes und das gesamte
 Druckdokument (alle Briefe) erzeugen. Reine Logik ohne UI.
@@ -422,7 +426,7 @@ Druckdokument (alle Briefe) erzeugen. Reine Logik ohne UI.
 
 ---
 
-### Etappe 4: UI-Grundgerüst, Laden, Speichern
+### [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
 
 **Ziel:** Benutzer kann ein ZIP laden, Jahr wählen (bearbeiten oder neu
 anlegen) und ein ZIP herunterladen. Änderungen gehen nicht verloren.
@@ -460,7 +464,7 @@ hinweisen.
 
 ---
 
-### Etappe 5: Daten bearbeiten und Übersicht
+### [ ] Etappe 5: Daten bearbeiten und Übersicht
 
 **Ziel:** Alle CSV-Daten des Jahres im Browser bearbeiten und die
 Zusammenfassung sehen.
@@ -490,7 +494,7 @@ Zusammenfassung sehen.
 
 ---
 
-### Etappe 6: Einstellungen und Vorlagen-Editor
+### [ ] Etappe 6: Einstellungen und Vorlagen-Editor
 
 **Ziel:** Druckdatum, Unterzeichnende, Brieftext und Logo im Browser ändern.
 
@@ -531,7 +535,7 @@ Zusammenfassung sehen.
 
 ---
 
-### Etappe 7: Sammel-PDF über Browser-Druck
+### [ ] Etappe 7: Sammel-PDF über Browser-Druck
 
 **Ziel:** Mit einem Klick das Druckdokument aller Briefe öffnen und als PDF
 speichern.
@@ -559,7 +563,7 @@ speichern.
 
 ---
 
-### Etappe 8: Auslieferung und Dokumentation
+### [ ] Etappe 8: Auslieferung und Dokumentation
 
 **Ziel:** Benutzer erhalten eine fertige Datei und eine verständliche Anleitung.
 
@@ -585,7 +589,7 @@ speichern.
 
 ---
 
-### Etappe 9 (optional): C#-Programm angleichen oder ablösen
+### [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
 
 **Ziel:** Klarheit über die Zukunft des C#-Programms.
 
@@ -601,18 +605,22 @@ speichern.
 
 ## 8. Status
 
-| Etappe | Titel | Status |
-|---|---|---|
-| 0 | Projektgerüst | offen |
-| 1 | Datenmodell und Berechnung | offen |
-| 2 | CSV, ZIP, Validierung, Jahr-Funktionen | offen |
-| 3 | Vorlage füllen und Druckdokument | offen |
-| 4 | UI-Grundgerüst, Laden, Speichern | offen |
-| 5 | Daten bearbeiten und Übersicht | offen |
-| 6 | Einstellungen und Vorlagen-Editor | offen |
-| 7 | Sammel-PDF über Browser-Druck | offen |
-| 8 | Auslieferung und Dokumentation | offen |
-| 9 | C#-Programm angleichen oder ablösen (optional) | offen |
+`[ ]` = offen, `[x]` = abgeschlossen. Eine Etappe wird **nur** dann mit
+`[x]` markiert, wenn alle Akzeptanzkriterien erfüllt sind (siehe 4.3). Die
+Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
+
+- [ ] Etappe 0: Projektgerüst
+- [ ] Etappe 1: Datenmodell und Berechnung
+- [ ] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
+- [ ] Etappe 3: Vorlage füllen und Druckdokument
+- [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
+- [ ] Etappe 5: Daten bearbeiten und Übersicht
+- [ ] Etappe 6: Einstellungen und Vorlagen-Editor
+- [ ] Etappe 7: Sammel-PDF über Browser-Druck
+- [ ] Etappe 8: Auslieferung und Dokumentation
+- [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
+
+Nächste Etappe = die erste mit `[ ]`, deren Voraussetzungen alle `[x]` sind.
 
 Abhängigkeiten: 0 -> 1 -> 2 -> 4 -> 5 -> 7 -> 8; 3 benötigt 1;
 6 benötigt 3 und 4; 7 benötigt 3 und 5.
