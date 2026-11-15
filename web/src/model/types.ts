@@ -57,6 +57,32 @@ export interface Template {
   logo?: Uint8Array;
 }
 
+export interface RawRow {
+  /** 1-based line in the source file. Undefined for rows added in the app. */
+  line?: number;
+  /** Cell texts exactly as edited, aligned with RawTable.header. */
+  cells: string[];
+}
+
+export interface RawTable {
+  /** Column names as found in the file, so that unknown columns survive. */
+  header: string[];
+  rows: RawRow[];
+}
+
+/** All data of a year as it is stored, including invalid values. */
+export interface YearModel {
+  year: number;
+  address: RawTable;
+  transaction: RawTable;
+  dynamicShare: RawTable;
+  powerEarning: RawTable;
+  conversionFactor: RawTable;
+  template: Template;
+  /** Undefined if Settings.json exists but is invalid; the file is then left unchanged. */
+  settings?: Settings;
+}
+
 export interface YearData {
   year: number;
   addresses: Address[];
