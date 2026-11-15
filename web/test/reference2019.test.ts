@@ -73,7 +73,7 @@ describe("CustomerTest 2019 reference summary", () => {
     const archive = await readArchive(await writeArchive(customerTestArchive));
     const { folder, result } = loadFirstYear(archive);
     expect(result.data).toBeDefined();
-    saveYear(archive, folder, result.data!);
+    saveYear(archive, folder, result.model!, result.data);
     const restored = await readArchive(await writeArchive(archive));
     const reread = loadFirstYear(restored).result;
     expect(reread.data).toEqual(result.data);

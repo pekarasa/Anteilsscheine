@@ -1,8 +1,8 @@
-import type { CalendarDate, Settings, YearData } from "../model/types";
+import type { CalendarDate, RawTable, Settings, YearData, YearModel } from "../model/types";
 import { calculateYearCertificates, calculateTotals } from "../logic/certificateCollection";
 import { texts } from "../ui/texts";
 import { decodeText, formatCsv } from "./csv";
-import { formatGermanDate, formatIsoDate } from "./dates";
+import { formatGermanDate, formatIsoDate, parseGermanDate } from "./dates";
 import { findYearFolders, getYearFile, yearFileNames, type Archive, type YearFolder } from "./zip";
 
 const encoder = new TextEncoder();
@@ -17,63 +17,36 @@ const summaryColumns = [
 ];
 
 /**
- * Writes the edited year back into the archive: all known data files, the
- * template, the settings and Summary_<year>.csv in the customer folder.
+ * Writes the year back into the archive. Invalid values are written as they
+ * are, so nothing is lost. Valid dates are written as dd.MM.yyyy. The summary
+ * is written only when the data is valid; an old summary is removed otherwise.
  * Unknown files stay untouched.
  */
-export function saveYear(archive: Archive, folder: YearFolder, data: YearData): void {
+export function saveYear(archive: Archive, folder: YearFolder, model: YearModel, data?: YearData): void {
   const put = (fileName: string, bytes: Uint8Array): void => {
     archive.set(folder.path + fileName, bytes);
   };
-  put(
-    yearFileNames.address,
-    encodeCsv(
-      ["Id", "Name", "Street", "City"],
-      data.addresses.map((a) => [String(a.id), a.name, a.street, a.city]),
-    ),
-  );
-  put(
-    yearFileNames.transaction,
-    encodeCsv(
-      ["AddressId", "Date", "Description", "Amount"],
-      data.transactions.map((t) => [
-        String(t.addressId),
-        formatGermanDate(t.date),
-        t.description,
-        String(t.amount),
-      ]),
-    ),
-  );
-  put(
-    yearFileNames.dynamicShare,
-    encodeCsv(
-      ["AddressId", "Date", "PowerPurchase"],
-      data.dynamicShares.map((s) => [String(s.addressId), formatGermanDate(s.date), String(s.powerPurchase)]),
-    ),
-  );
-  put(
-    yearFileNames.powerEarning,
-    encodeCsv(
-      ["Year", "Earning"],
-      data.powerEarnings.map((p) => [String(p.year), String(p.earning)]),
-    ),
-  );
-  put(
-    yearFileNames.conversionFactor,
-    encodeCsv(
-      ["Year", "Factor"],
-      data.conversionFactors.map((c) => [String(c.year), c.factor.text]),
-    ),
-  );
-  put(yearFileNames.settings, encoder.encode(formatSettings(data.settings)));
-  put(yearFileNames.document, encoder.encode(data.template.document));
-  put(yearFileNames.tableHeader, encoder.encode(data.template.tableHeader));
-  put(yearFileNames.tableItem, encoder.encode(data.template.tableItem));
-  put(yearFileNames.tableFooter, encoder.encode(data.template.tableFooter));
-  if (data.template.logo) {
-    put(yearFileNames.logo, data.template.logo);
+  put(yearFileNames.address, encodeTable(model.address, []));
+  put(yearFileNames.transaction, encodeTable(model.transaction, ["Date"]));
+  put(yearFileNames.dynamicShare, encodeTable(model.dynamicShare, ["Date"]));
+  put(yearFileNames.powerEarning, encodeTable(model.powerEarning, []));
+  put(yearFileNames.conversionFactor, encodeTable(model.conversionFactor, []));
+  if (model.settings) {
+    put(yearFileNames.settings, encoder.encode(formatSettings(model.settings)));
   }
-  archive.set(`${customerPath(folder)}Summary_${folder.year}.csv`, encoder.encode(buildSummary(data)));
+  put(yearFileNames.document, encoder.encode(model.template.document));
+  put(yearFileNames.tableHeader, encoder.encode(model.template.tableHeader));
+  put(yearFileNames.tableItem, encoder.encode(model.template.tableItem));
+  put(yearFileNames.tableFooter, encoder.encode(model.template.tableFooter));
+  if (model.template.logo) {
+    put(yearFileNames.logo, model.template.logo);
+  }
+  const summaryPath = `${customerPath(folder)}Summary_${folder.year}.csv`;
+  if (data) {
+    archive.set(summaryPath, encoder.encode(buildSummary(data)));
+  } else {
+    archive.delete(summaryPath);
+  }
 }
 
 /**
@@ -152,8 +125,17 @@ function customerPath(folder: YearFolder): string {
   return folder.path.slice(0, folder.path.length - `${folder.year}/`.length);
 }
 
-function encodeCsv(header: string[], rows: string[][]): Uint8Array {
-  return encoder.encode(formatCsv(header, rows));
+function encodeTable(table: RawTable, dateColumns: string[]): Uint8Array {
+  const rows = table.rows
+    .filter((row) => row.cells.some((cell) => cell !== ""))
+    .map((row) =>
+      row.cells.map((cell, index) => {
+        const column = table.header[index] ?? "";
+        const date = dateColumns.includes(column) ? parseGermanDate(cell) : undefined;
+        return date ? formatGermanDate(date) : cell;
+      }),
+    );
+  return encoder.encode(formatCsv(table.header, rows));
 }
 
 function summaryLine(cells: string[]): string {

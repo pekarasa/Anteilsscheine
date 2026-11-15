@@ -98,6 +98,14 @@ describe("invalid values", () => {
     ]);
   });
 
+  it("keeps the stored cells of an invalid table in the model", () => {
+    const result = read({ "Transaction.csv": "AddressId,Date,Description,Amount\r\n101,09.12.2011,B,2x0\r\n" });
+    expect(result.data).toBeUndefined();
+    expect(result.model?.transaction.rows).toEqual([
+      { line: 2, cells: ["101", "09.12.2011", "B", "2x0"] },
+    ]);
+  });
+
   it("reports an invalid date", () => {
     const result = read({ "DynamicShare.csv": "AddressId,Date,PowerPurchase\r\n101,31.02.2019,600\r\n" });
     expect(result.data).toBeUndefined();
