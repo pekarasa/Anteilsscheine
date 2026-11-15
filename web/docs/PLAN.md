@@ -629,6 +629,12 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   von `.gitignore` ausgeschlossen) stammt aus **echten Kundendaten**
   (39 Adressen), nicht aus `CustomerTest/2019` (10 Adressen). Sie ist daher
   **kein** Referenzwert für `CustomerTest` und darf nicht committet werden.
+- [Planung] Entscheid: Der Benutzer erzeugt die Referenz für
+  `CustomerTest/2019` mit dem C#-Programm und legt sie als
+  `web/test/fixtures/CustomerTest_Summary_2019.csv` ab. Fehlt die Datei zu
+  Beginn von Etappe 1, beim Benutzer nachfragen.
+- [Planung] Entscheid: **Keine** Tests mit echten Kundendaten, auch nicht
+  lokal. Getestet wird nur mit `CustomerTest/` und erfundenen Daten.
 - [Planung] `Document.html` in `CustomerTest/2019` enthält fest
   eingetragene Werte ("print date: 28. Februar 2023", "signer1: Max
   Mustermann", "signer2: John Doe"). Beim Umsetzen von Etappe 6 durch
