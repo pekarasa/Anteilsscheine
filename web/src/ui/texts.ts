@@ -36,4 +36,8 @@ export const texts = {
     unknownPlaceholder: (name: string) => `Unbekannter Platzhalter: \${${name}}.`,
     location: (file: string, line?: number) => (line ? `${file}, Zeile ${line}` : file),
   },
+  yearOps: {
+    invalidYear: "Das Jahr muss eine vierstellige Zahl sein.",
+    yearExists: (year: number) => `Das Jahr ${year} existiert bereits.`,
+  },
 };
