@@ -276,7 +276,7 @@ empfohlen; Abhängigkeiten sind angegeben.
 
 ---
 
-### [ ] Etappe 0: Projektgerüst
+### [x] Etappe 0: Projektgerüst
 
 **Ziel:** Ein lauffähiges, leeres Web-Projekt, das zu einer einzigen HTML-Datei
 gebaut wird.
@@ -609,7 +609,7 @@ speichern.
 `[x]` markiert, wenn alle Akzeptanzkriterien erfüllt sind (siehe 4.3). Die
 Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 
-- [ ] Etappe 0: Projektgerüst
+- [x] Etappe 0: Projektgerüst
 - [ ] Etappe 1: Datenmodell und Berechnung
 - [ ] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
 - [ ] Etappe 3: Vorlage füllen und Druckdokument
@@ -650,6 +650,25 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   `${printDate}`, `${signer1}`, `${signer2}` ersetzen (eigener Commit).
 - [Planung] Die Test-Vorlage referenziert `logo.png` derzeit nicht; reale
   Kundenvorlagen vermutlich schon. Logo-Ersetzung trotzdem testen.
+- [Etappe 0] Versionen: Vite 8.3, Vitest 5.1, vite-plugin-singlefile 2.3,
+  TypeScript 5.9 (bewusst nicht TypeScript 7, das neu erschienen ist).
+  Vitest 5 und Vite 8 brauchen Node.js 22.12 oder neuer (Node 24 vorhanden).
+- [Etappe 0] `npm run build` prüft zuerst mit `tsc --noEmit`, da Vite keine
+  Typen prüft. `npm run typecheck` steht zusätzlich als eigenes Skript.
+- [Etappe 0] Single-File geprüft: `dist/index.html` enthält JS und CSS inline,
+  keine externen Referenzen. Öffnen per `file://` in Chromium (Headless,
+  Playwright ausserhalb des Repos) ohne Konsolenfehler und ohne Netzanfragen.
+  Firefox und Safari sind in dieser Umgebung nicht geprüft; das Prüfen ist
+  bei Etappe 4 nachzuholen.
+- [Etappe 0] `.gitignore`: `**/node_modules/*` deckte `node_modules` bereits
+  ab. Zusätzlich `web/node_modules/` und `web/dist/` wie im Plan ergänzt.
+- [Etappe 0] Readme-Abschnitt "Web application" ist auf Englisch, passend zum
+  übrigen Readme. Die Aufgabe im Plan nennt keine Sprache.
+- [Etappe 0] `npm test` läuft mit einem Beispiel-Test (`test/texts.test.ts`).
+  `tsconfig.json` erfasst `src`, `test` und `vite.config.ts`.
+- [Etappe 0] Keine `.gitattributes`-Änderung nötig. Die Dateitypen der
+  Etappe (HTML, TS, JSON, MD) sind Text. Schriften oder Bilder später als
+  `binary` ergänzen.
 
 ## 10. Entstehung
 
