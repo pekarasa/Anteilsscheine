@@ -631,8 +631,9 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   **kein** Referenzwert für `CustomerTest` und darf nicht committet werden.
 - [Planung] Entscheid: Der Benutzer erzeugt die Referenz für
   `CustomerTest/2019` mit dem C#-Programm und legt sie als
-  `web/test/fixtures/CustomerTest_Summary_2019.csv` ab. Fehlt die Datei zu
-  Beginn von Etappe 1, beim Benutzer nachfragen.
+  `web/test/fixtures/CustomerTest_Summary_2019.csv` ab. **Erledigt**
+  (Commit "Add C# reference summary for CustomerTest 2019"). Stichprobe
+  Adresse 101 von Hand nachgerechnet: Held 44, Rest 19, Committed 56 stimmt.
 - [Planung] Entscheid: **Keine** Tests mit echten Kundendaten, auch nicht
   lokal. Getestet wird nur mit `CustomerTest/` und erfundenen Daten.
 - [Planung] `Document.html` in `CustomerTest/2019` enthält fest
