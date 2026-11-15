@@ -695,7 +695,7 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Die Formatierung ist nicht Teil von Etappe 1.
 
 - [Etappe 2] Zwischenstand: Umsetzung vollständig (`io/dates.ts`, `io/csv.ts`,
-  `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`), 92 Tests grün, Build
+  `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`), 98 Tests grün, Build
   erfolgreich. Die Etappe bleibt `[ ]`, weil das Abnahmekriterium "exportierte
   CSVs sind vom C#-Programm lesbar" nicht geprüft ist (`dotnet` nicht
   verfügbar). Offen: Eine mit `ShareCertificate` gelesene Kopie der
@@ -707,12 +707,22 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   (`Customer<Name>/Summary_<Jahr>.csv`), wie in der Readme beschrieben, nicht
   im Jahresordner. Format wie beim C#-Programm: Trennzeichen ", ", LF, Feld
   in Anführungszeichen nur bei Komma, Anführungszeichen oder Zeilenumbruch.
-- [Etappe 2] Fehler blockieren das Einlesen: Fehlende Dateien, fehlende
-  Spalten oder ungültige Zellen liefern keine Daten (`data` undefined).
-  Semantische Fehler (doppelte Adress-IDs, fehlender oder doppelter Ertrag,
-  fehlender Faktor, doppelter Faktor) lassen die Daten bestehen. **Offen vor
-  Etappe 5:** Die Tabelle muss ungültige Rohwerte anzeigen und korrigieren
-  können. Dafür muss das Modell Rohwerte halten. Entscheid nötig.
+- [Etappe 2] Entscheid: Das Modell hält Rohwerte (`YearModel` in
+  `model/types.ts`). Die Tabellen liegen als Zellen vor, wie sie in der Datei
+  stehen, auch ungültige. `YearData` ist eine typisierte Sicht und entsteht
+  nur, wenn alle Werte gültig sind (`toYearData`). Speichern schreibt das
+  Rohmodell verlustfrei; gültige Datumswerte werden als `dd.MM.yyyy`
+  geschrieben. Fehlende Dateien oder ungültige Einstellungen (`Settings.json`)
+  verhindern das Modell bzw. die Typisierung; eine ungültige
+  `Settings.json` wird beim Speichern nicht überschrieben.
+- [Etappe 2] Ein CSV-Lesefehler (z. B. offenes Anführungszeichen) lässt die
+  typisierten Daten undefined. Das Rohmodell bleibt erhalten.
+- [Etappe 2] Bei ungültigen Daten wird `Summary_<Jahr>.csv` entfernt, damit
+  keine veraltete Zusammenfassung zurückbleibt. Sie wird neu erzeugt, sobald
+  die Daten gültig sind.
+- [Etappe 2] Datumseingabe ist streng `dd.MM.yy` oder `dd.MM.yyyy` mit
+  zweistelligem Tag und Monat. Einstellige Werte wie `9.12.11` bleiben
+  ungültig. Die tolerante Eingabe ist Aufgabe von Etappe 5.
 - [Etappe 2] Unbekannte `AddressId` in Transaktionen/Strombezug ist eine
   Warnung. Der Eintrag wird nicht berücksichtigt, das Einlesen bleibt möglich.
 - [Etappe 2] Doppelter Umwandlungsfaktor wird für jedes Jahr als Fehler
