@@ -694,6 +694,56 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Betrag 0 (Plan 5.4 vermutet leeren String) ist noch nicht gegen C# geprüft.
   Die Formatierung ist nicht Teil von Etappe 1.
 
+- [Etappe 2] Zwischenstand: Umsetzung vollständig (`io/dates.ts`, `io/csv.ts`,
+  `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`), 92 Tests grün, Build
+  erfolgreich. Die Etappe bleibt `[ ]`, weil das Abnahmekriterium "exportierte
+  CSVs sind vom C#-Programm lesbar" nicht geprüft ist (`dotnet` nicht
+  verfügbar). Offen: Eine mit `ShareCertificate` gelesene Kopie der
+  exportierten `CustomerTest/2019` prüfen (`dotnet run`), danach `[x]` setzen.
+- [Etappe 2] Abhängigkeiten: jszip 3.10.2 und papaparse 5.7.1 (MIT). Für
+  PapaParse zusätzlich `@types/papaparse` als devDependency (MIT), da das
+  Paket keine eigenen Typen mitliefert.
+- [Etappe 2] `Summary_<Jahr>.csv` liegt im Kundenordner
+  (`Customer<Name>/Summary_<Jahr>.csv`), wie in der Readme beschrieben, nicht
+  im Jahresordner. Format wie beim C#-Programm: Trennzeichen ", ", LF, Feld
+  in Anführungszeichen nur bei Komma, Anführungszeichen oder Zeilenumbruch.
+- [Etappe 2] Fehler blockieren das Einlesen: Fehlende Dateien, fehlende
+  Spalten oder ungültige Zellen liefern keine Daten (`data` undefined).
+  Semantische Fehler (doppelte Adress-IDs, fehlender oder doppelter Ertrag,
+  fehlender Faktor, doppelter Faktor) lassen die Daten bestehen. **Offen vor
+  Etappe 5:** Die Tabelle muss ungültige Rohwerte anzeigen und korrigieren
+  können. Dafür muss das Modell Rohwerte halten. Entscheid nötig.
+- [Etappe 2] Unbekannte `AddressId` in Transaktionen/Strombezug ist eine
+  Warnung. Der Eintrag wird nicht berücksichtigt, das Einlesen bleibt möglich.
+- [Etappe 2] Doppelter Umwandlungsfaktor wird für jedes Jahr als Fehler
+  gemeldet, auch wenn das Jahr keinen Strombezug hat. C# meldet nur bei
+  Bedarf. Bewusste Verschärfung wegen Datenqualität.
+- [Etappe 2] Encoding: Windows-1252 wird erkannt und gemeldet. Beim Speichern
+  werden Daten und Vorlagen als UTF-8 geschrieben. Die BOM der
+  `Document.html` entfällt; das `meta charset` der Vorlage ist UTF-8, daher
+  unkritisch.
+- [Etappe 2] CSV-Schreibformat: Trennzeichen ",", UTF-8 ohne BOM, CRLF wie
+  die Originaldateien, Datum `dd.MM.yyyy`. Ein Datum `31.12.12` wird beim
+  Speichern zu `31.12.2012`.
+- [Etappe 2] Zeilennummern in Meldungen zählen die Zeilen der Datei. Sie
+  stimmen nicht mehr, wenn ein Feld mit Zeilenumbruch in Anführungszeichen
+  steht (Annahme: ein Datensatz pro Zeile).
+- [Etappe 2] Neues Jahr: `Generated/` (PDFs) wird nicht kopiert. `printDate`
+  ist heute, die Unterzeichnenden bleiben. Fehlt `Settings.json` in der
+  Quelle, werden die Unterzeichnenden leer angelegt.
+- [Etappe 2] Fehlt `Settings.json`, ist das eine Warnung. Beim Speichern wird
+  die Datei angelegt.
+- [Etappe 2] Referenztest: `CustomerTest/2019` läuft als ZIP mit Wurzelordner
+  durch Lesen, Berechnung und Speichern. Die Zusammenfassung stimmt Zeile für
+  Zeile mit `CustomerTest_Summary_2019.csv` überein. Das Logo wird über Vite
+  `?inline` eingelesen.
+- [Etappe 2] Ergänzt: `calculateYearCertificates` in
+  `logic/certificateCollection.ts` (alle Zertifikate eines Jahres, für
+  Zusammenfassung und später Brief). In `texts.ts` die Abschnitte `issues`
+  und `yearOps`.
+- [Etappe 2] Offen für Etappe 4: Download als Blob und das Verhalten unter
+  `file://` (IndexedDB) sind noch nicht geprüft.
+
 ## 10. Entstehung
 
 Dieser Plan entstand in einer Beratungssession (November 2026). Verlauf:
