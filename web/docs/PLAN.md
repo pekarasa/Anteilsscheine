@@ -320,7 +320,9 @@ liefert in TypeScript nachweislich dieselben Ergebnisse.
   - Fehlender Faktor => deutsche Fehlermeldung.
   - `TotalCommitted = 0` => verständlicher Fehler statt `Infinity`/`NaN`.
 - Referenzdaten erzeugen: Das C#-Programm mit `CustomerTest/2019` ausführen
-  und die Zusammenfassung als `web/test/fixtures/Summary_2019.csv` ablegen.
+  und die Zusammenfassung als `web/test/fixtures/CustomerTest_Summary_2019.csv`
+  ablegen. (Nicht `Summary_2019.csv` nennen: das Muster `Summary_20*.csv`
+  in `.gitignore` gilt in allen Ordnern.)
   Ist `dotnet` nicht verfügbar, Benutzer bitten, die Datei zu erzeugen:
   ```bash
   cd ShareCertificate && dotnet run -- --Year 2019 --CustomerName Test < /dev/null
