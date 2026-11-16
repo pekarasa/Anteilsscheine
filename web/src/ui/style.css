@@ -241,6 +241,20 @@ textarea.code {
   margin: 0 0 1rem;
 }
 
+.logo-section {
+  margin: 0 0 1rem;
+}
+
+img.logo {
+  display: block;
+  max-height: 6rem;
+  max-width: 100%;
+  margin: 0 0 0.75rem;
+  border: 1px dashed #c7c7cc;
+  padding: 0.25rem;
+  background: #ffffff;
+}
+
 .preview {
   width: 100%;
   height: 28rem;

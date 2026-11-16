@@ -3,6 +3,7 @@ import type { YearData } from "../model/types";
 import type { YearReadResult } from "../io/validation";
 import { h } from "./dom";
 import type { ViewContext } from "./context";
+import { logoSection } from "./logo";
 import { texts } from "./texts";
 
 type TemplateFile = keyof typeof texts.template.fields;
@@ -74,6 +75,7 @@ export function templatePanel(ctx: ViewContext, read: YearReadResult): HTMLEleme
       ),
     ),
     ...files.map((file) => h("label", { class: "field wide" }, h("span", {}, texts.template.fields[file]), areas[file])),
+    logoSection(ctx, template.logo),
     preview.element,
   );
 }

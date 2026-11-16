@@ -121,6 +121,14 @@ export const texts = {
     previewUnavailable: "Die Vorschau erscheint, sobald alle Daten gültig sind und mindestens eine Person erfasst ist.",
     previewFailed: "Die Vorschau kann nicht erstellt werden.",
     previewFrame: "Vorschau des Briefs",
+    logoTitle: "Logo",
+    logoHint:
+      "Das Bild steht oben im Brief (Datei Template/logo.png). PNG, JPG und SVG sind erlaubt; JPG und SVG werden in PNG umgewandelt.",
+    logoAlt: "Logo",
+    logoNone: "Kein Logo vorhanden.",
+    logoChoose: "Logo auswählen",
+    logoUnsupported: "Dieses Dateiformat wird nicht unterstützt. Erlaubt sind PNG, JPG und SVG.",
+    logoFailed: "Das Logo konnte nicht gelesen werden.",
     fields: {
       document: "Brief (Document.html)",
       tableHeader: "Tabellenkopf (TableHeader.html)",
