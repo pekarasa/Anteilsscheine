@@ -115,6 +115,9 @@ export const texts = {
     intro:
       "So sieht der Brief aus. Die Platzhalter werden beim Erstellen jedes Briefes mit den Daten der Person ersetzt.",
     placeholdersHint: "Platzhalter an der Cursorposition einfügen:",
+    htmlMode: "HTML anzeigen (für Fortgeschrittene)",
+    htmlHint:
+      "Im HTML-Modus sind alle Dateien der Vorlage sichtbar: Kopf und Stil des Briefs sowie die Tabellenfragmente. Fehlerhaftes HTML kann den Brief verändern.",
     reset: "Vorlage zurücksetzen",
     resetHint: "Stellt die Vorlage so her, wie sie beim ersten Öffnen dieses Jahres war (Text und Logo).",
     confirmReset: "Alle Änderungen an der Vorlage dieses Jahres gehen verloren. Wirklich zurücksetzen?",

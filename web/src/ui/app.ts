@@ -1,6 +1,7 @@
 import { connectAutosave, type SessionStorage } from "../state/persistence";
 import type { AppStore } from "../state/store";
 import { h } from "./dom";
+import { destroyEditor } from "./editor";
 import type { LocalState, ViewContext } from "./context";
 import { mainView, statusLabel } from "./mainView";
 import { startView } from "./startView";
@@ -11,6 +12,7 @@ export function mountApp(root: HTMLElement, store: AppStore, storage: SessionSto
   const ctx: ViewContext = { store, storage, local, render };
 
   function render(): void {
+    destroyEditor();
     const { view, folder, read } = store.getState();
     const body = view === "main" && folder && read ? mainView(ctx, folder, read) : startView(ctx);
     root.replaceChildren(h("h1", {}, texts.appTitle), body);
