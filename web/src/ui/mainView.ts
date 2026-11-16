@@ -5,6 +5,7 @@ import { h } from "./dom";
 import type { ViewContext } from "./context";
 import { dataPanel, isDataTab, missingDataHints } from "./dataViews";
 import { issueList, tabOfIssue } from "./issues";
+import { settingsPanel } from "./settingsView";
 import { summaryPanel } from "./summaryView";
 import { texts } from "./texts";
 
@@ -76,6 +77,9 @@ function jumpTo(ctx: ViewContext, issue: Issue): void {
 function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLElement {
   if (isDataTab(tab)) {
     return dataPanel(ctx, read, tab);
+  }
+  if (tab === "settings") {
+    return settingsPanel(ctx, read);
   }
   if (tab === "print") {
     return summaryPanel(read);

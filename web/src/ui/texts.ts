@@ -111,6 +111,20 @@ export const texts = {
     invalidYear: "Das Jahr muss eine vierstellige Zahl sein.",
     yearExists: (year: number) => `Das Jahr ${year} existiert bereits.`,
   },
+  settings: {
+    title: "Einstellungen",
+    intro: "Diese Angaben stehen in Settings.json des Jahres und werden im Brief eingesetzt.",
+    printDate: "Druckdatum",
+    signer1: "Unterzeichnende Person 1",
+    signer2: "Unterzeichnende Person 2",
+    invalidDate: "Bitte ein gültiges Druckdatum wählen.",
+    missing:
+      "Settings.json fehlt. Die Datei wird angelegt, sobald Sie hier eine Angabe ändern.",
+    invalid:
+      "Settings.json ist ungültig und kann nicht gelesen werden. Sie kann durch Standardwerte ersetzt werden (Druckdatum heute, Unterzeichnende leer).",
+    repair: "Mit Standardwerten ersetzen",
+    confirmRepair: "Die ungültige Settings.json wird durch Standardwerte ersetzt. Fortfahren?",
+  },
   severity: {
     error: "Fehler",
     warning: "Warnung",
