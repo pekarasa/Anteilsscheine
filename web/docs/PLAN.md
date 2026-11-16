@@ -495,7 +495,7 @@ Zusammenfassung sehen.
 
 ---
 
-### [ ] Etappe 6: Einstellungen und Vorlagen-Editor
+### [x] Etappe 6: Einstellungen und Vorlagen-Editor
 
 **Ziel:** Druckdatum, Unterzeichnende, Brieftext und Logo im Browser ändern.
 
@@ -616,7 +616,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 3: Vorlage füllen und Druckdokument
 - [x] Etappe 4: UI-Grundgerüst, Laden, Speichern
 - [x] Etappe 5: Daten bearbeiten und Übersicht
-- [ ] Etappe 6: Einstellungen und Vorlagen-Editor
+- [x] Etappe 6: Einstellungen und Vorlagen-Editor
 - [ ] Etappe 7: Sammel-PDF über Browser-Druck
 - [ ] Etappe 8: Auslieferung und Dokumentation
 - [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
@@ -931,10 +931,9 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   (eigener Commit, wie in dieser Liste vorgesehen). Folge: Das C#-Programm kennt
   diese Platzhalter nicht und druckt sie wörtlich in die Briefe. Entscheidung dazu
   gehört zu Etappe 9.
-- [Etappe 6] Offen: `CustomerTest/2019` hat keine `Settings.json`. Das ZIP zeigt
-  deshalb die erwartete Warnung, und das Druckdatum ist heute. Soll eine
-  `Settings.json` mit den bisherigen Werten (28.02.2023, Max Mustermann, John Doe)
-  ergänzt werden?
+- [Etappe 6] Erledigt: `CustomerTest/2019/Settings.json` ergänzt, mit den bisherigen
+  Werten (28.02.2023, Max Mustermann, John Doe). Die Briefe zeigen damit wieder
+  die alten Angaben, und das ZIP hat keine Warnung mehr.
 - [Etappe 6] Entscheid: "Vorlage zurücksetzen" stellt den Stand her, den das Jahr
   beim ersten Anzeigen in dieser Sitzung hatte. Nach der Wiederherstellung einer
   Sitzung ist das der wiederhergestellte Stand, nicht das Original-ZIP. Bei einem
@@ -957,8 +956,14 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 - [Etappe 6] Offen: Tabellen im Brief-Body (`<table>`) im WYSIWYG-Modus sind nicht
   geprüft. Die Tabellen-Schaltflächen fehlen bewusst. Tabellenfragmente bearbeitet
   man im HTML-Modus.
-- [Etappe 6] Offen: Echtes Safari auf macOS und eine Prüfung durch eine nicht
-  informatikaffine Person (Akzeptanz "Laie kann Text ändern").
+- [Etappe 6] Abnahme: Der Benutzer hat Etappe 6 freigegeben. Nicht von mir geprüft
+  sind echtes Safari auf macOS und die Bedienung durch eine nicht
+  informatikaffine Person (Akzeptanz "Laie kann Text ändern"). Diese Punkte sind
+  daher durch die Abnahme des Benutzers abgedeckt, nicht durch eine Prüfung
+  dieser Umsetzung.
+- [Etappe 6] Entscheid des Benutzers: Die festen Werte in der Testvorlage sind
+  durch `${printDate}`, `${signer1}`, `${signer2}` ersetzt. Das C#-Programm druckt
+  diese Platzhalter wörtlich, bis Etappe 9 entschieden ist.
 
 ## 10. Entstehung
 
