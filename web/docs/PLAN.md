@@ -536,7 +536,7 @@ Zusammenfassung sehen.
 
 ---
 
-### [ ] Etappe 7: Sammel-PDF über Browser-Druck
+### [x] Etappe 7: Sammel-PDF über Browser-Druck
 
 **Ziel:** Mit einem Klick das Druckdokument aller Briefe öffnen und als PDF
 speichern.
@@ -617,7 +617,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 4: UI-Grundgerüst, Laden, Speichern
 - [x] Etappe 5: Daten bearbeiten und Übersicht
 - [x] Etappe 6: Einstellungen und Vorlagen-Editor
-- [ ] Etappe 7: Sammel-PDF über Browser-Druck
+- [x] Etappe 7: Sammel-PDF über Browser-Druck
 - [ ] Etappe 8: Auslieferung und Dokumentation
 - [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
 
@@ -1005,6 +1005,10 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   "Standard", Kopf- und Fusszeilen aus) ist nicht automatisierbar. Die Schritte in
   der Anleitung müssen in Chrome, Edge, Firefox und Safari von Hand geprüft werden.
   Die Optionen heissen je Browser etwas anders.
+- [Etappe 7] Abnahme: Der Benutzer hat den Druck in den Browsern bestätigt. Die
+  Etappe ist damit auf `[x]` gesetzt. Die Prüfung von Safari auf dem Mac ist wie in
+  Etappe 4 und 5 nicht von mir durchgeführt; sie ist durch die Bestätigung des
+  Benutzers abgedeckt.
 
 ## 10. Entstehung
 
