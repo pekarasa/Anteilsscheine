@@ -6,7 +6,7 @@ import type { ViewContext } from "./context";
 import { dataPanel, isDataTab, missingDataHints } from "./dataViews";
 import { issueList, tabOfIssue } from "./issues";
 import { settingsPanel } from "./settingsView";
-import { summaryPanel } from "./summaryView";
+import { printPanel } from "./printView";
 import { templatePanel } from "./templateView";
 import { texts } from "./texts";
 
@@ -86,7 +86,7 @@ function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLEle
     return templatePanel(ctx, read);
   }
   if (tab === "print") {
-    return summaryPanel(read);
+    return printPanel(ctx, read);
   }
   return h("p", {}, texts.main.tabEmpty);
 }

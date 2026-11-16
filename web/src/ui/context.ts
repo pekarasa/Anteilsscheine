@@ -1,3 +1,4 @@
+import type { PrintFilter } from "../template/printDocument";
 import type { AppStore } from "../state/store";
 import type { SessionStorage, StoredSession } from "../state/persistence";
 import type { TableView } from "./table";
@@ -13,6 +14,8 @@ export interface LocalState {
   templateHtml?: boolean;
   /** Address shown in the letter preview of the template tab. */
   previewAddressId?: number;
+  /** Filter of the print tab. Undefined means all names, without addresses without certificates. */
+  printFilter?: PrintFilter;
   /** Row to highlight after a jump from an issue. Cleared after the next render. */
   focus?: { file: string; line: number };
 }
