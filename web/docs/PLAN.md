@@ -465,7 +465,7 @@ hinweisen.
 
 ---
 
-### [ ] Etappe 5: Daten bearbeiten und Übersicht
+### [x] Etappe 5: Daten bearbeiten und Übersicht
 
 **Ziel:** Alle CSV-Daten des Jahres im Browser bearbeiten und die
 Zusammenfassung sehen.
@@ -615,7 +615,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
 - [x] Etappe 3: Vorlage füllen und Druckdokument
 - [x] Etappe 4: UI-Grundgerüst, Laden, Speichern
-- [ ] Etappe 5: Daten bearbeiten und Übersicht
+- [x] Etappe 5: Daten bearbeiten und Übersicht
 - [ ] Etappe 6: Einstellungen und Vorlagen-Editor
 - [ ] Etappe 7: Sammel-PDF über Browser-Druck
 - [ ] Etappe 8: Auslieferung und Dokumentation
@@ -846,6 +846,57 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Die Fachlogik darunter ist getestet. UI-Prüfung erfolgte per Playwright.
 - [Etappe 4] Die Registerkarten sind bis auf den Platzhalter leer, wie im Plan
   vorgesehen. Die Startansicht bietet "Neues Jahr anlegen" mit Vorschlag X+1.
+
+- [Etappe 5] Umgesetzt in `io/cells.ts` (Zellprüfung und -normalisierung),
+  `io/tableEdit.ts` (Zelle setzen, Zeile hinzufügen/löschen, nächste ID),
+  `io/validation.ts` (`checkYear`, `findMissingYearData`), `state/store.ts`
+  (`updateTable`), `ui/table.ts` (Tabellenkomponente), `ui/dataViews.ts` (fünf
+  Registerkarten, Hinweise), `ui/summaryView.ts` (Übersicht), `ui/issues.ts`
+  (Sprung zur Zeile). 186 Vitest-Tests grün, `npm test`, `npm run build` erfolgreich.
+- [Etappe 5] Entscheid: Keine Tabellen-Bibliothek. Die Anforderungen (Zellprüfung
+  mit sofortiger Markierung, Auswahl der Person, Sprung zur Zeile) sind klein und
+  eng mit der Fachlogik verbunden. Eine Bibliothek hätte Grösse und Lizenzprüfung
+  gebracht, ohne diese Punkte einfacher zu machen.
+- [Etappe 5] Ergänzung: Änderungen gehen sofort in die Arbeitskopie (`saveYear`),
+  nicht erst beim Herunterladen. Sonst würden Autosave und Wiederherstellung
+  Tabellenänderungen verlieren, weil sie die Arbeitskopie speichern.
+- [Etappe 5] Erkenntnis: Baut die Ansicht nach jeder Zellbearbeitung neu auf, geht
+  der nächste Klick verloren, weil das Element beim Verlassen des Feldes ersetzt
+  wird. Deshalb ist die Veröffentlichungsart "data" eingeführt: Dann wird nur der
+  Status "Ungespeichert" ersetzt. Die Prüfliste oben und die Hinweise aktualisieren
+  sich bei Zelländerungen daher erst beim nächsten Wechsel der Registerkarte oder
+  eines Knopfes. Die Zellmarkierung ist dagegen sofort.
+- [Etappe 5] Ergänzung: Die Datumseingabe im Editor ist tolerant (`9.12.11` wird zu
+  `09.12.2011`). Die Dateiprüfung bleibt streng wie in Etappe 2.
+- [Etappe 5] Ergänzung: Nach der ersten Änderung einer Tabelle entfallen deren
+  Meldungen zur Datei (CSV-Syntax, Kodierung), weil sie den ursprünglichen
+  Dateizustand betreffen.
+- [Etappe 5] Ergänzung: Sortierung und Suche wirken nur auf die Anzeige. Gespeichert
+  wird die Reihenfolge der Datei. Neue Zeilen stehen am Ende.
+- [Etappe 5] Ergänzung: Eine neu hinzugefügte Zeile ist bis zum Ausfüllen ungültig
+  und wird als Fehler gemeldet. Komplett leere Zeilen lässt `saveYear` in der Datei
+  weg, sie bleiben bis zum Neuladen aber in der Anzeige.
+- [Etappe 5] Begriffe der Übersicht (Entscheid nötig): "Anteilsscheine" ist
+  `NumberOfCertificatesHeld`, "Restbetrag (CHF)" ist `RemainingBalance`,
+  "Verpflichtet" ist `NumberOfCommittedCertificates`. Bitte mit dem Fachbereich
+  abstimmen.
+- [Etappe 5] Interpretation des Kriteriums "blockieren den Druck": Bei ungültigen
+  Daten wird die Übersicht nicht berechnet, und die Datei enthält dann keine
+  `Summary_<Jahr>.csv`. Eine Blockade des Druckdialogs gibt es erst mit dem Druck
+  in Etappe 7 (dort laut Plan vorgesehen).
+- [Etappe 5] Offen: Fehlt eine Pflichtspalte in einer CSV, zeigt die Tabelle nur die
+  vorhandenen Spalten. Die Meldung erscheint, aber die Spalte lässt sich in der
+  Oberfläche nicht ergänzen.
+- [Etappe 5] Offen: Die Meldung zu `Settings.json` führt über "Anzeigen" zur
+  Registerkarte Einstellungen. Sie ist bis Etappe 6 leer.
+- [Etappe 5] Geprüft im Browser mit Playwright (ausserhalb des Repos) über
+  `file://` mit `CustomerTest/` als ZIP: Chromium, Firefox und WebKit. Abgedeckt
+  sind Bearbeiten, Klick direkt nach einer Zelländerung, Hinzufügen mit nächster
+  ID, Warnung beim Löschen, Suche, Sortierung, Sprung zur Zeile, Hinweise für ein
+  neues Jahr, Export, Wiederherstellung und die Übersicht. Die Übersicht stimmt für
+  `CustomerTest/2019` mit der C#-Referenz (Adresse 101: 44 / 19 / 56) überein. Eine
+  Änderung von +100 CHF ergibt 45 / 19 / 57. Safari auf macOS ist wie in Etappe 4
+  nicht geprüft.
 
 ## 10. Entstehung
 
