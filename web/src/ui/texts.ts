@@ -17,6 +17,27 @@ export const texts = {
   },
   print: {
     documentTitle: (year: number) => `Sammelanteilsscheine ${year}`,
+    title: "Drucken als PDF",
+    intro:
+      "Erstellt einen Brief pro Person in einem einzigen Dokument. Der Druckdialog speichert es als PDF.",
+    nameFilter: "Nur Namen, die diesen Text enthalten",
+    includeWithoutCertificates: "Auch Personen ohne Anteilsscheine",
+    letterCount: (count: number) => (count === 1 ? "1 Brief" : `${count} Briefe`),
+    button: "Drucken / Als PDF speichern",
+    frameTitle: "Druckdokument",
+    blocked: "Der Druck ist gesperrt, bis diese Fehler behoben sind:",
+    noLetters: "Mit diesen Filtern entsteht kein Brief.",
+    failed: "Das Druckdokument konnte nicht erstellt werden.",
+    stepsTitle: "So speichern Sie das PDF",
+    steps: [
+      "Auf \"Drucken / Als PDF speichern\" klicken. Es öffnet sich der Druckdialog.",
+      "Als Ziel \"Als PDF speichern\" wählen.",
+      "Unter den weiteren Einstellungen die Ränder auf \"Standard\" stellen.",
+      "\"Kopf- und Fusszeilen\" ausschalten.",
+      "Auf \"Speichern\" klicken und die PDF-Datei ablegen.",
+    ],
+    afterPrint:
+      "Empfehlung: Laden Sie danach die ZIP-Datei herunter. Sie enthält die Daten und die Vorlage dieses Jahres.",
   },
   issues: {
     missingFile: (file: string) => `Die Datei ${file} fehlt.`,
