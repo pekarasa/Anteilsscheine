@@ -115,6 +115,9 @@ export const texts = {
     intro:
       "So sieht der Brief aus. Die Platzhalter werden beim Erstellen jedes Briefes mit den Daten der Person ersetzt.",
     placeholdersHint: "Platzhalter an der Cursorposition einfügen:",
+    reset: "Vorlage zurücksetzen",
+    resetHint: "Stellt die Vorlage so her, wie sie beim ersten Öffnen dieses Jahres war (Text und Logo).",
+    confirmReset: "Alle Änderungen an der Vorlage dieses Jahres gehen verloren. Wirklich zurücksetzen?",
     previewTitle: "Vorschau",
     previewPerson: "Person",
     previewHint: "So sieht der Brief für die gewählte Person aus. Die Vorschau aktualisiert sich bei jeder Änderung.",

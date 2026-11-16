@@ -62,6 +62,23 @@ export function templatePanel(ctx: ViewContext, read: YearReadResult): HTMLEleme
     "section",
     {},
     h("p", { class: "intro" }, texts.template.intro),
+    h(
+      "div",
+      { class: "actions" },
+      h(
+        "button",
+        {
+          type: "button",
+          onclick: () => {
+            if (window.confirm(texts.template.confirmReset)) {
+              store.resetTemplate();
+            }
+          },
+        },
+        texts.template.reset,
+      ),
+      h("span", { class: "intro" }, texts.template.resetHint),
+    ),
     h("p", { class: "intro" }, texts.template.placeholdersHint),
     h(
       "div",
