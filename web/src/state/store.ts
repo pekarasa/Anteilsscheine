@@ -1,5 +1,13 @@
-import { checkYear, readYear, type YearReadResult } from "../io/validation";
+import {
+  checkYear,
+  readYear,
+  templateFileNames,
+  templateIssues,
+  type Issue,
+  type YearReadResult,
+} from "../io/validation";
 import { createYear, saveYear } from "../io/yearOps";
+import { formatIsoDate } from "../io/dates";
 import {
   exportFileName,
   findYearFolders,
@@ -8,7 +16,7 @@ import {
   type Archive,
   type YearFolder,
 } from "../io/zip";
-import type { CalendarDate, RawTable, YearModel } from "../model/types";
+import type { CalendarDate, RawTable, Settings, Template, YearModel } from "../model/types";
 import { texts } from "../ui/texts";
 
 export const tabIds = [
@@ -37,6 +45,8 @@ const tableFileNames: Record<TableName, string> = {
   powerEarning: yearFileNames.powerEarning,
   conversionFactor: yearFileNames.conversionFactor,
 };
+
+const templateFiles: readonly string[] = templateFileNames;
 
 /** Everything needed to continue a session later. */
 export interface SessionSnapshot {
@@ -76,6 +86,8 @@ const initialState: AppState = {
 export class AppStore {
   private state: AppState = initialState;
   private readonly listeners = new Set<StoreListener>();
+  /** Template of each year as it was when the year was first shown in this session. */
+  private readonly baselines = new Map<string, Template>();
 
   constructor(private readonly today: () => CalendarDate) {}
 
@@ -101,6 +113,7 @@ export class AppStore {
       throw new Error(texts.errors.noYearFolders);
     }
     const revision = this.state.revision + 1;
+    this.baselines.clear();
     this.setState({
       view: "start",
       archive,
@@ -115,6 +128,7 @@ export class AppStore {
   restore(snapshot: SessionSnapshot): void {
     const folders = findYearFolders(snapshot.archive);
     const folder = folders.find((candidate) => candidate.path === snapshot.folderPath);
+    this.baselines.clear();
     this.setState({
       view: folder ? snapshot.view : "start",
       tab: snapshot.tab,
@@ -187,15 +201,55 @@ export class AppStore {
    * at once, so that autosave, restore and export all contain it.
    */
   updateTable(name: TableName, change: (table: RawTable) => RawTable, kind: PublishKind = "full"): void {
-    const { archive, folder, read } = this.loaded();
-    if (!read.model) {
+    const { archive, folder, model, fileIssues } = this.editable();
+    const fileName = tableFileNames[name];
+    this.commitModel(
+      archive,
+      folder,
+      { ...model, [name]: change(model[name]) },
+      fileIssues.filter((issue) => issue.file !== fileName),
+      kind,
+    );
+  }
+
+  /** Changes the settings of the year. Settings.json is created if it was missing. */
+  updateSettings(settings: Settings, kind: PublishKind = "full"): void {
+    const { archive, folder, model, fileIssues } = this.editable();
+    this.commitModel(
+      archive,
+      folder,
+      { ...model, settings },
+      fileIssues.filter((issue) => issue.file !== yearFileNames.settings),
+      kind,
+    );
+  }
+
+  /** Replaces the settings by the defaults: today as print date, no signers. */
+  resetSettings(): void {
+    this.updateSettings({ printDate: formatIsoDate(this.today()), signer1: "", signer2: "" });
+  }
+
+  /** Changes the template of the year, e.g. the body of the letter or the logo. */
+  updateTemplate(change: (template: Template) => Template, kind: PublishKind = "full"): void {
+    const { archive, folder, model, fileIssues } = this.editable();
+    const template = change(model.template);
+    this.commitModel(
+      archive,
+      folder,
+      { ...model, template },
+      [...fileIssues.filter((issue) => !templateFiles.includes(issue.file)), ...templateIssues(template)],
+      kind,
+    );
+  }
+
+  /** Restores the template as it was when the year was first shown in this session. */
+  resetTemplate(): void {
+    const { folder } = this.loaded();
+    const baseline = this.baselines.get(folder.path);
+    if (!baseline) {
       throw new Error(texts.errors.noYearData);
     }
-    const model: YearModel = { ...read.model, [name]: change(read.model[name]) };
-    const fileName = tableFileNames[name];
-    const next = checkYear(model, read.fileIssues.filter((issue) => issue.file !== fileName));
-    saveYear(archive, folder, model, next.data);
-    this.setState({ read: next, revision: this.state.revision + 1 }, kind);
+    this.updateTemplate(() => baseline);
   }
 
   markSaved(): void {
@@ -203,6 +257,7 @@ export class AppStore {
   }
 
   close(): void {
+    this.baselines.clear();
     this.setState({
       view: "start",
       archive: undefined,
@@ -223,14 +278,39 @@ export class AppStore {
     return { archive, folder, read };
   }
 
+  private editable(): { archive: Archive; folder: YearFolder; model: YearModel; fileIssues: Issue[] } {
+    const { archive, folder, read } = this.loaded();
+    if (!read.model) {
+      throw new Error(texts.errors.noYearData);
+    }
+    return { archive, folder, model: read.model, fileIssues: read.fileIssues };
+  }
+
+  /**
+   * Writes the model to the working copy and publishes the checked result.
+   * fileIssues are the file issues that are kept, the rest is computed again.
+   */
+  private commitModel(
+    archive: Archive,
+    folder: YearFolder,
+    model: YearModel,
+    fileIssues: Issue[],
+    kind: PublishKind,
+  ): void {
+    const next = checkYear(model, fileIssues);
+    saveYear(archive, folder, model, next.data);
+    this.setState({ read: next, revision: this.state.revision + 1 }, kind);
+  }
+
   private focus(
     archive: Archive,
     folder: YearFolder | undefined,
   ): Pick<AppState, "folder" | "read"> {
-    return {
-      folder,
-      read: folder ? readYear(archive, folder, this.today()) : undefined,
-    };
+    const read = folder ? readYear(archive, folder, this.today()) : undefined;
+    if (folder && read?.model && !this.baselines.has(folder.path)) {
+      this.baselines.set(folder.path, read.model.template);
+    }
+    return { folder, read };
   }
 
   private setState(patch: Partial<AppState>, kind: PublishKind = "full"): void {

@@ -173,4 +173,71 @@ describe("AppStore", () => {
     store.openMain();
     expect(seen).toEqual(["start"]);
   });
+
+  it("writes changed settings to Settings.json", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    store.updateSettings({ printDate: "2027-01-05", signer1: "Anna Test", signer2: "" });
+    expect(store.getState().read?.model?.settings?.printDate).toBe("2027-01-05");
+    expect(decoder.decode(store.getState().archive?.get("CustomerTest/2019/Settings.json"))).toContain(
+      "Anna Test",
+    );
+    expect(store.isDirty()).toBe(true);
+  });
+
+  it("creates a missing Settings.json and removes its warning", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive({ "Settings.json": null }), "daten.zip");
+    expect(store.getState().read?.issues.some((issue) => issue.file === "Settings.json")).toBe(true);
+    store.updateSettings({ printDate: "2026-02-28", signer1: "", signer2: "" });
+    expect(store.getState().read?.issues.some((issue) => issue.file === "Settings.json")).toBe(false);
+    expect(store.getState().archive?.has("CustomerTest/2019/Settings.json")).toBe(true);
+  });
+
+  it("repairs an invalid Settings.json with the defaults of today", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive({ "Settings.json": "{kaputt" }), "daten.zip");
+    expect(store.getState().read?.model?.settings).toBeUndefined();
+    expect(store.getState().read?.data).toBeUndefined();
+    store.resetSettings();
+    expect(store.getState().read?.data?.settings).toEqual({
+      printDate: "2026-11-16",
+      signer1: "",
+      signer2: "",
+    });
+  });
+
+  it("updates the placeholder warnings of the template", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    store.updateTemplate((template) => ({ ...template, document: "<body>${unbekannt}</body>" }));
+    expect(store.getState().read?.issues).toContainEqual(
+      expect.objectContaining({ file: "Template/Document.html", severity: "warning" }),
+    );
+    store.updateTemplate((template) => ({ ...template, document: "<body>${addressName}</body>" }), "data");
+    expect(store.getState().read?.issues.some((issue) => issue.file === "Template/Document.html")).toBe(false);
+  });
+
+  it("resets the template to the state when the year was first shown", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    store.updateTemplate((template) => ({ ...template, document: "<body>Geändert</body>" }));
+    store.updateTemplate((template) => ({ ...template, document: "<body>Noch mehr</body>" }));
+    store.resetTemplate();
+    expect(store.getState().read?.model?.template.document).toBe("<p>${addressName}</p>");
+    expect(decoder.decode(store.getState().archive?.get("CustomerTest/2019/Template/Document.html"))).toBe(
+      "<p>${addressName}</p>",
+    );
+    expect(store.isDirty()).toBe(true);
+  });
+
+  it("removes the logo file when the logo is removed and restores it on reset", () => {
+    const logo = Uint8Array.from([137, 80, 78, 71]);
+    const store = newStore();
+    store.loadArchive(yearArchive({ "Template/logo.png": logo }), "daten.zip");
+    store.updateTemplate(({ logo: _removed, ...template }) => template);
+    expect(store.getState().archive?.has("CustomerTest/2019/Template/logo.png")).toBe(false);
+    store.resetTemplate();
+    expect(store.getState().archive?.get("CustomerTest/2019/Template/logo.png")).toEqual(logo);
+  });
 });

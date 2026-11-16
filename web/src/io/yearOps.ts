@@ -40,6 +40,8 @@ export function saveYear(archive: Archive, folder: YearFolder, model: YearModel,
   put(yearFileNames.tableFooter, encoder.encode(model.template.tableFooter));
   if (model.template.logo) {
     put(yearFileNames.logo, model.template.logo);
+  } else {
+    archive.delete(folder.path + yearFileNames.logo);
   }
   const summaryPath = `${customerPath(folder)}Summary_${folder.year}.csv`;
   const summary = data ? summaryOf(data) : undefined;
