@@ -43,6 +43,23 @@ export const texts = {
     unknownPlaceholder: (name: string) => `Unbekannter Platzhalter: \${${name}}.`,
     location: (file: string, line?: number) => (line ? `${file}, Zeile ${line}` : file),
   },
+  summary: {
+    title: "Übersicht",
+    intro:
+      "So erscheint die Zusammenfassung im Export (Summary_<Jahr>.csv). Sie wird bei jeder Änderung neu berechnet.",
+    unavailable:
+      "Die Übersicht erscheint, sobald alle Daten gültig sind. Die Hinweise oben zeigen, was noch fehlt.",
+    total: "Total",
+    columns: {
+      id: "ID",
+      name: "Name",
+      street: "Strasse",
+      city: "Ort",
+      held: "Anteilsscheine",
+      remaining: "Restbetrag (CHF)",
+      committed: "Verpflichtet",
+    },
+  },
   intro: {
     addresses:
       "Eine Zeile je Person. Die ID muss eindeutig sein; sie wird in den anderen Registerkarten verwendet.",

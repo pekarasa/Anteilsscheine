@@ -5,6 +5,7 @@ import { h } from "./dom";
 import type { ViewContext } from "./context";
 import { dataPanel, isDataTab } from "./dataViews";
 import { issueList } from "./issues";
+import { summaryPanel } from "./summaryView";
 import { texts } from "./texts";
 
 export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadResult): HTMLElement {
@@ -60,6 +61,9 @@ export function statusLabel(dirty: boolean): HTMLElement {
 function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLElement {
   if (isDataTab(tab)) {
     return dataPanel(ctx, read, tab);
+  }
+  if (tab === "print") {
+    return summaryPanel(read);
   }
   return h("p", {}, texts.main.tabEmpty);
 }

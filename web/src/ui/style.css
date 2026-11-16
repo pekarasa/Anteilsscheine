@@ -238,6 +238,16 @@ label {
   background: #fff3c4;
 }
 
+.grid th.num,
+.grid td.num {
+  text-align: right;
+}
+
+.grid tr.total td {
+  font-weight: 600;
+  border-top: 2px solid #8a8a8e;
+}
+
 .grid input,
 .grid select {
   width: 100%;
