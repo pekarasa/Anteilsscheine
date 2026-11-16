@@ -115,6 +115,12 @@ export const texts = {
     intro:
       "So sieht der Brief aus. Die Platzhalter werden beim Erstellen jedes Briefes mit den Daten der Person ersetzt.",
     placeholdersHint: "Platzhalter an der Cursorposition einfügen:",
+    previewTitle: "Vorschau",
+    previewPerson: "Person",
+    previewHint: "So sieht der Brief für die gewählte Person aus. Die Vorschau aktualisiert sich bei jeder Änderung.",
+    previewUnavailable: "Die Vorschau erscheint, sobald alle Daten gültig sind und mindestens eine Person erfasst ist.",
+    previewFailed: "Die Vorschau kann nicht erstellt werden.",
+    previewFrame: "Vorschau des Briefs",
     fields: {
       document: "Brief (Document.html)",
       tableHeader: "Tabellenkopf (TableHeader.html)",

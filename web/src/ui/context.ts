@@ -9,6 +9,8 @@ export interface LocalState {
   storageFailed: boolean;
   /** Search and sort per table, keyed by table name. */
   tables: Record<string, TableView>;
+  /** Address shown in the letter preview of the template tab. */
+  previewAddressId?: number;
   /** Row to highlight after a jump from an issue. Cleared after the next render. */
   focus?: { file: string; line: number };
 }
