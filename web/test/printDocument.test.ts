@@ -8,7 +8,7 @@ import documentHtml from "../../CustomerTest/2019/Template/Document.html?raw";
 import tableFooterHtml from "../../CustomerTest/2019/Template/TableFooter.html?raw";
 import tableHeaderHtml from "../../CustomerTest/2019/Template/TableHeader.html?raw";
 import tableItemHtml from "../../CustomerTest/2019/Template/TableItem.html?raw";
-import { buildPrintDocument, selectCertificates } from "../src/template/printDocument";
+import { buildLetterPreview, buildPrintDocument, selectCertificates } from "../src/template/printDocument";
 import { calculateCertificate } from "../src/logic/certificate";
 import { readYear } from "../src/io/validation";
 import { findYearFolders, type Archive } from "../src/io/zip";
@@ -215,6 +215,23 @@ describe("buildPrintDocument", () => {
       template: template("<p>ohne Body</p>"),
     });
     expect(() => buildPrintDocument(data, allFilter)).toThrow(texts.errors.templateWithoutBody);
+  });
+});
+
+describe("buildLetterPreview", () => {
+  it("shows only the letter of the chosen address, also without committed certificates", () => {
+    const data = yearData({ transactions: [{ addressId: 1, date: date(2012), description: "Kauf", amount: 200 }] });
+    const html = buildLetterPreview(data, 2);
+    expect(letters(html)).toHaveLength(1);
+    expect(html).toContain("<style>p { color: red }</style>");
+    expect(html).not.toContain("Anna Muster");
+    expect(html).toContain("Bruno Beispiel");
+    expect(html).not.toContain('class="letter letter-break"');
+  });
+
+  it("fills the figures of the chosen address", () => {
+    const data = yearData({ transactions: [{ addressId: 1, date: date(2012), description: "Kauf", amount: 200 }] });
+    expect(buildLetterPreview(data, 1)).toContain('pagebreak">2</p>');
   });
 });
 

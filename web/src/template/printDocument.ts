@@ -28,11 +28,29 @@ const logoFileName = "logo.png";
  */
 export function buildPrintDocument(data: YearData, filter: PrintFilter): string {
   const certificates = calculateYearCertificates(data);
+  return renderDocument(data, certificates, selectCertificates(certificates, filter));
+}
+
+/** The letter of one address as it is printed, without page breaks. Used for the preview. */
+export function buildLetterPreview(data: YearData, addressId: number): string {
+  const certificates = calculateYearCertificates(data);
+  return renderDocument(
+    data,
+    certificates,
+    certificates.filter((certificate) => certificate.address.id === addressId),
+  );
+}
+
+function renderDocument(
+  data: YearData,
+  certificates: readonly Certificate[],
+  selected: readonly Certificate[],
+): string {
   const totals = calculateTotals(certificates);
   const powerEarning = findPowerEarning(data);
   const printDate = formatPrintDate(data.settings.printDate);
 
-  const letters = selectCertificates(certificates, filter).map((certificate, index) => {
+  const letters = selected.map((certificate, index) => {
     const values: LetterValues = {
       year: data.year,
       plantPowerEarning: powerEarning.earning,
