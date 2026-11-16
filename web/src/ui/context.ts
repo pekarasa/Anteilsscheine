@@ -9,6 +9,8 @@ export interface LocalState {
   storageFailed: boolean;
   /** Search and sort per table, keyed by table name. */
   tables: Record<string, TableView>;
+  /** Row to highlight after a jump from an issue. Cleared after the next render. */
+  focus?: { file: string; line: number };
 }
 
 export interface ViewContext {

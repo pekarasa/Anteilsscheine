@@ -1,10 +1,10 @@
-import type { YearReadResult } from "../io/validation";
+import type { Issue, YearReadResult } from "../io/validation";
 import type { YearFolder } from "../io/zip";
 import { tabIds, type TabId } from "../state/store";
 import { h } from "./dom";
 import type { ViewContext } from "./context";
-import { dataPanel, isDataTab } from "./dataViews";
-import { issueList } from "./issues";
+import { dataPanel, isDataTab, missingDataHints } from "./dataViews";
+import { issueList, tabOfIssue } from "./issues";
 import { summaryPanel } from "./summaryView";
 import { texts } from "./texts";
 
@@ -32,7 +32,13 @@ export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadRes
     ),
     local.storageFailed ? h("p", { class: "notice" }, texts.start.storageUnavailable) : undefined,
     local.message ? h("p", { class: "notice" }, local.message) : undefined,
-    h("section", { class: "review" }, h("h2", {}, texts.review.title), issueList(read.issues)),
+    h(
+      "section",
+      { class: "review" },
+      h("h2", {}, texts.review.title),
+      issueList(read.issues, (issue) => jumpTo(ctx, issue)),
+      ...(read.model ? missingDataHints(ctx, read.model) : []),
+    ),
     h(
       "nav",
       { class: "tabs", role: "tablist" },
@@ -56,6 +62,15 @@ export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadRes
 
 export function statusLabel(dirty: boolean): HTMLElement {
   return h("span", { class: dirty ? "status dirty" : "status" }, dirty ? texts.main.unsaved : texts.main.saved);
+}
+
+function jumpTo(ctx: ViewContext, issue: Issue): void {
+  const tab = tabOfIssue(issue);
+  if (!tab) {
+    return;
+  }
+  ctx.local.focus = issue.line !== undefined ? { file: issue.file, line: issue.line } : undefined;
+  ctx.store.setTab(tab);
 }
 
 function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLElement {

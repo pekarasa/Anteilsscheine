@@ -14,6 +14,8 @@ export function mountApp(root: HTMLElement, store: AppStore, storage: SessionSto
     const { view, folder, read } = store.getState();
     const body = view === "main" && folder && read ? mainView(ctx, folder, read) : startView(ctx);
     root.replaceChildren(h("h1", {}, texts.appTitle), body);
+    root.querySelector("[data-focus]")?.scrollIntoView({ block: "center" });
+    local.focus = undefined;
   }
 
   store.subscribe((_state, kind) => {

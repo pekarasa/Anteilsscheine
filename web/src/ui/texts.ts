@@ -118,6 +118,14 @@ export const texts = {
   review: {
     title: "Prüfung der Daten",
     none: "Keine Fehler oder Warnungen gefunden.",
+    show: "Anzeigen",
+  },
+  hints: {
+    missingPowerEarning: (year: number) =>
+      `Für das Jahr ${year} fehlt der Ertrag der Anlage (Registerkarte Ertrag).`,
+    missingConversionFactor: (year: number) =>
+      `Für das Jahr ${year} fehlt der Umwandlungsfaktor, obwohl es Strombezug in diesem Jahr gibt (Registerkarte Faktoren).`,
+    capture: "jetzt erfassen",
   },
   start: {
     dropZone: "ZIP-Datei hierher ziehen oder auswählen",
