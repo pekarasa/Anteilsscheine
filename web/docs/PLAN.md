@@ -329,9 +329,10 @@ liefert in TypeScript nachweislich dieselben Ergebnisse.
   in `.gitignore` gilt in allen Ordnern.)
   Ist `dotnet` nicht verfügbar, Benutzer bitten, die Datei zu erzeugen:
   ```bash
-  cd ShareCertificate && dotnet run -- --Year 2019 --CustomerName Test < /dev/null
+  cd <Kopie mit CustomerTest> && dotnet run --project <Pfad>/ShareCertificate -- --Year 2019 --CustomerName Test < /dev/null > Summary_2019.csv
   ```
-  (Arbeitsverzeichnis muss den Ordner `CustomerTest` enthalten; `Console.ReadLine()`
+  (Arbeitsverzeichnis muss den Ordner `CustomerTest` enthalten, daher nicht in
+  `ShareCertificate` starten; eine Kopie verwenden, da `Generated/` PDFs anlegt. `Console.ReadLine()`
   am Ende wartet auf Eingabe, daher `< /dev/null`.)
   Falls nicht möglich: Referenzwerte von Hand nachrechnen und das im Test
   vermerken.
@@ -347,7 +348,7 @@ und den Referenztest dort ergänzen.
 
 ---
 
-### [ ] Etappe 2: CSV, ZIP, Validierung und Jahr-Funktionen
+### [x] Etappe 2: CSV, ZIP, Validierung und Jahr-Funktionen
 
 **Ziel:** ZIP-Dateien lesen und schreiben, Daten prüfen, Jahre anlegen und
 bearbeiten. Reine Logik ohne UI.
@@ -611,7 +612,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 
 - [x] Etappe 0: Projektgerüst
 - [x] Etappe 1: Datenmodell und Berechnung
-- [ ] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
+- [x] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
 - [ ] Etappe 3: Vorlage füllen und Druckdokument
 - [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
 - [ ] Etappe 5: Daten bearbeiten und Übersicht
@@ -694,12 +695,14 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Betrag 0 (Plan 5.4 vermutet leeren String) ist noch nicht gegen C# geprüft.
   Die Formatierung ist nicht Teil von Etappe 1.
 
-- [Etappe 2] Zwischenstand: Umsetzung vollständig (`io/dates.ts`, `io/csv.ts`,
-  `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`), 98 Tests grün, Build
-  erfolgreich. Die Etappe bleibt `[ ]`, weil das Abnahmekriterium "exportierte
-  CSVs sind vom C#-Programm lesbar" nicht geprüft ist (`dotnet` nicht
-  verfügbar). Offen: Eine mit `ShareCertificate` gelesene Kopie der
-  exportierten `CustomerTest/2019` prüfen (`dotnet run`), danach `[x]` setzen.
+- [Etappe 2] Abgeschlossen: Umsetzung in `io/dates.ts`, `io/csv.ts`,
+  `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`, 98 Tests grün, Build
+  erfolgreich. Abnahme "exportierte CSVs sind vom C#-Programm lesbar" geprüft:
+  Das C#-Programm liest den Export ohne Fehler (leere stderr-Datei), die
+  Zusammenfassung aus dem Export ist identisch mit der des Originals und mit
+  der Zusammenfassung aus dem Web-Code, und die Anzahl der erzeugten PDFs ist
+  gleich. Die Prüfung erfolgte mit einer temporären Testdatei (nicht
+  committet) und einer Kopie von `CustomerTest/2019`.
 - [Etappe 2] Abhängigkeiten: jszip 3.10.2 und papaparse 5.7.1 (MIT). Für
   PapaParse zusätzlich `@types/papaparse` als devDependency (MIT), da das
   Paket keine eigenen Typen mitliefert.
@@ -753,6 +756,9 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   und `yearOps`.
 - [Etappe 2] Offen für Etappe 4: Download als Blob und das Verhalten unter
   `file://` (IndexedDB) sind noch nicht geprüft.
+- [Etappe 2] Der Befehl in Etappe 1 (Abschnitt 7) war falsch: Das Programm
+  liest `./CustomerTest` relativ zum Arbeitsverzeichnis, nicht relativ zu
+  `ShareCertificate`. Korrigiert auf `dotnet run --project`.
 
 ## 10. Entstehung
 
