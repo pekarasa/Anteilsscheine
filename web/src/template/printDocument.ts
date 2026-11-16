@@ -31,6 +31,25 @@ export function buildPrintDocument(data: YearData, filter: PrintFilter): string 
   return renderDocument(data, certificates, selectCertificates(certificates, filter));
 }
 
+/** Number of letters that buildPrintDocument creates for the filter. */
+export function countLetters(data: YearData, filter: PrintFilter): number {
+  return selectCertificates(calculateYearCertificates(data), filter).length;
+}
+
+/**
+ * The reason why the letters cannot be created with this filter, if there is
+ * one. Without committed certificates the Ertragsanteil cannot be calculated.
+ */
+export function printProblem(data: YearData, filter: PrintFilter): string | undefined {
+  const certificates = calculateYearCertificates(data);
+  const selected = selectCertificates(certificates, filter);
+  const totals = calculateTotals(certificates);
+  if (selected.length > 0 && totals.totalNumberOfCommittedCertificates === 0) {
+    return texts.errors.noCommittedCertificates;
+  }
+  return undefined;
+}
+
 /** The letter of one address as it is printed, without page breaks. Used for the preview. */
 export function buildLetterPreview(data: YearData, addressId: number): string {
   const certificates = calculateYearCertificates(data);

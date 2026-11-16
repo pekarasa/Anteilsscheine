@@ -8,7 +8,13 @@ import documentHtml from "../../CustomerTest/2019/Template/Document.html?raw";
 import tableFooterHtml from "../../CustomerTest/2019/Template/TableFooter.html?raw";
 import tableHeaderHtml from "../../CustomerTest/2019/Template/TableHeader.html?raw";
 import tableItemHtml from "../../CustomerTest/2019/Template/TableItem.html?raw";
-import { buildLetterPreview, buildPrintDocument, selectCertificates } from "../src/template/printDocument";
+import {
+  buildLetterPreview,
+  buildPrintDocument,
+  countLetters,
+  printProblem,
+  selectCertificates,
+} from "../src/template/printDocument";
 import { calculateCertificate } from "../src/logic/certificate";
 import { readYear } from "../src/io/validation";
 import { findYearFolders, type Archive } from "../src/io/zip";
@@ -215,6 +221,34 @@ describe("buildPrintDocument", () => {
       template: template("<p>ohne Body</p>"),
     });
     expect(() => buildPrintDocument(data, allFilter)).toThrow(texts.errors.templateWithoutBody);
+  });
+});
+
+describe("countLetters", () => {
+  it("counts the letters of the filter", () => {
+    expect(countLetters(yearData(), allFilter)).toBe(2);
+    expect(countLetters(yearData(), defaultFilter)).toBe(1);
+  });
+
+  it("counts no letters when the name filter matches nobody", () => {
+    expect(countLetters(yearData(), { nameFilter: "Zoe", includeWithoutCertificates: true })).toBe(0);
+  });
+});
+
+describe("printProblem", () => {
+  it("reports nothing when letters can be created", () => {
+    expect(printProblem(yearData(), allFilter)).toBeUndefined();
+  });
+
+  it("reports missing committed certificates when letters would be created", () => {
+    const data = yearData({ transactions: [] });
+    expect(printProblem(data, allFilter)).toBe(texts.errors.noCommittedCertificates);
+  });
+
+  it("reports nothing when no letter would be created", () => {
+    const data = yearData({ transactions: [] });
+    expect(printProblem(data, defaultFilter)).toBeUndefined();
+    expect(printProblem(data, { nameFilter: "Zoe", includeWithoutCertificates: true })).toBeUndefined();
   });
 });
 
