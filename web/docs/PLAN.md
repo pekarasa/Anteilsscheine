@@ -810,10 +810,17 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   neues Jahr anlegen, Autosave, Wiederherstellen nach Neuladen, ZIP-Download
   (Dateiname, `Settings.json` mit heutigem Datum), keine Konsolenfehler und keine
   Netzwerkanfragen, Abmeldewarnung bei ungespeicherten Änderungen.
-- [Etappe 4] Offen: Firefox und Safari sind nicht geprüft. Insbesondere
-  IndexedDB unter `file://` ist dort noch zu prüfen. Im Browser simuliert
-  (verweigerter Zugriff auf `indexedDB`) erscheint der Hinweis zur fehlenden
-  Zwischenspeicherung im UI.
+- [Etappe 4] Playwright-Firefox (159) und Playwright-WebKit (27.2) geprüft: Das
+  Ablaufskript (laden, bearbeiten, neues Jahr, Autosave, Wiederherstellen,
+  Download, Abmeldewarnung) läuft wie in Chromium ohne Fehler und ohne
+  Netzwerkanfragen durch. IndexedDB unter `file://` funktioniert in beiden.
+  Bei verweigertem Zugriff auf `indexedDB` erscheint der Hinweis in allen drei.
+- [Etappe 4] Offen: echtes Safari (nur macOS). WebKit ist dieselbe
+  Rendering-Engine, aber kein Safari-Build. Die Etappe bleibt `[ ]`, bis Safari
+  auf einem Mac geprüft ist. Playwright-Firefox ist ebenfalls kein
+  Release-Firefox. Eine Prüfung im normalen Firefox ist sinnvoll.
+- [Etappe 4] Umgebung: Für die Playwright-Browser mussten Systembibliotheken
+  nachinstalliert werden (`playwright install-deps firefox webkit`, mit sudo).
 - [Etappe 4] Ergänzung: Ein Download gilt als gespeichert, sobald er ausgelöst
   wurde. Der Abschluss des Downloads ist im Browser nicht erkennbar.
 - [Etappe 4] Ergänzung: Der Download ist auch bei Fehlern in der Prüfung möglich,
