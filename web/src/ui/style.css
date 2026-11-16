@@ -177,3 +177,87 @@ label {
   min-height: 8rem;
   margin-top: 0;
 }
+
+.table-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem;
+}
+
+.table-tools input[type="search"] {
+  width: 16rem;
+  cursor: text;
+}
+
+.count {
+  color: #5a5a5e;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.grid {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.grid th,
+.grid td {
+  text-align: left;
+  padding: 0.25rem 0.4rem;
+  border-bottom: 1px solid #e3e3e6;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.grid th {
+  font-weight: 600;
+}
+
+.grid button.sort {
+  border: 0;
+  padding: 0;
+  background: none;
+  font-weight: 600;
+}
+
+.grid td.empty {
+  color: #5a5a5e;
+  font-style: italic;
+}
+
+.grid tr.focus td {
+  background: #fff3c4;
+}
+
+.grid input,
+.grid select {
+  width: 100%;
+  min-width: 6rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.grid input.cell[inputmode="numeric"],
+.grid input.cell[inputmode="decimal"] {
+  text-align: right;
+}
+
+.grid input.problem-error,
+.grid select.problem-error {
+  border: 2px solid #c62828;
+  background: #fde8e8;
+}
+
+.grid input.problem-warning,
+.grid select.problem-warning {
+  border: 2px solid #d99a00;
+  background: #fff6e0;
+}
+
+button.row-action {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.9em;
+}
