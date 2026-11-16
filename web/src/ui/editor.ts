@@ -29,6 +29,7 @@ export function mountEditor(host: HTMLElement, html: string, onInput: (html: str
     askBeforePasteHTML: false,
     defaultActionOnPaste: "insert_clear_html",
     useSearch: false,
+    font: { googleFonts: { url: "" } },
   });
   editor.value = html;
   editor.editor.addEventListener("input", () => onInput(editor.value));
