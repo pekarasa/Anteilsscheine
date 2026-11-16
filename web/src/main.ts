@@ -1,12 +1,12 @@
-import { texts } from "./ui/texts";
+import "./ui/style.css";
+import { calendarDateOf } from "./io/dates";
+import { createIndexedDbStorage } from "./state/persistence";
+import { AppStore } from "./state/store";
+import { mountApp } from "./ui/app";
 
 const app = document.getElementById("app");
 if (!app) {
   throw new Error("Missing #app element");
 }
 
-const heading = document.createElement("h1");
-heading.textContent = texts.appTitle;
-const placeholder = document.createElement("p");
-placeholder.textContent = texts.placeholder;
-app.append(heading, placeholder);
+mountApp(app, new AppStore(() => calendarDateOf(new Date())), createIndexedDbStorage());

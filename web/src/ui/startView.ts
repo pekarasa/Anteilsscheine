@@ -24,7 +24,7 @@ export function startView(ctx: ViewContext): HTMLElement {
   } else {
     children.push(dropZone(ctx));
   }
-  children.push(local.message ? h("p", { class: "error" }, local.message) : undefined);
+  children.push(local.message ? h("p", { class: "alert" }, local.message) : undefined);
   return h("section", { class: "start" }, ...children);
 }
 

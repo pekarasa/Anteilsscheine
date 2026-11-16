@@ -1,6 +1,5 @@
 export const texts = {
   appTitle: "Anteilsscheine",
-  placeholder: "Die Anwendung wird in den nächsten Etappen aufgebaut.",
   errors: {
     invalidDecimal: (value: string) =>
       `Ungültige Dezimalzahl: "${value}". Erwartet wird z. B. 0.8 oder 1.0.`,
