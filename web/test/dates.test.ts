@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  calendarDateOf,
   formatGermanDate,
   formatIsoDate,
   parseGermanDate,
@@ -60,5 +61,11 @@ describe("formatting", () => {
   it("round-trips German dates", () => {
     const date = parseGermanDate("31.12.12");
     expect(date && formatGermanDate(date)).toBe("31.12.2012");
+  });
+});
+
+describe("calendarDateOf", () => {
+  it("returns the local calendar date of an instant", () => {
+    expect(calendarDateOf(new Date(2026, 1, 28, 23, 59))).toEqual({ year: 2026, month: 2, day: 28 });
   });
 });

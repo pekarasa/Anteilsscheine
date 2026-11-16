@@ -27,6 +27,11 @@ export function parseIsoDate(text: string): CalendarDate | undefined {
   });
 }
 
+/** The local calendar date of a point in time, without time zone shifts. */
+export function calendarDateOf(instant: Date): CalendarDate {
+  return { year: instant.getFullYear(), month: instant.getMonth() + 1, day: instant.getDate() };
+}
+
 export function formatGermanDate(date: CalendarDate): string {
   return `${pad(date.day, 2)}.${pad(date.month, 2)}.${pad(date.year, 4)}`;
 }
