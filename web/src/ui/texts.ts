@@ -47,4 +47,59 @@ export const texts = {
     invalidYear: "Das Jahr muss eine vierstellige Zahl sein.",
     yearExists: (year: number) => `Das Jahr ${year} existiert bereits.`,
   },
+  severity: {
+    error: "Fehler",
+    warning: "Warnung",
+  },
+  review: {
+    title: "Prüfung der Daten",
+    none: "Keine Fehler oder Warnungen gefunden.",
+  },
+  start: {
+    dropZone: "ZIP-Datei hierher ziehen oder auswählen",
+    chooseFile: "ZIP-Datei auswählen",
+    otherFile: "Andere ZIP-Datei laden",
+    readFailed: "Die Datei konnte nicht gelesen werden.",
+    loadedFrom: (name: string) => `Geladen: ${name}`,
+    customer: "Kunde",
+    year: "Jahr",
+    editTitle: (year: number) => `Jahr ${year} bearbeiten / korrigieren`,
+    editText:
+      "Die Daten dieses Jahres werden direkt geändert. Beim Herunterladen wird das Jahr in der ZIP-Datei aktualisiert.",
+    editButton: "Jahr bearbeiten",
+    newTitle: (year: number) => `Neues Jahr anlegen auf Basis von ${year}`,
+    newText:
+      "Alle Daten, die Vorlage und die Einstellungen werden kopiert. Das Druckdatum wird auf heute gesetzt, die Unterzeichnenden bleiben.",
+    targetYear: "Neues Jahr",
+    createButton: "Neues Jahr anlegen",
+    restoreTitle: "Letzte Sitzung wiederherstellen?",
+    restoreText: (savedAt: string) =>
+      `Auf diesem Rechner ist eine Sitzung gespeichert, die nicht heruntergeladen wurde (Stand: ${savedAt}).`,
+    restoreButton: "Wiederherstellen",
+    discardButton: "Verwerfen",
+    confirmReplace: "Es gibt ungespeicherte Änderungen. Trotzdem eine andere ZIP-Datei laden?",
+    storageUnavailable:
+      "Die automatische Zwischenspeicherung ist in diesem Browser nicht verfügbar. ZIP-Datei daher regelmässig herunterladen.",
+  },
+  main: {
+    yearLabel: (customer: string, year: number) => `Kunde ${customer}, Jahr ${year}`,
+    unsaved: "Ungespeicherte Änderungen",
+    saved: "Alles gespeichert",
+    download: "ZIP herunterladen",
+    changeYear: "Jahr wechseln",
+    downloaded: (fileName: string) =>
+      `Die Datei ${fileName} wurde heruntergeladen. Der Stand gilt als gespeichert.`,
+    downloadFailed: "Die ZIP-Datei konnte nicht erstellt werden.",
+    tabEmpty: "Dieser Bereich wird in einer späteren Etappe ausgebaut.",
+    tabs: {
+      addresses: "Adressen",
+      transactions: "Transaktionen",
+      dynamicShares: "Strombezug",
+      powerEarnings: "Ertrag",
+      conversionFactors: "Faktoren",
+      settings: "Einstellungen",
+      template: "Vorlage",
+      print: "Übersicht & Druck",
+    },
+  },
 };
