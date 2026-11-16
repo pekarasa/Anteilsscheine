@@ -10,6 +10,10 @@ export const texts = {
       `Mehrere Umwandlungsfaktoren für das Jahr ${year} gefunden.`,
     noCommittedCertificates:
       "Es gibt keine Anteilsscheine mit Strombezug. Der Ertragsanteil kann nicht berechnet werden.",
+    templateWithoutBody: "Die Vorlage Document.html enthält keinen Bereich <body>.",
+  },
+  print: {
+    documentTitle: (year: number) => `Sammelanteilsscheine ${year}`,
   },
   issues: {
     missingFile: (file: string) => `Die Datei ${file} fehlt.`,
