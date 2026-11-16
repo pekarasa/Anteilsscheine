@@ -427,7 +427,7 @@ Druckdokument (alle Briefe) erzeugen. Reine Logik ohne UI.
 
 ---
 
-### [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
+### [x] Etappe 4: UI-Grundgerüst, Laden, Speichern
 
 **Ziel:** Benutzer kann ein ZIP laden, Jahr wählen (bearbeiten oder neu
 anlegen) und ein ZIP herunterladen. Änderungen gehen nicht verloren.
@@ -614,7 +614,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 1: Datenmodell und Berechnung
 - [x] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
 - [x] Etappe 3: Vorlage füllen und Druckdokument
-- [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
+- [x] Etappe 4: UI-Grundgerüst, Laden, Speichern
 - [ ] Etappe 5: Daten bearbeiten und Übersicht
 - [ ] Etappe 6: Einstellungen und Vorlagen-Editor
 - [ ] Etappe 7: Sammel-PDF über Browser-Druck
@@ -821,6 +821,14 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Release-Firefox. Eine Prüfung im normalen Firefox ist sinnvoll.
 - [Etappe 4] Umgebung: Für die Playwright-Browser mussten Systembibliotheken
   nachinstalliert werden (`playwright install-deps firefox webkit`, mit sudo).
+- [Etappe 4] Abschluss: Die manuellen Tests mit `Anteilsscheine-Testdaten.zip`
+  und `Anteilsscheine.html` (Stand Commit `b4da8dd`) sind erfolgreich
+  durchgelaufen. Die Etappe ist damit auf `[x]` gesetzt. Die Browser, mit denen
+  manuell getestet wurde, sind hier nicht erfasst. Die Anforderung "Firefox,
+  Chrome/Edge und Safari" gilt als durch die manuellen Tests abgedeckt, sofern
+  Safari dabei war. Automatisiert geprüft sind Chromium, Firefox und WebKit.
+- [Etappe 4] Offen für Etappe 5: Die Tabellen fehlen noch. Bearbeitung und
+  Übersicht bleiben in Etappe 5.
 - [Etappe 4] Ergänzung: Ein Download gilt als gespeichert, sobald er ausgelöst
   wurde. Der Abschluss des Downloads ist im Browser nicht erkennbar.
 - [Etappe 4] Ergänzung: Der Download ist auch bei Fehlern in der Prüfung möglich,
