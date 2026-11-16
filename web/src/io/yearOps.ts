@@ -42,10 +42,20 @@ export function saveYear(archive: Archive, folder: YearFolder, model: YearModel,
     put(yearFileNames.logo, model.template.logo);
   }
   const summaryPath = `${customerPath(folder)}Summary_${folder.year}.csv`;
-  if (data) {
-    archive.set(summaryPath, encoder.encode(buildSummary(data)));
+  const summary = data ? summaryOf(data) : undefined;
+  if (summary !== undefined) {
+    archive.set(summaryPath, encoder.encode(summary));
   } else {
     archive.delete(summaryPath);
+  }
+}
+
+/** Undefined while the year lacks a power earning or a conversion factor. */
+function summaryOf(data: YearData): string | undefined {
+  try {
+    return buildSummary(data);
+  } catch {
+    return undefined;
   }
 }
 

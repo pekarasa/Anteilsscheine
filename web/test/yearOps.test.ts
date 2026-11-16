@@ -121,6 +121,15 @@ describe("saveYear", () => {
     expect(decoder.decode(archive.get("CustomerTest/Summary_2019.csv"))).toBe(buildSummary(data!));
   });
 
+  it("saves without summary while the power earning of the year is missing", () => {
+    const archive = yearArchive({ "PowerEarning.csv": "Year,Earning\r\n2018,50000\r\n" });
+    const { folder, model, data } = loadModel(archive, 2019);
+    expect(data).toBeDefined();
+    saveYear(archive, folder, model, data);
+    expect(archive.has("CustomerTest/Summary_2019.csv")).toBe(false);
+    expect(decoder.decode(getYearFile(archive, folder, "PowerEarning.csv"))).toBe("Year,Earning\r\n2018,50000\r\n");
+  });
+
   it("removes an outdated summary when the data is invalid", () => {
     const archive = yearArchive();
     const { folder, model, data } = loadModel(archive, 2019);
