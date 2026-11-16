@@ -277,6 +277,14 @@ describe("CustomerTest 2019 letters", () => {
     expect(maya).toContain("&#36;{personalRemainingBalance}: 19");
   });
 
+  it("fills the print date and the signers from the settings", () => {
+    const html = buildPrintDocument(data, defaultFilter);
+    const maya = letters(html).find((letter) => letter.includes("Maya Graf"));
+    expect(maya).toContain("print date: 28. Februar 2026");
+    expect(maya).toContain("signer1: Max Mustermann");
+    expect(maya).toContain("signer2: John Doe");
+  });
+
   it("shows the transaction table of the letter", () => {
     const html = buildPrintDocument(data, defaultFilter);
     const maya = letters(html).find((letter) => letter.includes("Maya Graf"));
