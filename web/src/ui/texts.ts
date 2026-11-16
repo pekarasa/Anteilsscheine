@@ -11,6 +11,9 @@ export const texts = {
     noCommittedCertificates:
       "Es gibt keine Anteilsscheine mit Strombezug. Der Ertragsanteil kann nicht berechnet werden.",
     templateWithoutBody: "Die Vorlage Document.html enthält keinen Bereich <body>.",
+    noYearFolders:
+      "Die ZIP-Datei enthält keine Jahresordner. Erwartet wird die Struktur Customer<Name>/<Jahr>/.",
+    invalidZip: "Die Datei ist keine gültige ZIP-Datei.",
   },
   print: {
     documentTitle: (year: number) => `Sammelanteilsscheine ${year}`,
