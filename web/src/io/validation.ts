@@ -63,7 +63,7 @@ const placeholderNames = new Set([
   "Amount",
 ]);
 
-const templateFileNames = [
+export const templateFileNames = [
   yearFileNames.document,
   yearFileNames.tableHeader,
   yearFileNames.tableItem,
@@ -450,20 +450,25 @@ function readTemplate(read: FileReader): Template {
   if (logo) {
     template.logo = logo;
   }
-  const contents: [string, string][] = [
-    [yearFileNames.document, document],
-    [yearFileNames.tableHeader, tableHeader],
-    [yearFileNames.tableItem, tableItem],
-    [yearFileNames.tableFooter, tableFooter],
-  ];
-  for (const [fileName, text] of contents) {
-    for (const name of findPlaceholders(text)) {
-      if (!placeholderNames.has(name)) {
-        read.push(warningIssue(fileName, texts.issues.unknownPlaceholder(name)));
-      }
-    }
+  for (const issue of templateIssues(template)) {
+    read.push(issue);
   }
   return template;
+}
+
+/** Warnings for placeholders in the template files that the program does not fill. */
+export function templateIssues(template: Template): Issue[] {
+  const contents: [string, string][] = [
+    [yearFileNames.document, template.document],
+    [yearFileNames.tableHeader, template.tableHeader],
+    [yearFileNames.tableItem, template.tableItem],
+    [yearFileNames.tableFooter, template.tableFooter],
+  ];
+  return contents.flatMap(([fileName, text]) =>
+    findPlaceholders(text)
+      .filter((name) => !placeholderNames.has(name))
+      .map((name) => warningIssue(fileName, texts.issues.unknownPlaceholder(name))),
+  );
 }
 
 function findPlaceholders(text: string): string[] {
