@@ -214,6 +214,38 @@ button.link {
   box-sizing: border-box;
 }
 
+.field.wide {
+  max-width: none;
+}
+
+.field textarea,
+textarea.code {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #8a8a8e;
+  border-radius: 6px;
+}
+
+textarea.code {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.placeholders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+}
+
+button.placeholder {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.6rem;
+}
+
 .table-tools {
   display: flex;
   flex-wrap: wrap;

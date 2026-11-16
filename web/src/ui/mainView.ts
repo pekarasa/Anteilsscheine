@@ -7,6 +7,7 @@ import { dataPanel, isDataTab, missingDataHints } from "./dataViews";
 import { issueList, tabOfIssue } from "./issues";
 import { settingsPanel } from "./settingsView";
 import { summaryPanel } from "./summaryView";
+import { templatePanel } from "./templateView";
 import { texts } from "./texts";
 
 export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadResult): HTMLElement {
@@ -80,6 +81,9 @@ function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLEle
   }
   if (tab === "settings") {
     return settingsPanel(ctx, read);
+  }
+  if (tab === "template") {
+    return templatePanel(ctx, read);
   }
   if (tab === "print") {
     return summaryPanel(read);
