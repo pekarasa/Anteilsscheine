@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AppStore } from "../src/state/store";
+import { addRow, setCell } from "../src/io/tableEdit";
 import { readArchive, type Archive } from "../src/io/zip";
 import type { CalendarDate } from "../src/model/types";
 import { yearArchive } from "./helpers/archive";
@@ -115,6 +116,52 @@ describe("AppStore", () => {
     store.close();
     expect(store.getState().archive).toBeUndefined();
     expect(store.isDirty()).toBe(false);
+  });
+
+  it("writes a table change to the working copy and the export", async () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    store.updateTable("address", (table) => setCell(table, 0, "Name", "Neu Graf"));
+    expect(store.getState().read?.data?.addresses[0]?.name).toBe("Neu Graf");
+    expect(decoder.decode(store.getState().archive?.get("CustomerTest/2019/Address.csv"))).toContain(
+      "Neu Graf",
+    );
+    expect(store.isDirty()).toBe(true);
+    const exported = await readArchive((await store.buildExport()).bytes);
+    expect(decoder.decode(exported.get("CustomerTest/2019/Address.csv"))).toContain("Neu Graf");
+  });
+
+  it("keeps the table change in a restored session", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    store.updateTable("address", (table) => setCell(table, 0, "Name", "Neu Graf"));
+    const restored = newStore();
+    restored.restore(store.snapshot()!);
+    expect(restored.getState().read?.data?.addresses[0]?.name).toBe("Neu Graf");
+  });
+
+  it("updates the summary and removes it while the data is invalid", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    expect(store.getState().archive?.has("CustomerTest/Summary_2019.csv")).toBe(false);
+    store.updateTable("transaction", (table) => setCell(table, 0, "Amount", "abc"));
+    expect(store.getState().read?.data).toBeUndefined();
+    expect(store.getState().read?.issues.some((issue) => issue.severity === "error")).toBe(true);
+    store.updateTable("transaction", (table) => setCell(table, 0, "Amount", "300"));
+    expect(store.getState().read?.data?.transactions[0]?.amount).toBe(300);
+    expect(decoder.decode(store.getState().archive?.get("CustomerTest/Summary_2019.csv"))).toContain(
+      "Year: 2019",
+    );
+  });
+
+  it("publishes a data change with its kind", () => {
+    const store = newStore();
+    store.loadArchive(yearArchive(), "daten.zip");
+    const kinds: string[] = [];
+    store.subscribe((_state, kind) => kinds.push(kind));
+    store.updateTable("address", (table) => setCell(table, 0, "City", "Basel"), "data");
+    store.updateTable("address", (table) => addRow(table));
+    expect(kinds).toEqual(["data", "full"]);
   });
 
   it("notifies subscribers and stops after unsubscribe", () => {

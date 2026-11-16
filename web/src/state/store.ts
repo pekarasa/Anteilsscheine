@@ -1,7 +1,14 @@
-import { readYear, type YearReadResult } from "../io/validation";
+import { checkYear, readYear, type YearReadResult } from "../io/validation";
 import { createYear, saveYear } from "../io/yearOps";
-import { exportFileName, findYearFolders, writeArchive, type Archive, type YearFolder } from "../io/zip";
-import type { CalendarDate } from "../model/types";
+import {
+  exportFileName,
+  findYearFolders,
+  writeArchive,
+  yearFileNames,
+  type Archive,
+  type YearFolder,
+} from "../io/zip";
+import type { CalendarDate, RawTable, YearModel } from "../model/types";
 import { texts } from "../ui/texts";
 
 export const tabIds = [
@@ -17,6 +24,19 @@ export const tabIds = [
 
 export type TabId = (typeof tabIds)[number];
 export type View = "start" | "main";
+
+export type TableName = "address" | "transaction" | "dynamicShare" | "powerEarning" | "conversionFactor";
+
+/** "data": only the data changed and the view may stay as it is, e.g. while typing. */
+export type PublishKind = "full" | "data";
+
+const tableFileNames: Record<TableName, string> = {
+  address: yearFileNames.address,
+  transaction: yearFileNames.transaction,
+  dynamicShare: yearFileNames.dynamicShare,
+  powerEarning: yearFileNames.powerEarning,
+  conversionFactor: yearFileNames.conversionFactor,
+};
 
 /** Everything needed to continue a session later. */
 export interface SessionSnapshot {
@@ -42,7 +62,7 @@ export interface AppState {
   savedRevision?: number;
 }
 
-export type StoreListener = (state: AppState) => void;
+export type StoreListener = (state: AppState, kind: PublishKind) => void;
 
 const initialState: AppState = {
   view: "start",
@@ -162,6 +182,22 @@ export class AppStore {
     };
   }
 
+  /**
+   * Changes one table of the year. The change is written to the working copy
+   * at once, so that autosave, restore and export all contain it.
+   */
+  updateTable(name: TableName, change: (table: RawTable) => RawTable, kind: PublishKind = "full"): void {
+    const { archive, folder, read } = this.loaded();
+    if (!read.model) {
+      throw new Error(texts.errors.noYearData);
+    }
+    const model: YearModel = { ...read.model, [name]: change(read.model[name]) };
+    const fileName = tableFileNames[name];
+    const next = checkYear(model, read.fileIssues.filter((issue) => issue.file !== fileName));
+    saveYear(archive, folder, model, next.data);
+    this.setState({ read: next, revision: this.state.revision + 1 }, kind);
+  }
+
   markSaved(): void {
     this.setState({ savedRevision: this.state.revision });
   }
@@ -197,10 +233,10 @@ export class AppStore {
     };
   }
 
-  private setState(patch: Partial<AppState>): void {
+  private setState(patch: Partial<AppState>, kind: PublishKind = "full"): void {
     this.state = { ...this.state, ...patch };
     for (const listener of this.listeners) {
-      listener(this.state);
+      listener(this.state, kind);
     }
   }
 }

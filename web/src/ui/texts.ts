@@ -13,6 +13,7 @@ export const texts = {
     noYearFolders:
       "Die ZIP-Datei enthält keine Jahresordner. Erwartet wird die Struktur Customer<Name>/<Jahr>/.",
     invalidZip: "Die Datei ist keine gültige ZIP-Datei.",
+    noYearData: "Die Daten dieses Jahres sind unvollständig und können nicht bearbeitet werden.",
   },
   print: {
     documentTitle: (year: number) => `Sammelanteilsscheine ${year}`,
