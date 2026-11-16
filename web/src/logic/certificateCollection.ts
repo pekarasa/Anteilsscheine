@@ -1,4 +1,4 @@
-import type { YearData } from "../model/types";
+import type { PowerEarning, YearData } from "../model/types";
 import { calculateCertificate, type Certificate } from "./certificate";
 import { texts } from "../ui/texts";
 
@@ -8,12 +8,18 @@ export interface CertificateTotals {
   totalRemainingBalance: number;
 }
 
-/** One certificate per address, in the order of the address list. */
-export function calculateYearCertificates(data: YearData): Certificate[] {
+/** The power earning of the year of the data. */
+export function findPowerEarning(data: YearData): PowerEarning {
   const powerEarning = data.powerEarnings.find((earning) => earning.year === data.year);
   if (!powerEarning) {
     throw new Error(texts.issues.missingPowerEarning(data.year));
   }
+  return powerEarning;
+}
+
+/** One certificate per address, in the order of the address list. */
+export function calculateYearCertificates(data: YearData): Certificate[] {
+  const powerEarning = findPowerEarning(data);
   return data.addresses.map((address) =>
     calculateCertificate({
       year: data.year,
