@@ -2,12 +2,12 @@ import { connectAutosave, type SessionStorage } from "../state/persistence";
 import type { AppStore } from "../state/store";
 import { h } from "./dom";
 import type { LocalState, ViewContext } from "./context";
-import { mainView } from "./mainView";
+import { mainView, statusLabel } from "./mainView";
 import { startView } from "./startView";
 import { texts } from "./texts";
 
 export function mountApp(root: HTMLElement, store: AppStore, storage: SessionStorage): void {
-  const local: LocalState = { storageFailed: false };
+  const local: LocalState = { storageFailed: false, tables: {} };
   const ctx: ViewContext = { store, storage, local, render };
 
   function render(): void {
@@ -16,7 +16,12 @@ export function mountApp(root: HTMLElement, store: AppStore, storage: SessionSto
     root.replaceChildren(h("h1", {}, texts.appTitle), body);
   }
 
-  store.subscribe(() => {
+  store.subscribe((_state, kind) => {
+    if (kind === "data") {
+      // Keeps the focused field and the mouse target of the next click alive.
+      root.querySelector(".status")?.replaceWith(statusLabel(store.isDirty()));
+      return;
+    }
     local.message = undefined;
     render();
   });

@@ -1,15 +1,15 @@
 import type { YearReadResult } from "../io/validation";
 import type { YearFolder } from "../io/zip";
-import { tabIds } from "../state/store";
+import { tabIds, type TabId } from "../state/store";
 import { h } from "./dom";
 import type { ViewContext } from "./context";
+import { dataPanel, isDataTab } from "./dataViews";
 import { issueList } from "./issues";
 import { texts } from "./texts";
 
 export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadResult): HTMLElement {
   const { store, local } = ctx;
   const state = store.getState();
-  const dirty = store.isDirty();
   return h(
     "section",
     { class: "main" },
@@ -17,7 +17,7 @@ export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadRes
       "header",
       { class: "toolbar" },
       h("strong", {}, texts.main.yearLabel(folder.customer, folder.year)),
-      h("span", { class: dirty ? "status dirty" : "status" }, dirty ? texts.main.unsaved : texts.main.saved),
+      statusLabel(store.isDirty()),
       h(
         "div",
         { class: "actions" },
@@ -49,8 +49,19 @@ export function mainView(ctx: ViewContext, folder: YearFolder, read: YearReadRes
         ),
       ),
     ),
-    h("section", { class: "panel", role: "tabpanel" }, h("p", {}, texts.main.tabEmpty)),
+    h("section", { class: "panel", role: "tabpanel" }, tabContent(ctx, read, state.tab)),
   );
+}
+
+export function statusLabel(dirty: boolean): HTMLElement {
+  return h("span", { class: dirty ? "status dirty" : "status" }, dirty ? texts.main.unsaved : texts.main.saved);
+}
+
+function tabContent(ctx: ViewContext, read: YearReadResult, tab: TabId): HTMLElement {
+  if (isDataTab(tab)) {
+    return dataPanel(ctx, read, tab);
+  }
+  return h("p", {}, texts.main.tabEmpty);
 }
 
 async function download(ctx: ViewContext): Promise<void> {

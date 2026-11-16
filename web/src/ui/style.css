@@ -178,6 +178,11 @@ label {
   margin-top: 0;
 }
 
+.intro {
+  color: #5a5a5e;
+  margin: 0 0 0.75rem;
+}
+
 .table-tools {
   display: flex;
   flex-wrap: wrap;

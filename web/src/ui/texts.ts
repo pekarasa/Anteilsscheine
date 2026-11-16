@@ -43,6 +43,17 @@ export const texts = {
     unknownPlaceholder: (name: string) => `Unbekannter Platzhalter: \${${name}}.`,
     location: (file: string, line?: number) => (line ? `${file}, Zeile ${line}` : file),
   },
+  intro: {
+    addresses:
+      "Eine Zeile je Person. Die ID muss eindeutig sein; sie wird in den anderen Registerkarten verwendet.",
+    transactions:
+      "Feste Ein- und Auszahlungen in CHF. Datum als tt.mm.jjjj, Beträge als ganze Zahlen (auch negativ).",
+    dynamicShares:
+      "Jährlicher Strombezug in CHF pro Person. Auch künftige Jahre gehören hierher.",
+    powerEarnings: "Ertrag der Anlage pro Jahr in kWh. Für das bearbeitete Jahr muss eine Zeile vorhanden sein.",
+    conversionFactors:
+      "Umwandlungsfaktor pro Jahr, z. B. 0.8 oder 1.0. Für jedes Jahr mit Strombezug wird einer benötigt.",
+  },
   columns: {
     Id: "ID",
     Name: "Name",
@@ -66,6 +77,8 @@ export const texts = {
     confirmDeleteRow: "Diese Zeile wirklich löschen?",
     emptyChoice: "(keine Auswahl)",
     unknownChoice: (id: string) => `${id} (unbekannt)`,
+    addressInUse: (id: string, transactions: number, shares: number) =>
+      `Die Adress-ID ${id} wird noch verwendet (Transaktionen: ${transactions}, Strombezug: ${shares}). Diese Zeilen bleiben erhalten, sind danach aber keiner Person mehr zugeordnet.`,
     addressChoice: (id: number, name: string) => `${name} (${id})`,
     datePlaceholder: "tt.mm.jjjj",
     sortedAscending: " \u25B2",
