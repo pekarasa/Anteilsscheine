@@ -396,7 +396,7 @@ bearbeiten. Reine Logik ohne UI.
 
 ---
 
-### [ ] Etappe 3: Vorlage füllen und Druckdokument
+### [x] Etappe 3: Vorlage füllen und Druckdokument
 
 **Ziel:** Aus Daten und Vorlage das HTML eines Briefes und das gesamte
 Druckdokument (alle Briefe) erzeugen. Reine Logik ohne UI.
@@ -613,7 +613,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 0: Projektgerüst
 - [x] Etappe 1: Datenmodell und Berechnung
 - [x] Etappe 2: CSV, ZIP, Validierung, Jahr-Funktionen
-- [ ] Etappe 3: Vorlage füllen und Druckdokument
+- [x] Etappe 3: Vorlage füllen und Druckdokument
 - [ ] Etappe 4: UI-Grundgerüst, Laden, Speichern
 - [ ] Etappe 5: Daten bearbeiten und Übersicht
 - [ ] Etappe 6: Einstellungen und Vorlagen-Editor
@@ -694,6 +694,46 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 - [Etappe 1] Offen für Etappe 3: Das Verhalten von `ToString("##,#")` bei
   Betrag 0 (Plan 5.4 vermutet leeren String) ist noch nicht gegen C# geprüft.
   Die Formatierung ist nicht Teil von Etappe 1.
+
+- [Etappe 3] Umgesetzt in `web/src/template/` (`formatting.ts`, `fillTemplate.ts`,
+  `printDocument.ts`) mit 132 Vitest-Tests grün, `npm run typecheck` und
+  `npm run build` erfolgreich. `texts.ts` um `print` und
+  `errors.templateWithoutBody` ergänzt. Eigene Commits pro Schritt.
+- [Etappe 3] Nicht gegen C# geprüft: `dotnet` ist nicht installiert. Das
+  Verhalten von `"##,#"` (0 ergibt leeren String, Tausendertrennzeichen `’`
+  bei de-CH) stammt aus der .NET-Dokumentation und dem Plan. Offen: einmal mit
+  `dotnet` gegen `CustomerTest/2019` prüfen, sobald verfügbar.
+- [Etappe 3] Abweichung (Ergänzung): Platzhalter werden in **einem** Durchgang
+  ersetzt, und eingesetzte Werte werden nicht erneut ersetzt. Das C#-Programm
+  ersetzt nacheinander; unterschiedlich nur, wenn ein Name oder eine Beschreibung
+  Text wie `${...}` enthält.
+- [Etappe 3] Abweichung (Ergänzung): Werte werden HTML-escaped (`&`, `<`, `>`,
+  `"`, `'`), wie im Plan verlangt. Das C#-Programm escaped nicht; ein Name mit
+  `&` ergäbe dort ungültiges HTML.
+- [Etappe 3] Die Transaktionstabelle entspricht dem C#-Ablauf: Kopf, Zeilen und
+  Total-Zeile, je mit Zeilenumbruch. Die Brief-Zeilen enthalten nur Transaktionen
+  bis zum Jahr (Test "Jahr 2015" mit Held = 21 aus 5.6).
+- [Etappe 3] Mit Filter "Alle" und Summe Committed = 0 meldet der Druck den
+  Fehler aus `texts.errors.noCommittedCertificates` (wie der Plan 5.2 verlangt),
+  statt zu drucken. Etappe 7 sollte diesen Fall in der Validierung vor dem Druck
+  erkennen.
+- [Etappe 3] Logo: Das Modell kennt nur `Template/logo.png`. Das Logo wird immer
+  als `image/png` eingebettet. Andere Dateien aus `Template/` werden nicht
+  eingebettet. Das wird relevant, sobald Etappe 6 andere Formate zulässt
+  (dort nach PNG konvertieren, wie im Plan vorgesehen).
+- [Etappe 3] Jeder Brief ist ein `div.letter`; ab dem zweiten Brief hat er die
+  Klasse `letter-break` (`break-before: page`). Das Seitenumbruchverhalten in
+  Browsern ist noch nicht geprüft; das folgt in Etappe 7.
+- [Etappe 3] Die Referenz `CustomerTest/2019` ist nur teilweise geprüft: Die
+  Zahlen im Brief (Jahr, Ertrag, Total, Held, Rest, Committed, Ertragsanteil)
+  stimmen für Adresse 101 mit der Summary-Referenz überein. Ertragsanteil 20384
+  ist von Hand nachgerechnet (`trunc(trunc(129900 / 356) * 56)`). 8 Briefe ohne
+  Filter entsprechen 8 Adressen mit Committed != 0.
+- [Etappe 3] Die Vorlage `CustomerTest/2019/Template/Document.html` hat noch
+  fest eingetragene Werte für Druckdatum und Unterzeichnende. Das wird in
+  Etappe 6 ersetzt (siehe oben). Die Tests prüfen diese Felder deshalb noch nicht.
+- [Etappe 3] Für das Druckdokument ist `<body>` in `Document.html` Pflicht. Fehlt
+  er, meldet der Druck einen Fehler.
 
 - [Etappe 2] Abgeschlossen: Umsetzung in `io/dates.ts`, `io/csv.ts`,
   `io/zip.ts`, `io/validation.ts`, `io/yearOps.ts`, 98 Tests grün, Build
