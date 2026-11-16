@@ -3,9 +3,27 @@ import {
   calendarDateOf,
   formatGermanDate,
   formatIsoDate,
+  parseDateInput,
   parseGermanDate,
   parseIsoDate,
 } from "../src/io/dates";
+
+describe("parseDateInput", () => {
+  it("accepts one-digit day and month", () => {
+    expect(parseDateInput("9.12.11")).toEqual({ year: 2011, month: 12, day: 9 });
+  });
+
+  it("accepts two-digit and four-digit years", () => {
+    expect(parseDateInput("31.12.26")).toEqual({ year: 2026, month: 12, day: 31 });
+    expect(parseDateInput("31.12.2026")).toEqual({ year: 2026, month: 12, day: 31 });
+  });
+
+  it("rejects dates that do not exist and other formats", () => {
+    expect(parseDateInput("31.02.2026")).toBeUndefined();
+    expect(parseDateInput("2026-12-31")).toBeUndefined();
+    expect(parseDateInput("31122026")).toBeUndefined();
+  });
+});
 
 describe("parseGermanDate", () => {
   it("reads two-digit years as 20xx", () => {

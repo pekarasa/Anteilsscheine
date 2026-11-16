@@ -42,6 +42,12 @@ export const texts = {
     unknownPlaceholder: (name: string) => `Unbekannter Platzhalter: \${${name}}.`,
     location: (file: string, line?: number) => (line ? `${file}, Zeile ${line}` : file),
   },
+  cells: {
+    invalidInteger: "Bitte eine ganze Zahl eingeben.",
+    invalidDecimal: "Bitte eine Dezimalzahl eingeben, z. B. 0.8 oder 1.0.",
+    invalidDate: "Bitte ein Datum eingeben, z. B. 31.12.2026 oder 31.12.26.",
+    unknownAddress: (id: string) => `Die Adress-ID ${id} existiert nicht in der Adressliste.`,
+  },
   yearOps: {
     invalidYear: "Das Jahr muss eine vierstellige Zahl sein.",
     yearExists: (year: number) => `Das Jahr ${year} existiert bereits.`,

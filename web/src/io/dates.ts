@@ -1,14 +1,22 @@
 import type { CalendarDate } from "../model/types";
 
 const germanDatePattern = /^(\d{2})\.(\d{2})\.(\d{2}|\d{4})$/;
+const dateInputPattern = /^(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})$/;
 const isoDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /** Accepts dd.MM.yy (20xx) and dd.MM.yyyy. Returns undefined for invalid dates. */
 export function parseGermanDate(text: string): CalendarDate | undefined {
   const match = germanDatePattern.exec(text.trim());
-  if (!match) {
-    return undefined;
-  }
+  return match ? dateFromMatch(match) : undefined;
+}
+
+/** Tolerant input for typing: also accepts one-digit day and month, e.g. 9.12.11. */
+export function parseDateInput(text: string): CalendarDate | undefined {
+  const match = dateInputPattern.exec(text.trim());
+  return match ? dateFromMatch(match) : undefined;
+}
+
+function dateFromMatch(match: RegExpExecArray): CalendarDate | undefined {
   const yearText = match[3] ?? "";
   const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
   return toValidDate({ year, month: Number(match[2]), day: Number(match[1]) });
