@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { describeIssue, readYear, type Issue } from "../src/io/validation";
+import {
+  checkYear,
+  describeIssue,
+  findMissingYearData,
+  readYear,
+  type Issue,
+} from "../src/io/validation";
 import { findYearFolders } from "../src/io/zip";
 import type { CalendarDate } from "../src/model/types";
 import { yearArchive } from "./helpers/archive";
@@ -212,6 +218,65 @@ describe("semantic checks", () => {
     expect(warnings(result.issues)).toEqual([
       expect.objectContaining({ file: "Template/Document.html", message: expect.stringContaining("Windows-1252") }),
     ]);
+  });
+});
+
+describe("checkYear", () => {
+  it("computes the data again after a change of the model", () => {
+    const result = read();
+    const model = result.model!;
+    const changed = {
+      ...model,
+      transaction: {
+        ...model.transaction,
+        rows: [{ line: 2, cells: ["101", "09.12.2011", "Kauf", "abc"] }],
+      },
+    };
+    const checked = checkYear(changed, result.fileIssues);
+    expect(checked.data).toBeUndefined();
+    expect(errors(checked.issues)[0]?.file).toBe("Transaction.csv");
+  });
+
+  it("becomes valid again when the value is corrected", () => {
+    const model = read().model!;
+    const changed = {
+      ...model,
+      transaction: { ...model.transaction, rows: [{ line: 2, cells: ["101", "09.12.2011", "Kauf", "300"] }] },
+    };
+    expect(checkYear(changed, []).data?.transactions[0]?.amount).toBe(300);
+  });
+
+  it("keeps the issues about the files as read", () => {
+    const model = read().model!;
+    const fileIssue: Issue = { severity: "warning", file: "Address.csv", message: "Kodierung." };
+    const checked = checkYear(model, [fileIssue]);
+    expect(checked.issues[0]).toBe(fileIssue);
+    expect(checked.fileIssues).toEqual([fileIssue]);
+  });
+
+  it("keeps the data undefined while a file issue is an error", () => {
+    const model = read().model!;
+    const fileIssue: Issue = { severity: "error", file: "Address.csv", message: "Fehler." };
+    expect(checkYear(model, [fileIssue]).data).toBeUndefined();
+  });
+});
+
+describe("findMissingYearData", () => {
+  it("finds nothing in a complete year", () => {
+    const model = read().model!;
+    expect(findMissingYearData(model)).toEqual({ powerEarning: false, conversionFactorYears: [] });
+  });
+
+  it("finds a missing power earning of the year", () => {
+    const model = read({ "PowerEarning.csv": "Year,Earning\r\n2018,1000\r\n" }).model!;
+    expect(findMissingYearData(model).powerEarning).toBe(true);
+  });
+
+  it("finds years of dynamic shares without a conversion factor, once and sorted", () => {
+    const model = read({
+      "DynamicShare.csv": "AddressId,Date,PowerPurchase\r\n101,31.12.2021,600\r\n101,31.12.2020,300\r\n101,31.12.2020,5\r\n",
+    }).model!;
+    expect(findMissingYearData(model).conversionFactorYears).toEqual([2020, 2021]);
   });
 });
 

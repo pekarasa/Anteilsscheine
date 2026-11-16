@@ -34,6 +34,14 @@ export interface YearReadResult {
   /** Typed data. Undefined as long as any value is invalid. */
   data?: YearData;
   issues: Issue[];
+  /** Issues about the files as they were read, e.g. encoding or CSV syntax. */
+  fileIssues: Issue[];
+}
+
+export interface MissingYearData {
+  powerEarning: boolean;
+  /** Years with a dynamic share but without a conversion factor, sorted. */
+  conversionFactorYears: number[];
 }
 
 const placeholderNames = new Set([
@@ -97,7 +105,7 @@ export function readYear(archive: Archive, folder: YearFolder, today: CalendarDa
     issues.push(errorIssue(name, texts.issues.missingFile(name)));
   }
   if (missing.length > 0) {
-    return { issues };
+    return { issues, fileIssues: issues };
   }
 
   const read = new FileReader(archive, folder, issues);
@@ -111,13 +119,55 @@ export function readYear(archive: Archive, folder: YearFolder, today: CalendarDa
     template: readTemplate(read),
     settings: readSettings(read, today),
   };
-  const readFailed = issues.some((issue) => issue.severity === "error");
+  return checkYear(model, issues);
+}
+
+/**
+ * Checks a model, for example after the user has changed it. The issues about
+ * the files as read are kept as given; all other issues are computed again.
+ */
+export function checkYear(model: YearModel, fileIssues: Issue[]): YearReadResult {
+  const readFailed = fileIssues.some((issue) => issue.severity === "error");
   const converted = toYearData(model);
   return {
     model,
     data: readFailed ? undefined : converted.data,
-    issues: [...issues, ...converted.issues],
+    issues: [...fileIssues, ...converted.issues],
+    fileIssues,
   };
+}
+
+/**
+ * Finds what the year still lacks for the summary. Reads the raw values, so it
+ * also works while other values are invalid.
+ */
+export function findMissingYearData(model: YearModel): MissingYearData {
+  const earningYears = integerValues(model.powerEarning, "Year");
+  const factorYears = new Set(integerValues(model.conversionFactor, "Year"));
+  const shareYears = dateValues(model.dynamicShare, "Date").map((date) => date.year);
+  const missingYears = [...new Set(shareYears.filter((year) => !factorYears.has(year)))];
+  return {
+    powerEarning: !earningYears.includes(model.year),
+    conversionFactorYears: missingYears.sort((a, b) => a - b),
+  };
+}
+
+function integerValues(table: RawTable, column: string): number[] {
+  return cellTexts(table, column)
+    .filter((text) => /^-?\d+$/.test(text))
+    .map(Number);
+}
+
+function dateValues(table: RawTable, column: string): CalendarDate[] {
+  return cellTexts(table, column).flatMap((text) => {
+    const date = parseGermanDate(text);
+    return date ? [date] : [];
+  });
+}
+
+function cellTexts(table: RawTable, column: string): string[] {
+  const position = table.header.indexOf(column);
+  return table.rows.map((row) => (row.cells[position] ?? "").trim());
 }
 
 /**
