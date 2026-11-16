@@ -965,6 +965,47 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   durch `${printDate}`, `${signer1}`, `${signer2}` ersetzt. Das C#-Programm druckt
   diese Platzhalter wörtlich, bis Etappe 9 entschieden ist.
 
+- [Etappe 7] Zwischenstand (Etappe bleibt `[ ]`, weil der echte Druckdialog in
+  Chrome/Edge, Firefox und Safari nicht von Hand geprüft ist). Umgesetzt:
+  `template/printDocument.ts` (`countLetters`, `printProblem`), `ui/printFrame.ts`
+  (Druck in verstecktem `iframe`, wartet auf die Bilder, dann `print()`),
+  `ui/printView.ts` (Registerkarte "Übersicht & Druck": Namensfilter, Checkbox,
+  Anzahl Briefe, Sperre, Anleitung, darunter die Übersicht). 207 Vitest-Tests grün,
+  `npm test` und `npm run build` erfolgreich.
+- [Etappe 7] Abweichung (mit dem Benutzer geklärt): Die Anleitung im UI ist nur Text,
+  ohne Bilder. Die Screenshots folgen in Etappe 8 (`Benutzeranleitung.md`).
+- [Etappe 7] Sperre: Fehler in den Daten (Schweregrad Fehler) und die Vorlage ohne
+  `<body>` sperren den Druck. Ebenso fehlende Anteilsscheine bei Filter "Alle" (keine
+  Summe Verpflichtet). Warnungen sperren nicht. Der Knopf ist dann deaktiviert, und die
+  Gründe stehen darüber. Der Ertragsfehler ist im Browser geprüft.
+- [Etappe 7] Mit dem Filter "Alle" und ohne Anteilsscheine erkennt
+  `printProblem` den Fehler vor dem Druck (Etappe 3 hatte das offen gelassen).
+- [Etappe 7] Geprüft mit Playwright (ausserhalb des Repos) über `file://` mit einem
+  ZIP von `CustomerTest/` in Chromium, Firefox und WebKit: Zählung (8, 10 mit Checkbox,
+  1 mit Namensfilter, 0 ohne Treffer), Druckdokument (8 Briefe, 7 Umbrüche,
+  Titel, Einstellungen, keine Platzhalter, keine externen Verweise), Sperre bei
+  fehlendem Ertrag mit Meldung. In Chromium und Firefox wird der Frame nach dem
+  Druck entfernt, also der Dialog geschlossen.
+- [Etappe 7] Playwright-Firefox: Nach `print()` klickt Playwright nichts mehr an
+  (Element sichtbar, aber nicht bedienbar). Die Seite selbst reagiert auf
+  DOM-Klicks normal. Das Skript bedient deshalb nach dem Druck per DOM-Klick.
+- [Etappe 7] WebKit (Headless): `afterprint` feuert nicht, deshalb bleibt das
+  verborgene `iframe` bis zum nächsten Druck im DOM. Es liegt ausserhalb des
+  sichtbaren Bereichs. Auf dem Mac prüfen, ob Safari `afterprint` auslöst.
+- [Etappe 7] PDF-Prüfung (Chromium `page.pdf`, Auswertung mit pdf.js): Jeder der 8
+  Briefe beginnt auf einer neuen Seite, und keine Seite enthält Text von zwei Briefen.
+  Insgesamt 24 Seiten. Die Vorlage erzeugt je Brief 3 Seiten (`.pagebreak` im Brief
+  und `page-break-before` in `TableHeader.html`). Auf der Seite mit "Transaction data"
+  steht nur diese Überschrift, die Tabelle beginnt auf der nächsten Seite. Das
+  entspricht dem C#-Programm mit derselben Vorlage, ist kein Fehler der Web-App.
+- [Etappe 7] Logo: Die Testvorlage referenziert `logo.png` nicht. Mit einer
+  temporären Kopie, die `<img src="logo.png">` enthält, erscheint das Logo in allen
+  8 Briefen (8 Bildoperationen im PDF).
+- [Etappe 7] Offen: Der echte Druckdialog (Ziel "Als PDF speichern", Ränder
+  "Standard", Kopf- und Fusszeilen aus) ist nicht automatisierbar. Die Schritte in
+  der Anleitung müssen in Chrome, Edge, Firefox und Safari von Hand geprüft werden.
+  Die Optionen heissen je Browser etwas anders.
+
 ## 10. Entstehung
 
 Dieser Plan entstand in einer Beratungssession (November 2026). Verlauf:
