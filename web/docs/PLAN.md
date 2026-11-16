@@ -898,6 +898,68 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Änderung von +100 CHF ergibt 45 / 19 / 57. Safari auf macOS ist wie in Etappe 4
   nicht geprüft.
 
+- [Etappe 6] Zwischenstand (Etappe bleibt `[ ]`, weil die Akzeptanz "Laie kann
+  Text ändern" und Safari auf macOS nicht geprüft sind). Umgesetzt: Einstellungen
+  (`ui/settingsView.ts`), Vorlage (`ui/templateView.ts`, `ui/logo.ts`,
+  `ui/editor.ts`), Store (`updateSettings`, `updateTemplate`, `resetTemplate`,
+  `resetSettings`), `template/templateBody.ts`, Vorschau `buildLetterPreview`.
+  202 Vitest-Tests grün, `npm test` und `npm run build` erfolgreich.
+- [Etappe 6] Entscheid Editor: Jodit 4.20.1 (MIT, keine Abhängigkeiten, Typen
+  enthalten). Nicht gewählt: TinyMCE 8 (Lizenz "SEE LICENSE", nicht MIT). TinyMCE
+  6.8.6 (MIT) und Quill 2 (BSD-3) wurden nur auf dem Papier bewertet, nicht
+  praktisch getestet. TinyMCE lädt Skins und Plugins zur Laufzeit nach, was für
+  die Single-File-Auslieferung problematisch wäre. Quill kennt keine Tabellen und
+  keine Inline-Styles und würde die Vorlage verändern.
+- [Etappe 6] Jodit mit `CustomerTest/2019/Template/Document.html` geprüft
+  (Playwright, außerhalb des Repos): Öffnen und Herunterladen ohne Änderung
+  ergibt eine byte-identische Datei (BOM ausgenommen, siehe Etappe 2).
+  Ohne Gegenmassnahme wird `&#36;{year}` zu `${year}`, und der Brief zeigt dann
+  einen falschen Wert. Deshalb wird `&#36;` in einen Marker
+  `<span class="escaped-dollar">` gehüllt und beim Speichern zurückgewandelt
+  (`template/templateBody.ts`).
+- [Etappe 6] Der Editor normalisiert den Body strukturell: `<p>` um `<ul>` wird
+  aufgelöst, Leerabsätze wechseln, Fett wird als `<strong>` geschrieben. Die
+  Darstellung bleibt gleich, und der Head bleibt unverändert.
+- [Etappe 6] Grösse: `dist/index.html` wächst von 159 kB auf 940 kB (gzip 274 kB),
+  fast alles Jodit. Zu beobachten.
+- [Etappe 6] Jodit lädt beim Bearbeiten die Google-Fonts-Liste, sobald
+  Schriftfamilien im Inhalt vorkommen. Abgeschaltet über
+  `font.googleFonts.url = ""`. Geprüft in Chromium, Firefox und WebKit (auch beim
+  Tippen): keine Anfragen außerhalb von `file:`, `data:` und `blob:`.
+- [Etappe 6] Abweichung/Ergänzung: `CustomerTest/2019/Template/Document.html`
+  enthält nun `${printDate}`, `${signer1}`, `${signer2}` statt der festen Werte
+  (eigener Commit, wie in dieser Liste vorgesehen). Folge: Das C#-Programm kennt
+  diese Platzhalter nicht und druckt sie wörtlich in die Briefe. Entscheidung dazu
+  gehört zu Etappe 9.
+- [Etappe 6] Offen: `CustomerTest/2019` hat keine `Settings.json`. Das ZIP zeigt
+  deshalb die erwartete Warnung, und das Druckdatum ist heute. Soll eine
+  `Settings.json` mit den bisherigen Werten (28.02.2023, Max Mustermann, John Doe)
+  ergänzt werden?
+- [Etappe 6] Entscheid: "Vorlage zurücksetzen" stellt den Stand her, den das Jahr
+  beim ersten Anzeigen in dieser Sitzung hatte. Nach der Wiederherstellung einer
+  Sitzung ist das der wiederhergestellte Stand, nicht das Original-ZIP. Bei einem
+  neuen Jahr ist es die kopierte Vorlage.
+- [Etappe 6] Fehler behoben: Ein entferntes Logo blieb als Datei im ZIP
+  (`saveYear`). Jetzt wird `Template/logo.png` gelöscht.
+- [Etappe 6] Logo: JPG und SVG werden im Browser über ein Canvas in PNG
+  umgewandelt. SVG ohne feste Grösse wird 800 px breit. Geprüft: Der Export
+  enthält bei einem SVG-Logo eine PNG-Datei (Signatur `89 50 4E 47`).
+- [Etappe 6] Eine ungültige `Settings.json` lässt sich mit "Mit Standardwerten
+  ersetzen" reparieren. Die bisherige Datei wird dabei ersetzt, nach Rückfrage.
+- [Etappe 6] Änderungen in Textfeldern und im Editor werden als "data"
+  veröffentlicht. Die Prüfliste und die Hinweise aktualisieren sich erst beim
+  nächsten Wechsel der Registerkarte (wie in Etappe 5). Die Vorschau aktualisiert
+  sich sofort.
+- [Etappe 6] Geprüft mit Playwright über `file://`, mit `CustomerTest/` als ZIP,
+  in Chromium, Firefox und WebKit: Einstellungen in der Vorschau und in
+  `Settings.json`, Fett und Absätze im Editor, Platzhalter am Cursor, Logo (JPG,
+  SVG), Zurücksetzen, Export mit Änderungen, keine Konsolenfehler.
+- [Etappe 6] Offen: Tabellen im Brief-Body (`<table>`) im WYSIWYG-Modus sind nicht
+  geprüft. Die Tabellen-Schaltflächen fehlen bewusst. Tabellenfragmente bearbeitet
+  man im HTML-Modus.
+- [Etappe 6] Offen: Echtes Safari auf macOS und eine Prüfung durch eine nicht
+  informatikaffine Person (Akzeptanz "Laie kann Text ändern").
+
 ## 10. Entstehung
 
 Dieser Plan entstand in einer Beratungssession (November 2026). Verlauf:
