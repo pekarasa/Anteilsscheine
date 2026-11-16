@@ -800,6 +800,38 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   liest `./CustomerTest` relativ zum Arbeitsverzeichnis, nicht relativ zu
   `ShareCertificate`. Korrigiert auf `dotnet run --project`.
 
+- [Etappe 4] Zwischenstand (Etappe bleibt `[ ]`, weil Firefox und Safari nicht
+  geprüft sind). Umgesetzt: `state/store.ts` (AppStore mit Revisionszähler für
+  "ungespeichert"), `state/persistence.ts` (IndexedDB, Autosave nach 500 ms),
+  `ui/` (dom, issues, context, startView, mainView, app) und `main.ts` mit
+  `style.css`. 152 Vitest-Tests grün, `npm run build` erfolgreich.
+- [Etappe 4] Geprüft mit Playwright (Chromium, headless, Skript ausserhalb des
+  Repos) über `file://` mit `CustomerTest/` als ZIP: laden, Jahr bearbeiten,
+  neues Jahr anlegen, Autosave, Wiederherstellen nach Neuladen, ZIP-Download
+  (Dateiname, `Settings.json` mit heutigem Datum), keine Konsolenfehler und keine
+  Netzwerkanfragen, Abmeldewarnung bei ungespeicherten Änderungen.
+- [Etappe 4] Offen: Firefox und Safari sind nicht geprüft. Insbesondere
+  IndexedDB unter `file://` ist dort noch zu prüfen. Im Browser simuliert
+  (verweigerter Zugriff auf `indexedDB`) erscheint der Hinweis zur fehlenden
+  Zwischenspeicherung im UI.
+- [Etappe 4] Ergänzung: Ein Download gilt als gespeichert, sobald er ausgelöst
+  wurde. Der Abschluss des Downloads ist im Browser nicht erkennbar.
+- [Etappe 4] Ergänzung: Der Download ist auch bei Fehlern in der Prüfung möglich,
+  damit nichts verloren geht. Der Plan verlangt die Sperre nur für den Druck
+  (Etappe 7).
+- [Etappe 4] Ergänzung: Eine wiederhergestellte Sitzung gilt als ungespeichert,
+  bis sie heruntergeladen wurde. Beim Laden einer anderen ZIP-Datei bei
+  ungespeicherten Änderungen fragt eine Bestätigung nach. Über "Jahr wechseln"
+  kommt man zur Startansicht zurück.
+- [Etappe 4] Fehler in Etappe 2 behoben: `saveYear` schlug fehl, wenn für das
+  Jahr der Ertrag oder ein Umwandlungsfaktor fehlte (Berechnung der
+  Zusammenfassung warf). Die Prüfung meldet das bereits. Jetzt wird das ZIP
+  ohne `Summary_<Jahr>.csv` geschrieben, die Daten bleiben erhalten.
+- [Etappe 4] Die UI-Schicht hat keine Vitest-Tests (Node-Umgebung ohne DOM).
+  Die Fachlogik darunter ist getestet. UI-Prüfung erfolgte per Playwright.
+- [Etappe 4] Die Registerkarten sind bis auf den Platzhalter leer, wie im Plan
+  vorgesehen. Die Startansicht bietet "Neues Jahr anlegen" mit Vorschlag X+1.
+
 ## 10. Entstehung
 
 Dieser Plan entstand in einer Beratungssession (November 2026). Verlauf:
