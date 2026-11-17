@@ -1027,8 +1027,11 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 - [Etappe 8] Offen: Die Übersicht im Druck-Tab zeigt bei fehlendem Ertrag dieselbe
   Meldung wie die Prüfliste (Seiteneffekt der Übersicht aus Etappe 5). Die Meldung
   erscheint dadurch doppelt, die Funktion ist nicht betroffen.
-- [Etappe 8] Offen: Optionale Veröffentlichung auf GitHub Pages wurde nicht umgesetzt
-  (nur nach Rücksprache).
+- [Etappe 8] GitHub Pages (nach Rücksprache, Repository ist öffentlich): Workflow
+  `.github/workflows/pages.yml` läuft bei jedem Push auf `master`, testet, baut und
+  veröffentlicht `index.html` und `Anteilsscheine.html`. Einmalig nötig: unter
+  GitHub "Settings > Pages > Source" auf "GitHub Actions" stellen. Der Workflow ist
+  nicht auf GitHub gelaufen; der erste Lauf steht aus.
 - [Etappe 8] Offen: Prüfung der Anleitung durch eine nicht informatikaffine Person,
   Rückmeldungen werden hier festgehalten.
 
