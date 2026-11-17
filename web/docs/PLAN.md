@@ -591,7 +591,7 @@ speichern.
 
 ---
 
-### [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
+### [x] Etappe 9 (optional): C#-Programm angleichen oder ablösen
 
 **Ziel:** Klarheit über die Zukunft des C#-Programms.
 
@@ -644,7 +644,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 6: Einstellungen und Vorlagen-Editor
 - [x] Etappe 7: Sammel-PDF über Browser-Druck
 - [x] Etappe 8: Auslieferung und Dokumentation
-- [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
+- [x] Etappe 9 (optional): C#-Programm angleichen oder ablösen
 - [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
 
 Nächste Etappe = die erste mit `[ ]`, deren Voraussetzungen alle `[x]` sind.
@@ -1074,6 +1074,11 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   als abgedeckt. Die Etappe ist damit auf [x] gesetzt.
 - [Etappe 9] Entscheid des Benutzers: Variante "Ablösen" mit Entfernung des
   C#-Programms, damit das Repository bereinigt wird.
+- [Etappe 9] C#-Programm abgelöst: Die Ordner `ShareCertificate/` und
+  `ShareCertificate.Test/` sowie die Lösungsdatei `ShareCertificate.sln` wurden
+  gelöscht. `Readme.md` beschreibt nur noch die Web-Anwendung. `CustomerTest/`
+  bleibt für die automatisierten Tests der Web-Anwendung unverändert erhalten.
+  Die Tests (207) und der Build laufen weiterhin fehlerfrei.
 
 ## 10. Entstehung
 
