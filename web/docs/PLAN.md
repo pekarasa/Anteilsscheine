@@ -607,7 +607,7 @@ speichern.
 
 ---
 
-### [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
+### [x] Etappe 10: Azure-Pipeline für die Web-Anwendung
 
 **Ziel:** Die Azure-Pipeline testet, baut und veröffentlicht nur noch die
 Web-Anwendung, ohne C#-Schritte.
@@ -645,7 +645,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 7: Sammel-PDF über Browser-Druck
 - [x] Etappe 8: Auslieferung und Dokumentation
 - [x] Etappe 9 (optional): C#-Programm angleichen oder ablösen
-- [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
+- [x] Etappe 10: Azure-Pipeline für die Web-Anwendung
 
 Nächste Etappe = die erste mit `[ ]`, deren Voraussetzungen alle `[x]` sind.
 
@@ -1079,16 +1079,16 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   gelöscht. `Readme.md` beschreibt nur noch die Web-Anwendung. `CustomerTest/`
   bleibt für die automatisierten Tests der Web-Anwendung unverändert erhalten.
   Die Tests (207) und der Build laufen weiterhin fehlerfrei.
-- [Etappe 10] Zwischenstand (Etappe bleibt `[ ]`, weil der Lauf auf dem
-  Azure-Agenten noch aussteht): `azure-pipelines.yml` wurde auf die
-  Web-Schritte reduziert (Node 24, `npm ci`, `npm test`, `npm run build`,
-  Kopieren von `Anteilsscheine.html` und Veröffentlichen als Artefakt
-  `Anteilsscheine_Web`). Die C#-Schritte und -Variablen wurden entfernt.
-  Die YAML-Syntax ist mit dem Parser `yaml` validiert. Lokale Tests (207)
-  und Build laufen fehlerfrei.
-- [Etappe 10] Offen: Sobald die Änderungen auf `master` gepusht sind,
-  muss der Lauf auf dem Azure-Agenten geprüft und das Artefakt
-  `Anteilsscheine_Web` kontrolliert werden.
+- [Etappe 10] `azure-pipelines.yml` wurde auf die Web-Schritte reduziert
+  (Node 24, `npm ci`, `npm test`, `npm run build`, Kopieren von `Anteilsscheine.html`
+  und Veröffentlichen als Artefakt `Anteilsscheine_Web`). Die C#-Schritte und
+  -Variablen wurden entfernt. Die YAML-Syntax ist mit dem Parser `yaml`
+  validiert. Lokale Tests (207) und Build laufen fehlerfrei.
+- [Etappe 10] Die veraltete Aufgabe `NodeTool@0` erzeugte beim ersten Lauf
+  zwei Warnungen und wurde durch `UseNode@1` (mit `version: '24.x'`) ersetzt.
+- [Etappe 10] Abnahme: Der Benutzer hat bestätigt, dass die Pipeline auf Azure
+  fehlerfrei durchgelaufen ist und das Artefakt erzeugt wurde. Die Etappe ist
+  damit auf [x] gesetzt.
 
 ## 10. Entstehung
 
