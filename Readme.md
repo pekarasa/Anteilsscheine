@@ -42,6 +42,7 @@ rm CustomerTest/2019/Generated/2019_*.pdf
 The `web/` folder contains a static web version of the tool. It runs entirely
 in the browser and builds into a single HTML file. No data leaves the computer.
 
+- Use the application: [pekarasa.github.io/Anteilsscheine](https://pekarasa.github.io/Anteilsscheine/)
 - User guide (German, for users): [web/docs/Benutzeranleitung.md](web/docs/Benutzeranleitung.md)
 - Example data to try it out: [web/docs/Beispiel-Anteilsscheine.zip](web/docs/Beispiel-Anteilsscheine.zip)
 - Plan and status of the development: [web/docs/PLAN.md](web/docs/PLAN.md)
