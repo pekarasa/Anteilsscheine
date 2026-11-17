@@ -1,67 +1,49 @@
-# ShareCertificate
+# Anteilsscheine (Share Certificates)
 
-In order to facilitate the annually recurring work of issuing share certificates, this program has been developed.
+A static single-file web application to facilitate the annually recurring work of issuing share certificates and generating annual series letters as PDF.
 
 [![Build Status](https://dev.azure.com/pekarasa/Anteilsscheine/_apis/build/status/pekarasa.Anteilsscheine?branchName=master)](https://dev.azure.com/pekarasa/Anteilsscheine/_build/latest?definitionId=1&branchName=master)
 
-The program is written with C# .NET 6.0.
+The application runs entirely in the browser; no data leaves the computer.
 
-## How to build the application
+## Using the Application
 
-```bash
-cd Anteilsscheine
-dotnet build
-cd ShareCertificate
-dotnet publish -r linux-x64 -p:PublishSingleFile=true --self-contained true
-```
+- **Web app:** [pekarasa.github.io/Anteilsscheine](https://pekarasa.github.io/Anteilsscheine/)
+- **User guide (German):** [web/docs/Benutzeranleitung.md](web/docs/Benutzeranleitung.md)
+- **Example data:** [web/docs/Beispiel-Anteilsscheine.zip](web/docs/Beispiel-Anteilsscheine.zip)
+- **Architecture and development plan (German):** [web/docs/PLAN.md](web/docs/PLAN.md)
 
-## How to start the application
+Alternatively, the built HTML file `web/dist/index.html` (or `Anteilsscheine.html` from the build artifacts) can be opened locally in any modern browser (`file://`) without installation or a web server.
 
-Go to the folder where the subfolders _Customer*_ is. Open an shell and start the programm with the follwing command:
+## Test Data
 
-```bash
-cd Anteilsscheine
-publish/linux-x64/ShareCertificate --Year 2019 --CustomerName Test > CustomerTest/Summary_2019.csv
-```
+The folder `CustomerTest/` contains fictional test data (year 2019) used by the automated test suite.
 
-In the csv is an overview of all share certificates per person.
+## Development
 
-The generated PDFs are saved in the subfolder CustomerTest/2019/Generated/.
+The web application is located in the `web/` folder and is built with TypeScript and Vite (`vite-plugin-singlefile`).
 
-## How to merge all PDFs to a single one
+### Prerequisites
 
-The following command is used to combine all PDFs in one file and delete the generated:
+- Node.js 22.12 or newer
+- npm
 
-```bash
-pdfunite CustomerTest/2019/Generated/*.pdf SammelanteilsscheinSerienbrief_2019.pdf
-rm CustomerTest/2019/Generated/2019_*.pdf
-```
-
-## Web application
-
-The `web/` folder contains a static web version of the tool. It runs entirely
-in the browser and builds into a single HTML file. No data leaves the computer.
-
-- Use the application: [pekarasa.github.io/Anteilsscheine](https://pekarasa.github.io/Anteilsscheine/)
-- User guide (German, for users): [web/docs/Benutzeranleitung.md](web/docs/Benutzeranleitung.md)
-- Example data to try it out: [web/docs/Beispiel-Anteilsscheine.zip](web/docs/Beispiel-Anteilsscheine.zip)
-- Plan and status of the development: [web/docs/PLAN.md](web/docs/PLAN.md)
-
-Requirements: Node.js 22.12 or newer and npm.
+### Commands
 
 ```bash
 cd web
-npm ci              # install dependencies (once, or after changes to package-lock.json)
-npm run dev         # start the development server
-npm run typecheck   # TypeScript check
-npm test            # run the unit tests
-npm run build       # build dist/index.html (one self-contained file)
+npm ci              # install dependencies
+npm run dev         # start local development server
+npm run typecheck   # run TypeScript type check
+npm test            # run unit tests (Vitest)
+npm run build       # build self-contained single-file HTML into dist/index.html
 ```
 
-The built file `web/dist/index.html` can be opened by double-click in a browser.
-The Azure pipeline runs the same tests and build and publishes the file as the
-artifact `Anteilsscheine_Web`.
+## Continuous Integration
+
+The Azure pipeline runs automated tests and builds `Anteilsscheine.html` as the pipeline artifact `Anteilsscheine_Web`.
+A GitHub Actions workflow automatically deploys `master` to GitHub Pages.
 
 ## License
 
-ShareCertificate uses the MIT licence, see the LICENSE file.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
