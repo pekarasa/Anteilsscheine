@@ -1079,6 +1079,16 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   gelöscht. `Readme.md` beschreibt nur noch die Web-Anwendung. `CustomerTest/`
   bleibt für die automatisierten Tests der Web-Anwendung unverändert erhalten.
   Die Tests (207) und der Build laufen weiterhin fehlerfrei.
+- [Etappe 10] Zwischenstand (Etappe bleibt `[ ]`, weil der Lauf auf dem
+  Azure-Agenten noch aussteht): `azure-pipelines.yml` wurde auf die
+  Web-Schritte reduziert (Node 24, `npm ci`, `npm test`, `npm run build`,
+  Kopieren von `Anteilsscheine.html` und Veröffentlichen als Artefakt
+  `Anteilsscheine_Web`). Die C#-Schritte und -Variablen wurden entfernt.
+  Die YAML-Syntax ist mit dem Parser `yaml` validiert. Lokale Tests (207)
+  und Build laufen fehlerfrei.
+- [Etappe 10] Offen: Sobald die Änderungen auf `master` gepusht sind,
+  muss der Lauf auf dem Azure-Agenten geprüft und das Artefakt
+  `Anteilsscheine_Web` kontrolliert werden.
 
 ## 10. Entstehung
 
