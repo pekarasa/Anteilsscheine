@@ -11,8 +11,8 @@ ZIP-Datei wieder und drucken die Briefe als PDF.
 
 - **Browser:** Verwenden Sie eine aktuelle Version von Chrome, Edge, Firefox
   oder Safari.
-- **Programm:** Öffnen Sie die Datei `Anteilsscheine.html` mit einem Doppelklick.
-  Sie öffnet sich im Browser.
+- **Programm:** Öffnen Sie [https://pekarasa.github.io/Anteilsscheine/](https://pekarasa.github.io/Anteilsscheine/)
+  im Browser oder die Datei `Anteilsscheine.html` mit einem Doppelklick.
 - **Daten:** Sie brauchen die ZIP-Datei mit dem Ordner des Kunden, zum Beispiel
   `CustomerTest/2019/`. Zum Ausprobieren gibt es die Datei
   `Beispiel-Anteilsscheine.zip` (im Ordner `web/docs/` des Projekts).
