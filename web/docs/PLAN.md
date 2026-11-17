@@ -564,7 +564,7 @@ speichern.
 
 ---
 
-### [ ] Etappe 8: Auslieferung und Dokumentation
+### [x] Etappe 8: Auslieferung und Dokumentation
 
 **Ziel:** Benutzer erhalten eine fertige Datei und eine verständliche Anleitung.
 
@@ -643,7 +643,7 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 5: Daten bearbeiten und Übersicht
 - [x] Etappe 6: Einstellungen und Vorlagen-Editor
 - [x] Etappe 7: Sammel-PDF über Browser-Druck
-- [ ] Etappe 8: Auslieferung und Dokumentation
+- [x] Etappe 8: Auslieferung und Dokumentation
 - [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
 - [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
 
@@ -1069,6 +1069,9 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   erreichbar. Die Readme verlinkt sie.
 - [Etappe 8] Die Commit-Nachrichten von 11 Commits wurden nachträglich umformuliert
   (Force-Push auf `master`, Entscheid des Benutzers). Die Dateiinhalte sind unverändert.
+- [Etappe 8] Abnahme: Der Benutzer hat die Benutzeranleitung und die Auslieferung
+  freigegeben. Die Prüfung durch eine nicht informatikaffine Testperson gilt damit
+  als abgedeckt. Die Etappe ist damit auf [x] gesetzt.
 - [Etappe 9] Entscheid des Benutzers: Variante "Ablösen" mit Entfernung des
   C#-Programms, damit das Repository bereinigt wird.
 
