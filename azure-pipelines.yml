@@ -48,4 +48,44 @@ steps:
     targetPath: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'ShareCertificate_LatestBuild'
 
+# Web application (web/): tests, then the single-file build as its own artifact.
+- task: NodeTool@0
+  displayName: Install Node.js
+  inputs:
+    versionSpec: '24.x'
+
+- task: Npm@1
+  displayName: Install web dependencies
+  inputs:
+    command: 'ci'
+    workingDir: 'web'
+
+- task: Npm@1
+  displayName: Test web application
+  inputs:
+    command: 'custom'
+    workingDir: 'web'
+    customCommand: 'test'
+
+- task: Npm@1
+  displayName: Build web application
+  inputs:
+    command: 'custom'
+    workingDir: 'web'
+    customCommand: 'run build'
+
+- task: PowerShell@2
+  displayName: Copy Anteilsscheine.html to the artifact folder
+  inputs:
+    targetType: 'inline'
+    script: |
+      New-Item -ItemType Directory -Force -Path '$(Build.ArtifactStagingDirectory)/Web' | Out-Null
+      Copy-Item -Path 'web/dist/index.html' -Destination '$(Build.ArtifactStagingDirectory)/Web/Anteilsscheine.html'
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish Anteilsscheine.html
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/Web'
+    artifactName: 'Anteilsscheine_Web'
+
 #https://stackoverflow.com/questions/63788646/naming-resulting-zip-archive-in-azure-pipelines-build
