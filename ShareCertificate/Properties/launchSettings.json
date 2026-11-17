@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "ShareCertificate": {
-      "commandName": "Project",
-      "commandLineArgs": "--Year 2025 --CustomerName SolarOltingen > CustomerSolarOltingen/Summary_2025.csv",
-      "workingDirectory": "../../"
-    }
-  }
-}
