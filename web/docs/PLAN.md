@@ -584,7 +584,8 @@ speichern.
 - Beispiel-ZIP aus `CustomerTest/` als Download/Testdatei bereitstellen.
 
 **Ergebnis / Akzeptanz:**
-- Pipeline erzeugt `Anteilsscheine.html`.
+- ~~Pipeline erzeugt `Anteilsscheine.html`.~~ Verschoben nach Etappe 10
+  (Entscheid des Benutzers).
 - Eine nicht informatikaffine Testperson schafft den Jahresablauf mit der
   Anleitung ohne Hilfe (Rückmeldungen in Abschnitt 9 festhalten).
 
@@ -601,6 +602,30 @@ speichern.
   `${signer1}`, `${signer2}` im C#-Programm unterstützen.
 - **Ablösen:** C#-Programm als "veraltet" kennzeichnen, Readme anpassen,
   ggf. entfernen.
+- Entscheid des Benutzers: Variante "Ablösen" mit Entfernung des C#-Programms
+  (Abschnitt 9).
+
+---
+
+### [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
+
+**Ziel:** Die Azure-Pipeline testet, baut und veröffentlicht nur noch die
+Web-Anwendung, ohne C#-Schritte.
+
+**Voraussetzungen:** Etappe 9.
+
+**Aufgaben:**
+- `azure-pipelines.yml` auf die Web-Schritte reduzieren (die C#-Schritte fallen
+  mit dem C#-Programm weg). Die Web-Schritte aus Etappe 8 bleiben erhalten.
+- Lauf auf dem Azure-Agenten prüfen und das Artefakt `Anteilsscheine_Web`
+  kontrollieren.
+
+**Ergebnis / Akzeptanz:**
+- Pipeline läuft grün auf Azure.
+- Das Artefakt `Anteilsscheine_Web` enthält `Anteilsscheine.html`.
+
+**Hinweise:** Aus Etappe 8 verschoben (Entscheid des Benutzers). Die Reihenfolge
+hinter Etappe 9 ist gewollt, weil erst dann die C#-Schritte wegfallen.
 
 ---
 
@@ -620,10 +645,11 @@ Markierung erfolgt **hier und** in der Überschrift der Etappe in Abschnitt 7.
 - [x] Etappe 7: Sammel-PDF über Browser-Druck
 - [ ] Etappe 8: Auslieferung und Dokumentation
 - [ ] Etappe 9 (optional): C#-Programm angleichen oder ablösen
+- [ ] Etappe 10: Azure-Pipeline für die Web-Anwendung
 
 Nächste Etappe = die erste mit `[ ]`, deren Voraussetzungen alle `[x]` sind.
 
-Abhängigkeiten: 0 -> 1 -> 2 -> 4 -> 5 -> 7 -> 8; 3 benötigt 1;
+Abhängigkeiten: 0 -> 1 -> 2 -> 4 -> 5 -> 7 -> 8; 8 -> 9 -> 10; 3 benötigt 1;
 6 benötigt 3 und 4; 7 benötigt 3 und 5.
 Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
 
@@ -1034,6 +1060,17 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   nicht auf GitHub gelaufen; der erste Lauf steht aus.
 - [Etappe 8] Offen: Prüfung der Anleitung durch eine nicht informatikaffine Person,
   Rückmeldungen werden hier festgehalten.
+- [Etappe 8] Entscheid des Benutzers: Die Prüfung der Azure-Pipeline ist aus Etappe 8
+  herausgenommen und in die neue Etappe 10 verschoben. Das Akzeptanzkriterium
+  "Pipeline erzeugt Anteilsscheine.html" gilt deshalb nicht mehr für Etappe 8.
+- [Etappe 8] GitHub Pages läuft: Der erste Deploy scheiterte mit 404, weil die
+  Pages-Quelle noch nicht auf "GitHub Actions" stand. Nach der Einstellung und einem
+  erneuten Lauf ist die Seite unter https://pekarasa.github.io/Anteilsscheine/
+  erreichbar. Die Readme verlinkt sie.
+- [Etappe 8] Die Commit-Nachrichten von 11 Commits wurden nachträglich umformuliert
+  (Force-Push auf `master`, Entscheid des Benutzers). Die Dateiinhalte sind unverändert.
+- [Etappe 9] Entscheid des Benutzers: Variante "Ablösen" mit Entfernung des
+  C#-Programms, damit das Repository bereinigt wird.
 
 ## 10. Entstehung
 
