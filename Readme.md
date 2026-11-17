@@ -40,8 +40,11 @@ rm CustomerTest/2019/Generated/2019_*.pdf
 ## Web application
 
 The `web/` folder contains a static web version of the tool. It runs entirely
-in the browser and builds into a single HTML file. It is under construction;
-the plan is in `web/docs/PLAN.md`.
+in the browser and builds into a single HTML file. No data leaves the computer.
+
+- User guide (German, for users): [web/docs/Benutzeranleitung.md](web/docs/Benutzeranleitung.md)
+- Example data to try it out: [web/docs/Beispiel-Anteilsscheine.zip](web/docs/Beispiel-Anteilsscheine.zip)
+- Plan and status of the development: [web/docs/PLAN.md](web/docs/PLAN.md)
 
 Requirements: Node.js 22.12 or newer and npm.
 
@@ -55,6 +58,8 @@ npm run build       # build dist/index.html (one self-contained file)
 ```
 
 The built file `web/dist/index.html` can be opened by double-click in a browser.
+The Azure pipeline runs the same tests and build and publishes the file as the
+artifact `Anteilsscheine_Web`.
 
 ## License
 
