@@ -1010,6 +1010,28 @@ Etappe 3 kann parallel zu Etappe 2 umgesetzt werden.
   Etappe 4 und 5 nicht von mir durchgeführt; sie ist durch die Bestätigung des
   Benutzers abgedeckt.
 
+- [Etappe 8] Zwischenstand (Etappe bleibt `[ ]`, weil die Pipeline auf Azure noch
+  nicht gelaufen ist und die Prüfung durch eine nicht informatikaffine Person fehlt).
+  Umgesetzt: `azure-pipelines.yml` mit den Web-Schritten (Node 24, `npm ci`,
+  `npm test`, `npm run build`, `Anteilsscheine.html` als Artefakt `Anteilsscheine_Web`).
+  Die bestehenden C#-Schritte sind unverändert, die Datei wurde nur ergänzt. Die
+  YAML-Struktur ist mit dem Parser `yaml` geprüft, ein Lauf auf dem Windows-Agent
+  steht aus. `web/docs/Benutzeranleitung.md` mit 9 Screenshots (`web/docs/img/`),
+  `web/docs/Beispiel-Anteilsscheine.zip` (aus `CustomerTest/`), Readme aktualisiert.
+  Tests (207) und Build sind grün.
+- [Etappe 8] Abweichung (Ergänzung): Das Beispiel-ZIP liegt unter `web/docs/`, weil
+  der Plan keinen Ort nennt. Die Pipeline veröffentlicht es nicht separat.
+- [Etappe 8] Die Screenshots zeigen nur die Oberfläche. Der Druckdialog des Browsers
+  ist nicht fotografierbar; die Schritte stehen als Text im Abschnitt "Briefe drucken".
+  Die Screenshots entstanden mit Playwright (Chromium, Testdaten aus `CustomerTest/`).
+- [Etappe 8] Offen: Die Übersicht im Druck-Tab zeigt bei fehlendem Ertrag dieselbe
+  Meldung wie die Prüfliste (Seiteneffekt der Übersicht aus Etappe 5). Die Meldung
+  erscheint dadurch doppelt, die Funktion ist nicht betroffen.
+- [Etappe 8] Offen: Optionale Veröffentlichung auf GitHub Pages wurde nicht umgesetzt
+  (nur nach Rücksprache).
+- [Etappe 8] Offen: Prüfung der Anleitung durch eine nicht informatikaffine Person,
+  Rückmeldungen werden hier festgehalten.
+
 ## 10. Entstehung
 
 Dieser Plan entstand in einer Beratungssession (November 2026). Verlauf:
